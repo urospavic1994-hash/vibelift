@@ -1255,7 +1255,9 @@ function SettingsScreen({ onBack, profile, onSaveProfile, theme, onToggleTheme, 
           </div>
         ) : (
           <div className="settings-row" onClick={() => setEditingName(true)}>
-            <div className="s-icon" style={{ background:'rgba(255,31,125,.12)' }}>👤</div>
+            <div className="s-icon" style={{ background:'rgba(255,31,125,.12)' }}>
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--pink)" strokeWidth="1.8" strokeLinecap="round"><circle cx="9" cy="6" r="3"/><path d="M3 16c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg>
+            </div>
             <div>
               <div className="s-label">{(profile && profile.name) ? profile.name : 'Set your name'}</div>
               <div className="s-value">Tap to edit</div>
@@ -1266,7 +1268,11 @@ function SettingsScreen({ onBack, profile, onSaveProfile, theme, onToggleTheme, 
 
         <div className="settings-sec">Appearance</div>
         <div className="settings-row" onClick={onToggleTheme}>
-          <div className="s-icon" style={{ background:'rgba(15,37,87,.08)' }}>{theme === 'light' ? '🌙' : '☀️'}</div>
+          <div className="s-icon" style={{ background:'rgba(15,37,87,.08)' }}>
+            {theme === 'light'
+              ? <svg width="17" height="17" viewBox="0 0 17 17" fill="none" stroke="var(--text)" strokeWidth="1.8" strokeLinecap="round"><path d="M14 9.5A6 6 0 0 1 6.5 3a6 6 0 1 0 7.5 6.5z"/></svg>
+              : <svg width="17" height="17" viewBox="0 0 17 17" fill="none" stroke="var(--text)" strokeWidth="1.8" strokeLinecap="round"><circle cx="8.5" cy="8.5" r="3.5"/><line x1="8.5" y1="1" x2="8.5" y2="2.5"/><line x1="8.5" y1="14.5" x2="8.5" y2="16"/><line x1="1" y1="8.5" x2="2.5" y2="8.5"/><line x1="14.5" y1="8.5" x2="16" y2="8.5"/></svg>}
+          </div>
           <div>
             <div className="s-label">{theme === 'light' ? 'Dark Mode' : 'Light Mode'}</div>
             <div className="s-value">Currently: {theme === 'light' ? 'Light' : 'Dark'}</div>
@@ -1301,7 +1307,9 @@ function SettingsScreen({ onBack, profile, onSaveProfile, theme, onToggleTheme, 
           </div>
         ) : (
           <div className="settings-row" onClick={() => setShowAdd(true)}>
-            <div className="s-icon" style={{ background:'rgba(13,170,116,.12)', fontSize:22 }}>＋</div>
+            <div className="s-icon" style={{ background:'rgba(13,170,116,.12)' }}>
+            <svg width="17" height="17" viewBox="0 0 17 17" fill="none" stroke="var(--success)" strokeWidth="2" strokeLinecap="round"><line x1="8.5" y1="2" x2="8.5" y2="15"/><line x1="2" y1="8.5" x2="15" y2="8.5"/></svg>
+          </div>
             <div>
               <div className="s-label">Add Custom Exercise</div>
               <div className="s-value">Extend any muscle group</div>
@@ -1327,12 +1335,21 @@ function HomeScreen({ onStart, onViewHistory, onOpenSettings, history, hasActive
       <div className="home-body">
         <div className="home-top">
           <div>
-            <div className="greeting-name">{firstName ? `Hey, ${firstName} 👋` : 'Hey there 👋'}</div>
+            <div className="greeting-name">{firstName ? `Hey, ${firstName}` : 'Hey there'}</div>
             <div className="greeting-date">{fmtDate(today)}</div>
           </div>
           <div style={{ display:'flex', gap:8, alignItems:'center' }}>
-            <button className="theme-btn" onClick={onViewHistory} title="View history" style={{ fontSize:18 }}>📋</button>
-            <button className="theme-btn" onClick={onOpenSettings} title="Settings" style={{ fontSize:18 }}>⚙️</button>
+            <button className="theme-btn" onClick={onViewHistory} title="View history">
+              <svg width="17" height="17" viewBox="0 0 17 17" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+                <line x1="2" y1="4.5" x2="15" y2="4.5"/><line x1="2" y1="8.5" x2="15" y2="8.5"/><line x1="2" y1="12.5" x2="10" y2="12.5"/>
+              </svg>
+            </button>
+            <button className="theme-btn" onClick={onOpenSettings} title="Settings">
+              <svg width="17" height="17" viewBox="0 0 17 17" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+                <line x1="2" y1="4.5" x2="15" y2="4.5"/><circle cx="5.5" cy="4.5" r="1.8" fill="currentColor" stroke="none"/>
+                <line x1="2" y1="12.5" x2="15" y2="12.5"/><circle cx="11.5" cy="12.5" r="1.8" fill="currentColor" stroke="none"/>
+              </svg>
+            </button>
           </div>
         </div>
 
@@ -1348,7 +1365,7 @@ function HomeScreen({ onStart, onViewHistory, onOpenSettings, history, hasActive
         <div className="stats-row">
           <div className="stat-card">
             <div className="stat-val pink">{streak}</div>
-            <div className="stat-lbl">Day Streak 🔥</div>
+            <div className="stat-lbl">Day Streak</div>
           </div>
           <div className="stat-card">
             <div className="stat-val">{history.length}</div>
@@ -1370,8 +1387,7 @@ function HomeScreen({ onStart, onViewHistory, onOpenSettings, history, hasActive
           </div>
           {recent.length === 0 ? (
             <div style={{ textAlign:'center', padding:'24px 0', color:'var(--text2)' }}>
-              <div style={{ fontSize:32, marginBottom:8 }}>🏋️</div>
-              <div style={{ fontSize:14, lineHeight:1.5 }}>No workouts yet.<br/>Complete your first session to see history here.</div>
+              <div style={{ fontSize:14, lineHeight:1.6 }}>No workouts yet.<br/>Complete your first session to see history here.</div>
             </div>
           ) : (
             recent.map((w, i) => (
@@ -1380,9 +1396,9 @@ function HomeScreen({ onStart, onViewHistory, onOpenSettings, history, hasActive
                   <div className="hist-preview-date">{fmtDate(w.date)}</div>
                   <div className="hist-preview-meta">{w.exercises.length} exercises · {w.exercises.reduce((s,e)=>s+e.sets.length,0)} sets</div>
                 </div>
-                <div className="hist-preview-icons">
-                  {w.exercises.slice(0,4).map((ex,j) => (
-                    <ExIcon key={j} id={ex.id} size={20} color="var(--text2)" />
+                <div style={{ display:'flex', gap:4, flexWrap:'wrap', justifyContent:'flex-end', maxWidth:120 }}>
+                  {w.exercises.slice(0,3).map((ex,j) => (
+                    <span key={j} style={{ fontSize:10, fontWeight:700, letterSpacing:.4, color:'var(--text2)', background:'var(--sfx)', padding:'2px 7px', borderRadius:20 }}>{ex.gl}</span>
                   ))}
                 </div>
               </div>
@@ -1518,10 +1534,10 @@ function GroupDetailScreen({ group, onBack, onPick, onFinish, completedIds, hist
       </div>
       <div className="group-detail-body">
         <div className="grp-detail-hero">
-          <div className="grp-detail-hero-inner" style={{ background: meta.grad }}>
-            <div style={{ position:'absolute', right:-10, top:-10, opacity:.14 }}>
-              <ExIcon id={meta.icon} size={110} color="white" />
-            </div>
+          <div className="grp-detail-hero-inner" style={meta.img
+            ? { backgroundImage: `url('./${meta.img}')`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundColor: '#111' }
+            : { background: meta.grad }}>
+            <div style={{ position:'absolute', inset:0, background:'linear-gradient(to right, rgba(0,0,0,.72) 0%, rgba(0,0,0,.2) 100%)', zIndex:0 }} />
             <div style={{ position:'relative', zIndex:1 }}>
               <div className="grp-detail-hero-name">{exs[0].gl}</div>
               <div className="grp-detail-hero-sub">{exs.length} exercises</div>
@@ -1686,7 +1702,7 @@ function LogScreen({ exercise, onBack, onComplete, history }) {
         )}
 
         {allDone && (
-          <div className="done-banner"><span>🎉</span><span>All {totalSets} sets complete!</span></div>
+          <div className="done-banner"><span>All {totalSets} sets complete</span></div>
         )}
       </div>
 
@@ -1719,8 +1735,7 @@ function SummaryScreen({ workout, baseHistory, onDone }) {
   return (
     <div className="screen">
       <div className="sum-hero">
-        <div className="sum-hero-emoji">🏆</div>
-        <div className="sum-title">Workout Complete!</div>
+        <div className="sum-title">Workout Complete</div>
         <div className="sum-date">{fmtDate(workout.date)}</div>
         <div className="sum-stats">
           <div className="sum-stat"><div className="sum-stat-v">{workout.exercises.length}</div><div className="sum-stat-l">Exercises</div></div>
@@ -1742,7 +1757,7 @@ function SummaryScreen({ workout, baseHistory, onDone }) {
                 <div>
                   <div className="sum-ex-name">
                     {ex.name}
-                    {isNewPR && <span className="pr-badge" style={{ marginLeft:8 }}>🏆 PR</span>}
+                    {isNewPR && <span className="pr-badge" style={{ marginLeft:8 }}>PR</span>}
                   </div>
                   <div className="sum-ex-group">{ex.gl}</div>
                 </div>
