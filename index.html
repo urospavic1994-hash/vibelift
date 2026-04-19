@@ -392,7 +392,15 @@
     }
     .set-dot.completed { background: var(--navy); border-color: var(--navy); color: white; }
     .set-dot.active { background: var(--pink); border-color: var(--pink); color: white; box-shadow: 0 0 0 6px rgba(255,31,125,.16); transform: scale(1.1); }
+    .set-dot.warmup-skipped { background: var(--sfx); border-color: var(--border); color: var(--text2); }
     .set-dot-lbl { font-size: 9px; color: var(--text2); font-weight: 700; text-transform: uppercase; letter-spacing: .5px; }
+
+    .warmup-card {
+      background: var(--card); border-radius: var(--r); padding: 20px; box-shadow: var(--sh2);
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .warmup-card-title { font-family: var(--fd); font-size: 21px; font-weight: 800; color: var(--text); letter-spacing: .3px; }
+    .warmup-card-desc { color: var(--text2); font-size: 14px; line-height: 1.5; }
 
     .input-form { background: var(--card); border-radius: var(--r); padding: 20px; box-shadow: var(--sh2); }
     .input-form-title { font-family: var(--fd); font-size: 21px; font-weight: 800; color: var(--text); margin-bottom: 16px; letter-spacing: .3px; }
@@ -503,7 +511,6 @@
     ══════════════════════════════════ */
     .splash {
       position: fixed; inset: 0;
-      max-width: 430px; left: 50%; transform: translateX(-50%);
       background: url('./welcome.jpg') center/cover no-repeat #0a1020;
       display: flex; flex-direction: column;
       align-items: center; justify-content: flex-end;
@@ -1549,7 +1556,8 @@ function GroupDetailScreen({ group, onBack, onPick, onFinish, completedIds, hist
    LOG SCREEN — Tinder / hotel-card hero
 ═══════════════════════════════════════ */
 function LogScreen({ exercise, onBack, onComplete, history }) {
-  const [totalSets, setTotalSets] = useState(4);
+  const [totalSets, setTotalSets] = useState(3);
+  const [warmup, setWarmup] = useState('pending'); // 'pending' | 'done' | 'skipped'
   const [currentSet, setCurrentSet] = useState(1);
   const [doneSets, setDoneSets] = useState([]);
   const [weight, setWeight] = useState('');
@@ -1569,6 +1577,7 @@ function LogScreen({ exercise, onBack, onComplete, history }) {
 
   const maxLogged = doneSets.length ? Math.max(...doneSets.map(s => s.weight)) : 0;
   const isNewPR   = maxLogged > pb && pb > 0;
+  const inWarmup  = warmup === 'pending';
 
   function completeSet() {
     if (!weight || !reps) return;
@@ -1583,7 +1592,6 @@ function LogScreen({ exercise, onBack, onComplete, history }) {
 
   return (
     <div className="screen">
-      {/* Tinder-style hero — no top header, back button floats */}
       <div className="log-hero" style={{ background: meta.grad }}>
         <button className="log-hero-back" onClick={onBack}>←</button>
         <div className="log-hero-bg-icon">
@@ -1600,13 +1608,21 @@ function LogScreen({ exercise, onBack, onComplete, history }) {
       </div>
 
       <div className="log-body">
+        {/* Set progress dots — Warmup dot + working set dots */}
         <div className="set-prog">
           <div className="sec-label">Set Progress</div>
           <div className="set-dots">
+            <div className="set-dot-wrap">
+              <div className={`set-dot ${warmup === 'done' ? 'completed' : ''} ${inWarmup ? 'active' : ''} ${warmup === 'skipped' ? 'warmup-skipped' : ''}`}>
+                {warmup === 'done' ? '✓' : warmup === 'skipped' ? '—' : 'W'}
+              </div>
+              <div className="set-dot-lbl">Warm Up</div>
+            </div>
+            <div className={`set-dot-connector ${warmup !== 'pending' ? 'done-conn' : ''}`} />
             {Array.from({ length: totalSets }, (_, i) => {
               const n = i + 1;
               const completed = doneSets.some(s => s.setNum === n);
-              const active    = !allDone && n === currentSet;
+              const active    = !inWarmup && !allDone && n === currentSet;
               return (
                 <React.Fragment key={n}>
                   <div className="set-dot-wrap">
@@ -1622,7 +1638,18 @@ function LogScreen({ exercise, onBack, onComplete, history }) {
           </div>
         </div>
 
-        {!allDone && (
+        {/* Warmup phase UI */}
+        {inWarmup && (
+          <div className="warmup-card">
+            <div className="warmup-card-title">Warm-Up Set</div>
+            <div className="warmup-card-desc">Do a light set to get the muscle primed before going heavy. No weight or reps logged.</div>
+            <button className="btn-pink" onClick={() => setWarmup('done')}>✓ Warm-Up Done</button>
+            <button className="btn-outline" onClick={() => setWarmup('skipped')}>Skip Warm-Up</button>
+          </div>
+        )}
+
+        {/* Working set input */}
+        {!inWarmup && !allDone && (
           <div className="input-form">
             <div className="input-form-title">Set {currentSet} of {totalSets}</div>
             <div className="input-row">
@@ -1659,17 +1686,18 @@ function LogScreen({ exercise, onBack, onComplete, history }) {
       </div>
 
       <div className="log-action-bar">
-        {!allDone && doneSets.length === 0 && (
+        {/* Sets adjuster — visible during warmup or before first working set */}
+        {(inWarmup || (!allDone && doneSets.length === 0)) && (
           <div className="sets-ctrl">
             <button className="sets-ctrl-btn" onClick={() => setTotalSets(Math.max(1, totalSets - 1))}>−</button>
             <span className="sets-ctrl-lbl">{totalSets} sets</span>
             <button className="sets-ctrl-btn" onClick={() => setTotalSets(Math.min(8, totalSets + 1))}>+</button>
           </div>
         )}
-        {!allDone
+        {!inWarmup && (!allDone
           ? <button className="btn-pink" onClick={completeSet} disabled={!weight || !reps}>Complete Set {currentSet} →</button>
-          : <button className="btn-pink" onClick={finish}>✓ Mark Exercise Complete</button>}
-        {!allDone && doneSets.length > 0 && (
+          : <button className="btn-pink" onClick={finish}>✓ Mark Exercise Complete</button>)}
+        {!inWarmup && !allDone && doneSets.length > 0 && (
           <button className="btn-outline" onClick={finish}>Stop Early &amp; Save</button>
         )}
       </div>
