@@ -1020,12 +1020,12 @@ const DB = [
 ];
 
 const GROUP_META = {
-  chest:     { grad: 'linear-gradient(140deg,#2d0b1f 0%,#8c1a40 55%,#e91e5e 100%)', icon: 'bench_press',  color: '#e91e5e' },
-  back:      { grad: 'linear-gradient(140deg,#071a3a 0%,#0d4a8c 55%,#1e7bd4 100%)', icon: 'pullup',       color: '#1e7bd4' },
-  shoulders: { grad: 'linear-gradient(140deg,#1a0a35 0%,#5a1a9a 55%,#9c27b0 100%)', icon: 'ohp',          color: '#9c27b0' },
-  legs:      { grad: 'linear-gradient(140deg,#1c1000 0%,#7d4300 55%,#f57c00 100%)', icon: 'squat',        color: '#f57c00' },
-  arms:      { grad: 'linear-gradient(140deg,#001a08 0%,#1b6e35 55%,#43a047 100%)', icon: 'bicep_curl',   color: '#43a047' },
-  core:      { grad: 'linear-gradient(140deg,#001219 0%,#00687a 55%,#00bcd4 100%)', icon: 'plank',        color: '#00bcd4' },
+  chest:     { grad: 'linear-gradient(140deg,#2d0b1f 0%,#8c1a40 55%,#e91e5e 100%)', icon: 'bench_press',  color: '#e91e5e', img: 'Chest.png' },
+  back:      { grad: 'linear-gradient(140deg,#071a3a 0%,#0d4a8c 55%,#1e7bd4 100%)', icon: 'pullup',       color: '#1e7bd4', img: 'Back.png' },
+  shoulders: { grad: 'linear-gradient(140deg,#1a0a35 0%,#5a1a9a 55%,#9c27b0 100%)', icon: 'ohp',          color: '#9c27b0', img: 'Sholder.png' },
+  legs:      { grad: 'linear-gradient(140deg,#1c1000 0%,#7d4300 55%,#f57c00 100%)', icon: 'squat',        color: '#f57c00', img: 'Legs.png' },
+  arms:      { grad: 'linear-gradient(140deg,#001a08 0%,#1b6e35 55%,#43a047 100%)', icon: 'bicep_curl',   color: '#43a047', img: 'Arms.png' },
+  core:      { grad: 'linear-gradient(140deg,#001219 0%,#00687a 55%,#00bcd4 100%)', icon: 'plank',        color: '#00bcd4', img: 'Core.png' },
 };
 
 const DAYS_SHORT = ['Su','Mo','Tu','We','Th','Fr','Sa'];
@@ -1472,10 +1472,15 @@ function GroupSelectScreen({ onBack, onSelectGroup, onFinish, completedIds, allE
           const exs  = exList.filter(e => e.group === grp);
           const doneCnt = exs.filter(e => completedIds.includes(e.id)).length;
           return (
-            <div key={grp} className="grp-card" style={{ background: meta.grad }} onClick={() => onSelectGroup(grp)}>
-              <div className="grp-card-bg-icon">
-                <ExIcon id={meta.icon} size={130} color="white" />
-              </div>
+            <div
+              key={grp}
+              className="grp-card"
+              style={meta.img
+                ? { backgroundImage: `url('./${meta.img}')`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundColor: '#111' }
+                : { background: meta.grad }}
+              onClick={() => onSelectGroup(grp)}
+            >
+              {!meta.img && <div className="grp-card-bg-icon"><ExIcon id={meta.icon} size={130} color="white" /></div>}
               {doneCnt > 0 && <div className="grp-done-pill">✓ {doneCnt} done</div>}
               <div className="grp-card-overlay">
                 <div className="grp-card-name">{exs[0].gl}</div>
