@@ -1813,7 +1813,7 @@ function App() {
   const [profile, setProfile]       = useState(() => loadProfile());
   const [customEx, setCustomEx]     = useState(() => loadCustomEx());
   const [splash, setSplash]         = useState(true);
-  const [screen, setScreen]         = useState(() => loadCurrent() ? 'group-select' : 'home');
+  const [screen, setScreen]         = useState('home');
 
   // Apply theme to body immediately
   useEffect(() => {
