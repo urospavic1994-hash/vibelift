@@ -152,54 +152,62 @@
     /* ══════════════════════════════════
        HOME SCREEN
     ══════════════════════════════════ */
-    .home-body {
-      flex: 1; overflow-y: auto; padding: 24px 18px 52px;
-      display: flex; flex-direction: column; gap: 16px;
+    .home-hero {
+      height: 67vh; min-height: 360px; flex-shrink: 0;
+      position: relative;
+      background: url('./Main%20page%20hero%20image.png') center/cover no-repeat #0a1020;
+      display: flex; flex-direction: column;
     }
-    .home-top { display: flex; align-items: flex-start; justify-content: space-between; }
-    .greeting-name {
-      font-family: var(--fd); font-size: 42px; font-weight: 900; color: var(--text);
-      line-height: 1; letter-spacing: .4px;
+    .home-hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to bottom, rgba(0,0,0,.52) 0%, rgba(0,0,0,.05) 42%, rgba(0,0,0,.68) 100%);
     }
-    .greeting-date { font-size: 13.5px; color: var(--text2); margin-top: 5px; font-weight: 500; }
-
-    .program-card {
-      background: linear-gradient(148deg, var(--navy3) 0%, var(--navy) 45%, var(--navy2) 100%);
-      border-radius: var(--r); padding: 24px 22px;
-      color: white; position: relative; overflow: hidden;
-      box-shadow: var(--sh3), inset 0 1px 0 rgba(255,255,255,.08);
+    .home-hero-top {
+      position: relative; z-index: 1;
+      display: flex; align-items: flex-start; justify-content: space-between;
+      padding: 18px 18px 0;
     }
-    .program-card::before {
-      content: ''; position: absolute; right: -44px; top: -44px;
-      width: 180px; height: 180px; border-radius: 50%;
-      background: radial-gradient(circle, rgba(255,31,125,.3) 0%, transparent 68%);
+    .home-hero-greeting {
+      font-family: var(--fd); font-size: 38px; font-weight: 900;
+      color: white; line-height: 1; letter-spacing: .4px;
     }
-    .program-card::after {
-      content: ''; position: absolute; left: -16px; bottom: -32px;
-      width: 110px; height: 110px; border-radius: 50%;
-      background: radial-gradient(circle, rgba(255,31,125,.14) 0%, transparent 70%);
+    .home-hero-date { font-size: 13px; color: rgba(255,255,255,.62); margin-top: 5px; font-weight: 500; }
+    .home-hero-bottom {
+      position: relative; z-index: 1;
+      margin-top: auto; padding: 0 18px 26px;
     }
-    .prog-eyebrow {
-      font-family: var(--fd); font-size: 11px; font-weight: 700; text-transform: uppercase;
-      letter-spacing: 2.2px; opacity: .5; margin-bottom: 6px;
+    .home-hero-eyebrow {
+      font-family: var(--fd); font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 2.2px;
+      color: rgba(255,255,255,.52); margin-bottom: 7px;
     }
-    .prog-title { font-family: var(--fd); font-size: 32px; font-weight: 900; line-height: 1.05; margin-bottom: 5px; letter-spacing: .3px; }
-    .prog-sub { font-size: 13px; opacity: .58; margin-bottom: 22px; font-weight: 500; }
-    .prog-btn {
-      background: var(--pink); color: white; border: none;
-      border-radius: 10px; padding: 12px 28px;
-      font-family: var(--fd); font-size: 16px; font-weight: 800; letter-spacing: .9px;
-      cursor: pointer; position: relative; z-index: 1;
-      box-shadow: 0 4px 22px rgba(255,31,125,.62);
-      transition: transform .1s;
+    .home-hero-title {
+      font-family: var(--fd); font-size: 42px; font-weight: 900;
+      color: white; line-height: 1; letter-spacing: .3px; margin-bottom: 6px;
     }
-    .prog-btn:active { transform: scale(.96); }
+    .home-hero-sub {
+      font-size: 14px; color: rgba(255,255,255,.62); margin-bottom: 22px; font-weight: 500;
+    }
+    .home-hero-btn {
+      padding: 15px 32px; border-radius: var(--r-sm); border: none;
+      background: #f59e0b; color: #0f2557;
+      font-family: var(--fd); font-size: 18px; font-weight: 900; letter-spacing: .8px;
+      cursor: pointer;
+      box-shadow: 0 4px 22px rgba(245,158,11,.45);
+      transition: transform .12s, box-shadow .12s;
+    }
+    .home-hero-btn:active { transform: scale(.97); box-shadow: 0 2px 8px rgba(245,158,11,.3); }
+    .home-scroll-body {
+      flex: 1; overflow-y: auto;
+      padding: 18px 18px 60px;
+      display: flex; flex-direction: column; gap: 14px;
+    }
 
     .stats-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .stat-card { background: var(--card); border-radius: var(--r); padding: 18px 16px; box-shadow: var(--sh2); }
-    .stat-val      { font-family: var(--fd); font-size: 44px; font-weight: 900; color: var(--text); line-height: 1; }
-    .stat-val.pink { color: var(--pink); }
-    .stat-lbl      { font-size: 12px; color: var(--text2); margin-top: 4px; font-weight: 500; }
+    .stat-val        { font-family: var(--fd); font-size: 44px; font-weight: 900; color: var(--text); line-height: 1; }
+    .stat-val.amber  { color: #f59e0b; }
+    .stat-lbl        { font-size: 12px; color: var(--text2); margin-top: 4px; font-weight: 500; }
 
     .dot-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-bottom: 9px; }
     .dot { aspect-ratio: 1; border-radius: 50%; background: var(--border); transition: background .22s; }
@@ -1330,41 +1338,50 @@ function HomeScreen({ onStart, onViewHistory, onOpenSettings, history, hasActive
   const recent = [...history].reverse().slice(0, 3);
   const firstName = (profile && profile.name) ? profile.name.split(' ')[0] : null;
 
+  const heroTitle = hasActive ? 'Resume Workout' : workedToday ? 'Train Again?' : 'Ready to lift';
+  const heroSub   = hasActive ? 'You have a workout in progress.' : workedToday ? 'You already trained today.' : 'Build your session in real time.';
+  const btnLabel  = hasActive ? 'Resume →' : 'Start Workout →';
+
+  const iconBtn = { background:'rgba(0,0,0,.32)', border:'1px solid rgba(255,255,255,.18)', color:'white' };
+
   return (
-    <div className="screen">
-      <div className="home-body">
-        <div className="home-top">
+    <div className="screen" style={{ height:'100vh', overflow:'hidden', display:'flex', flexDirection:'column' }}>
+
+      {/* ── 2/3-screen hero ── */}
+      <div className="home-hero">
+        <div className="home-hero-overlay" />
+        <div className="home-hero-top">
           <div>
-            <div className="greeting-name">{firstName ? `Hey, ${firstName}` : 'Hey there'}</div>
-            <div className="greeting-date">{fmtDate(today)}</div>
+            <div className="home-hero-greeting">{firstName ? `Hey, ${firstName}` : 'Hey there'}</div>
+            <div className="home-hero-date">{fmtDate(today)}</div>
           </div>
           <div style={{ display:'flex', gap:8, alignItems:'center' }}>
-            <button className="theme-btn" onClick={onViewHistory} title="View history">
-              <svg width="17" height="17" viewBox="0 0 17 17" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+            <button className="theme-btn" style={iconBtn} onClick={onViewHistory} title="View history">
+              <svg width="17" height="17" viewBox="0 0 17 17" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round">
                 <line x1="2" y1="4.5" x2="15" y2="4.5"/><line x1="2" y1="8.5" x2="15" y2="8.5"/><line x1="2" y1="12.5" x2="10" y2="12.5"/>
               </svg>
             </button>
-            <button className="theme-btn" onClick={onOpenSettings} title="Settings">
-              <svg width="17" height="17" viewBox="0 0 17 17" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
-                <line x1="2" y1="4.5" x2="15" y2="4.5"/><circle cx="5.5" cy="4.5" r="1.8" fill="currentColor" stroke="none"/>
-                <line x1="2" y1="12.5" x2="15" y2="12.5"/><circle cx="11.5" cy="12.5" r="1.8" fill="currentColor" stroke="none"/>
+            <button className="theme-btn" style={iconBtn} onClick={onOpenSettings} title="Settings">
+              <svg width="17" height="17" viewBox="0 0 17 17" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round">
+                <line x1="2" y1="4.5" x2="15" y2="4.5"/><circle cx="5.5" cy="4.5" r="1.8" fill="white" stroke="none"/>
+                <line x1="2" y1="12.5" x2="15" y2="12.5"/><circle cx="11.5" cy="12.5" r="1.8" fill="white" stroke="none"/>
               </svg>
             </button>
           </div>
         </div>
-
-        <div className="program-card">
-          <div className="prog-eyebrow">Today's Program</div>
-          <div className="prog-title">{hasActive ? 'Resume Workout' : workedToday ? 'Train Again?' : 'Ready to lift?'}</div>
-          <div className="prog-sub">
-            {hasActive ? 'You have a workout in progress.' : workedToday ? 'You already trained today — great job.' : 'Build your session in real time.'}
-          </div>
-          <button className="prog-btn" onClick={onStart}>{hasActive ? 'Resume →' : 'Start Workout →'}</button>
+        <div className="home-hero-bottom">
+          <div className="home-hero-eyebrow">Today's Program</div>
+          <div className="home-hero-title">{heroTitle}</div>
+          <div className="home-hero-sub">{heroSub}</div>
+          <button className="home-hero-btn" onClick={onStart}>{btnLabel}</button>
         </div>
+      </div>
 
+      {/* ── Scrollable content — calendar peeks on load ── */}
+      <div className="home-scroll-body">
         <div className="stats-row">
           <div className="stat-card">
-            <div className="stat-val pink">{streak}</div>
+            <div className="stat-val amber">{streak}</div>
             <div className="stat-lbl">Day Streak</div>
           </div>
           <div className="stat-card">
