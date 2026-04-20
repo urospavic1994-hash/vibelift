@@ -1534,7 +1534,6 @@ function HomeScreen({ onStart, onViewHistory, onOpenSettings, history, hasActive
               <div className="hero-stat-lbl">Total Workouts</div>
             </div>
           </div>
-          <button className="home-hero-btn" onClick={onStart}>{btnLabel}</button>
         </div>
       </div>
 
@@ -1779,7 +1778,7 @@ function LogScreen({ exercise, onBack, onComplete, history }) {
 
   return (
     <div className="screen">
-      <div className="log-hero" style={{ background: meta.grad }}>
+      <div className="log-hero" style={{ background: meta.grad, opacity: 0.6 }}>
         <button className="log-hero-back" onClick={onBack}>←</button>
         <div className="log-hero-bg-icon">
           <ExIcon id={exercise.id} size={160} color="white" />
@@ -1842,11 +1841,11 @@ function LogScreen({ exercise, onBack, onComplete, history }) {
             <div className="input-row">
               <div className="inp-group">
                 <label>Weight (kg)</label>
-                <input type="number" value={weight} placeholder="0" min="0" step="2.5" onChange={e => setWeight(e.target.value)} />
+                <input type="number" inputMode="numeric" pattern="[0-9]*" value={weight} placeholder="0" min="0" step="2.5" onChange={e => setWeight(e.target.value)} />
               </div>
               <div className="inp-group">
                 <label>Reps</label>
-                <input type="number" value={reps} placeholder="0" min="0" step="1" onChange={e => setReps(e.target.value)} />
+                <input type="number" inputMode="numeric" pattern="[0-9]*" value={reps} placeholder="0" min="0" step="1" onChange={e => setReps(e.target.value)} />
               </div>
             </div>
           </div>
