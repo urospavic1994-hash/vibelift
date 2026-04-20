@@ -1778,7 +1778,10 @@ function LogScreen({ exercise, onBack, onComplete, history }) {
 
   return (
     <div className="screen">
-      <div className="log-hero" style={{ background: meta.grad, opacity: 0.6 }}>
+      <div className="log-hero" style={meta.img
+        ? { backgroundImage: `url('./${meta.img}')`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundColor: '#111' }
+        : { background: meta.grad }}>
+        {meta.img && <div style={{ position:'absolute', inset:0, background:'rgba(0,0,0,0.42)', zIndex:0 }} />}
         <button className="log-hero-back" onClick={onBack}>←</button>
         <div className="log-hero-bg-icon">
           <ExIcon id={exercise.id} size={160} color="white" />
