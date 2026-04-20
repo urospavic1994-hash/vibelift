@@ -153,15 +153,28 @@
        HOME SCREEN
     ══════════════════════════════════ */
     .home-hero {
-      height: 67vh; min-height: 360px; flex-shrink: 0;
+      height: 100vh; flex-shrink: 0;
       position: relative;
       background: url('./Main%20page%20hero%20image.png') center/cover no-repeat #0a1020;
       display: flex; flex-direction: column;
     }
     .home-hero-overlay {
       position: absolute; inset: 0;
-      background: linear-gradient(to bottom, rgba(0,0,0,.52) 0%, rgba(0,0,0,.05) 42%, rgba(0,0,0,.68) 100%);
+      background: linear-gradient(to bottom, rgba(0,0,0,.58) 0%, rgba(0,0,0,.08) 38%, rgba(0,0,0,.72) 100%);
     }
+    .hero-stats-row {
+      display: flex; gap: 10px;
+    }
+    .hero-stat-chip {
+      flex: 1;
+      background: rgba(0,0,0,.35);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 14px; padding: 12px 14px;
+    }
+    .hero-stat-val { font-family: var(--fd); font-size: 34px; font-weight: 900; color: white; line-height: 1; }
+    .hero-stat-val.amber { color: #f59e0b; }
+    .hero-stat-lbl { font-size: 11px; color: rgba(255,255,255,.58); margin-top: 3px; font-weight: 500; }
     .home-hero-top {
       position: relative; z-index: 1;
       display: flex; align-items: flex-start; justify-content: space-between;
@@ -209,14 +222,71 @@
     .stat-val.amber  { color: #f59e0b; }
     .stat-lbl        { font-size: 12px; color: var(--text2); margin-top: 4px; font-weight: 500; }
 
-    .dot-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-bottom: 9px; }
-    .dot { aspect-ratio: 1; border-radius: 50%; background: var(--border); transition: background .22s; }
-    .dot.done        { background: var(--pink); }
-    .dot.today       { box-shadow: 0 0 0 2.5px var(--text); }
-    .dot.today.done  { box-shadow: 0 0 0 2.5px var(--pink); }
-    .dot.future      { opacity: .4; }
-    .dot-day-labels  { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
-    .dot-day-lbl     { text-align: center; font-size: 9px; letter-spacing: .5px; color: var(--text2); font-weight: 700; text-transform: uppercase; }
+    /* calendar */
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+    .cal-day-lbl { text-align: center; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--text2); padding-bottom: 6px; }
+    .cal-day {
+      aspect-ratio: 1; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 600; color: var(--text2);
+      cursor: default; transition: background .15s;
+    }
+    .cal-day.has-workout { background: rgba(255,31,125,.15); color: var(--pink); cursor: pointer; font-weight: 700; }
+    .cal-day.has-workout:active { background: rgba(255,31,125,.25); }
+    .cal-day.in-progress { background: rgba(245,158,11,.18); color: #f59e0b; cursor: pointer; font-weight: 700; }
+    .cal-day.today-ring { box-shadow: 0 0 0 2px var(--text); }
+    .cal-day.future { opacity: .3; }
+    .cal-day.selected { background: var(--pink) !important; color: white !important; box-shadow: 0 2px 10px rgba(255,31,125,.35); }
+    .cal-day.in-progress.selected { background: #f59e0b !important; color: #0f2557 !important; }
+    .cal-expand {
+      grid-column: 1 / -1;
+      background: var(--sfx); border-radius: 12px;
+      padding: 12px 14px; margin-top: 2px;
+      border-left: 3px solid var(--pink);
+      animation: slideDown .2s ease;
+    }
+    .cal-expand.active-expand { border-left-color: #f59e0b; }
+    @keyframes slideDown { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
+    .cal-expand-date { font-family: var(--fd); font-size: 14px; font-weight: 800; color: var(--text); margin-bottom: 8px; letter-spacing: .3px; }
+    .cal-expand-ex { font-size: 12px; color: var(--text2); padding: 4px 0; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+    .cal-expand-ex:last-child { border-bottom: none; }
+    .cal-expand-ex-name { font-weight: 600; color: var(--text); }
+    .cal-in-progress-badge { font-size: 10px; font-weight: 700; color: #f59e0b; background: rgba(245,158,11,.14); padding: 2px 8px; border-radius: 20px; }
+
+    /* break modal & exercise-done sheet */
+    .modal-backdrop {
+      position: fixed; inset: 0; z-index: 1000;
+      background: rgba(0,0,0,.55);
+      backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+      display: flex; align-items: flex-end;
+      animation: fadeIn .2s ease;
+    }
+    @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+    .modal-sheet {
+      width: 100%; max-width: 430px; margin: 0 auto;
+      background: var(--card); border-radius: 24px 24px 0 0;
+      padding: 20px 22px env(safe-area-inset-bottom, 28px);
+      animation: slideUp .28s cubic-bezier(.18,.82,.4,1);
+    }
+    .modal-handle { width: 36px; height: 4px; border-radius: 2px; background: var(--border); margin: 0 auto 20px; }
+    .modal-title { font-family: var(--fd); font-size: 26px; font-weight: 900; color: var(--text); letter-spacing: .4px; margin-bottom: 6px; }
+    .modal-sub { font-size: 14px; color: var(--text2); margin-bottom: 22px; line-height: 1.5; }
+    .ex-done-btn {
+      width: 100%; padding: 16px 18px; border-radius: var(--r-sm); border: 2px solid var(--border);
+      background: var(--card); color: var(--text);
+      font-family: var(--fd); font-size: 17px; font-weight: 800; letter-spacing: .4px;
+      cursor: pointer; text-align: left;
+      display: flex; align-items: center; gap: 12px;
+      box-shadow: var(--sh1); transition: border-color .14s, background .14s; margin-bottom: 10px;
+    }
+    .ex-done-btn:active { background: var(--sfx); border-color: var(--pink); }
+    .ex-done-btn-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 18px; }
+    .ex-done-finish {
+      width: 100%; padding: 11px; border-radius: var(--r-sm); border: none; margin-top: 2px;
+      background: transparent; color: var(--text2);
+      font-size: 14px; font-weight: 600; cursor: pointer; transition: color .14s;
+    }
+    .ex-done-finish:active { color: var(--pink); }
 
     /* Home history preview */
     .hist-preview-row {
@@ -521,16 +591,25 @@
       position: fixed; inset: 0;
       background: url('./welcome.jpg') center/cover no-repeat #0a1020;
       display: flex; flex-direction: column;
-      align-items: center; justify-content: flex-end;
+      align-items: center;
       z-index: 9999;
     }
     .splash-overlay {
       position: absolute; inset: 0;
-      background: linear-gradient(to top, rgba(0,0,0,.88) 0%, rgba(0,0,0,.35) 55%, rgba(0,0,0,.12) 100%);
+      background: linear-gradient(to bottom, rgba(0,0,0,.10) 0%, rgba(0,0,0,.38) 50%, rgba(0,0,0,.65) 75%, rgba(0,0,0,.50) 100%);
     }
     .splash-content {
-      position: relative; z-index: 1;
-      text-align: center; padding: 0 28px 60px; width: 100%;
+      position: absolute; top: 66%; transform: translateY(-50%);
+      z-index: 1;
+      text-align: center; padding: 0 28px; width: 100%;
+    }
+    .splash-text-wrap {
+      display: block; width: 100%;
+      background: rgba(0,0,0,.42);
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 20px; padding: 28px 40px 24px;
+      margin-bottom: 20px;
     }
     .splash-logo {
       font-family: var(--fd); font-size: 68px; font-weight: 900;
@@ -1116,24 +1195,88 @@ function getTrend(history, exId) {
 }
 
 /* ═══════════════════════════════════════
-   DOT CHART
+   WORKOUT CALENDAR
 ═══════════════════════════════════════ */
-function DotChart({ history }) {
-  const days = get28Days(), done = new Set(history.map(w => w.date)), today = todayISO();
+function getCalendarMonth() {
+  const today = new Date();
+  const year = today.getFullYear(), month = today.getMonth();
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const cells = [];
+  for (let i = 0; i < firstDay; i++) cells.push(null);
+  for (let d = 1; d <= daysInMonth; d++) {
+    const iso = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    cells.push({ day: d, iso });
+  }
+  return { cells, monthLabel: today.toLocaleDateString('en-US', { month:'long', year:'numeric' }) };
+}
+
+function WorkoutCalendar({ history, current }) {
+  const [expanded, setExpanded] = useState(null);
+  const { cells, monthLabel } = useMemo(getCalendarMonth, []);
+  const today = todayISO();
+  const doneDates = useMemo(() => new Set(history.map(w => w.date)), [history]);
+  const inProgressDate = current && current.exercises.length > 0 ? current.date : null;
+
+  function handleDayTap(iso) {
+    if (doneDates.has(iso) || iso === inProgressDate) {
+      setExpanded(prev => prev === iso ? null : iso);
+    }
+  }
+
+  const expandedWorkout = expanded ? history.find(w => w.date === expanded) : null;
+  const expandedIsActive = expanded === inProgressDate;
+
   return (
     <div>
-      <div className="dot-grid">
-        {days.map(d => {
-          let cls = 'dot';
-          if (d > today) cls += ' future';
-          else if (done.has(d)) cls += ' done';
-          if (d === today) cls += ' today';
-          return <div key={d} className={cls} title={d} />;
+      <div style={{ marginBottom: 10 }}>
+        <span className="sec-label" style={{ marginBottom: 0 }}>Activity — {monthLabel}</span>
+      </div>
+      <div className="cal-grid">
+        {DAYS_SHORT.map(d => <div key={d} className="cal-day-lbl">{d}</div>)}
+        {cells.map((cell, i) => {
+          if (!cell) return <div key={`e${i}`} className="cal-day empty" />;
+          const { day, iso } = cell;
+          const isDone = doneDates.has(iso);
+          const isActive = iso === inProgressDate;
+          const isFuture = iso > today;
+          const isToday = iso === today;
+          const isSelected = expanded === iso;
+          let cls = 'cal-day';
+          if (isFuture) cls += ' future';
+          else if (isActive) cls += ' in-progress';
+          else if (isDone) cls += ' has-workout';
+          if (isToday) cls += ' today-ring';
+          if (isSelected) cls += ' selected';
+          return <div key={iso} className={cls} onClick={() => handleDayTap(iso)}>{day}</div>;
         })}
       </div>
-      <div className="dot-day-labels">
-        {DAYS_SHORT.map(d => <div key={d} className="dot-day-lbl">{d}</div>)}
-      </div>
+      {expanded && (
+        <div className={`cal-expand ${expandedIsActive ? 'active-expand' : ''}`} style={{ marginTop: 10 }}>
+          <div className="cal-expand-date">{fmtDate(expanded)}</div>
+          {expandedIsActive && !expandedWorkout ? (
+            <>
+              <div className="cal-expand-ex">
+                <span className="cal-expand-ex-name">Workout in progress</span>
+                <span className="cal-in-progress-badge">Active</span>
+              </div>
+              {current.exercises.map((ex, j) => (
+                <div key={j} className="cal-expand-ex">
+                  <span className="cal-expand-ex-name">{ex.name}</span>
+                  <span>{ex.sets.length} sets</span>
+                </div>
+              ))}
+            </>
+          ) : expandedWorkout ? (
+            expandedWorkout.exercises.map((ex, j) => (
+              <div key={j} className="cal-expand-ex">
+                <span className="cal-expand-ex-name">{ex.name}</span>
+                <span>{ex.sets.length} sets</span>
+              </div>
+            ))
+          ) : null}
+        </div>
+      )}
     </div>
   );
 }
@@ -1149,8 +1292,8 @@ function SplashScreen({ isFirstTime, onContinue }) {
 
   useEffect(() => {
     if (!isFirstTime) {
-      const t1 = setTimeout(() => setFading(true), 800);
-      const t2 = setTimeout(onContinue, 1200);
+      const t1 = setTimeout(() => setFading(true), 1100);
+      const t2 = setTimeout(onContinue, 1500);
       return () => { clearTimeout(t1); clearTimeout(t2); };
     }
   }, []);
@@ -1164,8 +1307,10 @@ function SplashScreen({ isFirstTime, onContinue }) {
     <div className={`splash ${fading ? 'fading' : ''}`}>
       <div className="splash-overlay" />
       <div className="splash-content">
-        <div className="splash-logo">Vibe<span>Lift</span></div>
-        <div className="splash-tagline">Work out, not stress out.</div>
+        <div className="splash-text-wrap">
+          <div className="splash-logo">Vibe<span>Lift</span></div>
+          <div className="splash-tagline">Work out, not stress out.</div>
+        </div>
         {isFirstTime && (
           <button className="splash-btn" onClick={handleBtn}>Get Started →</button>
         )}
@@ -1331,7 +1476,7 @@ function SettingsScreen({ onBack, profile, onSaveProfile, theme, onToggleTheme, 
   );
 }
 
-function HomeScreen({ onStart, onViewHistory, onOpenSettings, history, hasActive, profile }) {
+function HomeScreen({ onStart, onViewHistory, onOpenSettings, history, hasActive, profile, current }) {
   const today = todayISO();
   const streak = getStreak(history);
   const workedToday = history.some(w => w.date === today);
@@ -1345,9 +1490,9 @@ function HomeScreen({ onStart, onViewHistory, onOpenSettings, history, hasActive
   const iconBtn = { background:'rgba(0,0,0,.32)', border:'1px solid rgba(255,255,255,.18)', color:'white' };
 
   return (
-    <div className="screen" style={{ height:'100vh', overflow:'hidden', display:'flex', flexDirection:'column' }}>
+    <div className="screen" style={{ height:'100vh', overflowY:'auto', display:'flex', flexDirection:'column' }}>
 
-      {/* ── 2/3-screen hero ── */}
+      {/* ── Full-screen hero ── */}
       <div className="home-hero">
         <div className="home-hero-overlay" />
         <div className="home-hero-top">
@@ -1369,30 +1514,29 @@ function HomeScreen({ onStart, onViewHistory, onOpenSettings, history, hasActive
             </button>
           </div>
         </div>
+
         <div className="home-hero-bottom">
           <div className="home-hero-eyebrow">Today's Program</div>
           <div className="home-hero-title">{heroTitle}</div>
           <div className="home-hero-sub">{heroSub}</div>
+          <div className="hero-stats-row" style={{ padding:'0 0 20px' }}>
+            <div className="hero-stat-chip">
+              <div className={`hero-stat-val${streak > 0 ? ' amber' : ''}`}>{streak}</div>
+              <div className="hero-stat-lbl">Day Streak</div>
+            </div>
+            <div className="hero-stat-chip">
+              <div className="hero-stat-val">{history.length}</div>
+              <div className="hero-stat-lbl">Total Workouts</div>
+            </div>
+          </div>
           <button className="home-hero-btn" onClick={onStart}>{btnLabel}</button>
         </div>
       </div>
 
-      {/* ── Scrollable content — calendar peeks on load ── */}
-      <div className="home-scroll-body">
-        <div className="stats-row">
-          <div className="stat-card">
-            <div className="stat-val amber">{streak}</div>
-            <div className="stat-lbl">Day Streak</div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-val">{history.length}</div>
-            <div className="stat-lbl">Total Workouts</div>
-          </div>
-        </div>
-
+      {/* ── Scrollable content below hero ── */}
+      <div className="home-scroll-body" style={{ flex:'none', overflowY:'visible' }}>
         <div className="card">
-          <div className="sec-label">Activity — Last 4 Weeks</div>
-          <DotChart history={history} />
+          <WorkoutCalendar history={history} current={current} />
         </div>
 
         <div className="card">
@@ -1801,6 +1945,61 @@ function SummaryScreen({ workout, baseHistory, onDone }) {
 }
 
 /* ═══════════════════════════════════════
+   BREAK MODAL
+═══════════════════════════════════════ */
+function BreakModal({ onBreak, onDone }) {
+  return (
+    <div className="modal-backdrop" onClick={onBreak}>
+      <div className="modal-sheet" onClick={e => e.stopPropagation()}>
+        <div className="modal-handle" />
+        <div className="modal-title">Taking a break?</div>
+        <div className="modal-sub">Your progress is saved. Come back whenever you're ready and pick up exactly where you left off.</div>
+        <button className="btn-pink" onClick={onDone} style={{ marginBottom:10 }}>Done — Save &amp; Finish</button>
+        <button className="btn-outline" onClick={onBreak}>Just a Break — Resume Later</button>
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════
+   EXERCISE DONE SHEET
+═══════════════════════════════════════ */
+function ExerciseDoneSheet({ exerciseName, group, onSameGroup, onNewGroup, onFinish }) {
+  const meta = GROUP_META[group] || GROUP_META.chest;
+  return (
+    <div className="modal-backdrop" onClick={onSameGroup}>
+      <div className="modal-sheet" onClick={e => e.stopPropagation()}>
+        <div className="modal-handle" />
+        <div className="modal-title">Nice work!</div>
+        <div className="modal-sub" style={{ marginBottom:18 }}><strong>{exerciseName}</strong> is done. What's next?</div>
+        <button className="ex-done-btn" onClick={onSameGroup}>
+          <div className="ex-done-btn-icon" style={{ background: meta.grad }}>
+            <ExIcon id={meta.icon} size={20} color="white" />
+          </div>
+          <div>
+            <div>Add exercise — {group.charAt(0).toUpperCase()+group.slice(1)}</div>
+            <div style={{ fontSize:12, fontWeight:500, color:'var(--text2)', marginTop:2 }}>Stay in the same muscle group</div>
+          </div>
+        </button>
+        <button className="ex-done-btn" onClick={onNewGroup}>
+          <div className="ex-done-btn-icon" style={{ background:'rgba(127,127,127,.12)' }}>
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="var(--text)" strokeWidth="1.8" strokeLinecap="round">
+              <rect x="2" y="2" width="7" height="7" rx="1.5"/><rect x="11" y="2" width="7" height="7" rx="1.5"/>
+              <rect x="2" y="11" width="7" height="7" rx="1.5"/><rect x="11" y="11" width="7" height="7" rx="1.5"/>
+            </svg>
+          </div>
+          <div>
+            <div>New muscle group</div>
+            <div style={{ fontSize:12, fontWeight:500, color:'var(--text2)', marginTop:2 }}>Switch to a different area</div>
+          </div>
+        </button>
+        <button className="ex-done-finish" onClick={onFinish}>Finish workout</button>
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════
    APP ROOT
 ═══════════════════════════════════════ */
 function App() {
@@ -1814,6 +2013,8 @@ function App() {
   const [customEx, setCustomEx]     = useState(() => loadCustomEx());
   const [splash, setSplash]         = useState(true);
   const [screen, setScreen]         = useState('home');
+  const [breakModal, setBreakModal] = useState(false);
+  const [exerciseDoneSheet, setExerciseDoneSheet] = useState(null);
 
   // Apply theme to body immediately
   useEffect(() => {
@@ -1830,7 +2031,8 @@ function App() {
 
   function onSplashDone() {
     setSplash(false);
-    if (!profile || !profile.setupDone) setScreen('profile-setup');
+    if (!profile || !profile.setupDone) { setScreen('profile-setup'); return; }
+    if (current && current.exercises.length > 0) setBreakModal(true);
   }
 
   function onProfileSave(p) {
@@ -1854,6 +2056,7 @@ function App() {
     setCurrent(prev => ({ ...prev, exercises: [...prev.exercises.filter(e => e.id !== ex.id), ex] }));
     setActiveEx(null);
     setScreen('group-detail');
+    setExerciseDoneSheet({ exerciseName: ex.name, group: ex.group });
   }
 
   function finishWorkout() {
@@ -1863,6 +2066,8 @@ function App() {
     setHistory(next); saveHistory(next);
     setSummary({ workout: current, baseHistory: base });
     setCurrent(null);
+    setBreakModal(false);
+    setExerciseDoneSheet(null);
     setScreen('summary');
   }
 
@@ -1870,7 +2075,7 @@ function App() {
   function backFromGroupDetail() { setScreen('group-select'); }
   function backFromGroupSelect() {
     const hasWork = current && current.exercises.length > 0;
-    if (hasWork && !window.confirm('Leave workout? Progress is saved — resume anytime.')) return;
+    if (hasWork) { setBreakModal(true); return; }
     setScreen('home');
   }
 
@@ -1887,7 +2092,24 @@ function App() {
       )}
 
       {!splash && screen === 'home' && (
-        <HomeScreen onStart={startWorkout} onViewHistory={() => setScreen('history')} onOpenSettings={() => setScreen('settings')} history={history} hasActive={!!current} profile={profile} />
+        <HomeScreen onStart={startWorkout} onViewHistory={() => setScreen('history')} onOpenSettings={() => setScreen('settings')} history={history} hasActive={!!current} profile={profile} current={current} />
+      )}
+
+      {breakModal && (
+        <BreakModal
+          onBreak={() => { setBreakModal(false); setScreen('home'); }}
+          onDone={() => { finishWorkout(); }}
+        />
+      )}
+
+      {exerciseDoneSheet && (
+        <ExerciseDoneSheet
+          exerciseName={exerciseDoneSheet.exerciseName}
+          group={exerciseDoneSheet.group}
+          onSameGroup={() => { setExerciseDoneSheet(null); setScreen('group-detail'); }}
+          onNewGroup={() => { setExerciseDoneSheet(null); setScreen('group-select'); }}
+          onFinish={() => { setExerciseDoneSheet(null); finishWorkout(); }}
+        />
       )}
 
       {!splash && screen === 'history' && (
