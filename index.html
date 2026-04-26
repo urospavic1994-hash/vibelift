@@ -6,7 +6,7 @@
   <title>VibeLift</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Passion+One:wght@400;700;900&family=Sacramento&family=Dancing+Script:wght@400;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/react@18.2.0/umd/react.development.js"></script>
   <script src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/@babel/standalone@7.23.5/babel.min.js"></script>
@@ -14,42 +14,49 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --pink:    #ff1f7d;
-      --pink2:   #d4005e;
-      --navy:    #0f2557;
-      --navy2:   #1a3a7a;
-      --navy3:   #091b40;
+      --pink:    #ff2d78;
+      --pink2:   #ff0a6c;
+      --navy:    #0a0e27;
+      --navy2:   #0f1a3c;
+      --navy3:   #162350;
       --success: #0daa74;
-      --pink-glow: rgba(255,31,125,.30);
+      --pink-glow: rgba(255,45,120,.30);
+      --cyan:      #00e5ff;
+      --purple:    #b24dff;
+      --amber:     #f59e0b;
+      --sunset:    #ff6b35;
+      --cyan-glow: rgba(0,229,255,.30);
 
       /* Semantic — light defaults */
-      --bg:     #edf1fd;
+      --bg:     #f0f2ff;
       --card:   #ffffff;
-      --sfx:    #f0f4fe;
-      --border: #d8e2f6;
-      --text:   #0f2557;
-      --text2:  #6674a8;
+      --sfx:    #e8ecff;
+      --border: rgba(10,14,39,0.1);
+      --text:   #0a0e27;
+      --text2:  rgba(10,14,39,0.5);
       --hdr-bg: rgba(255,255,255,.88);
       --bar-bg: rgba(255,255,255,.92);
-      --sh1: 0 1px 4px rgba(15,37,87,.05), 0 3px 10px rgba(15,37,87,.06);
-      --sh2: 0 2px 8px rgba(15,37,87,.05), 0 8px 26px rgba(15,37,87,.09);
-      --sh3: 0 4px 16px rgba(15,37,87,.08), 0 20px 48px rgba(15,37,87,.12);
+      --sh1: 0 1px 4px rgba(10,14,39,.05), 0 3px 10px rgba(10,14,39,.06);
+      --sh2: 0 2px 8px rgba(10,14,39,.05), 0 8px 26px rgba(10,14,39,.09);
+      --sh3: 0 4px 16px rgba(10,14,39,.08), 0 20px 48px rgba(10,14,39,.12);
 
       --r:   18px;
       --r-sm: 12px;
-      --fd: 'Barlow Condensed', sans-serif;
+      --fd: 'Passion One', sans-serif;
       --fb: 'DM Sans', sans-serif;
+      --fl: 'Sacramento', cursive;
+      --fc: 'Dancing Script', cursive;
     }
 
     [data-theme="dark"] {
-      --bg:     #070c17;
-      --card:   #0d1526;
-      --sfx:    #060a13;
-      --border: #162038;
-      --text:   #dde5ff;
-      --text2:  #6a7aa8;
-      --hdr-bg: rgba(7,12,23,.9);
-      --bar-bg: rgba(7,12,23,.94);
+      --bg:     #0a0e27;
+      --card:   #0f1a3c;
+      --sfx:    #0a0e27;
+      --border: rgba(255,255,255,0.08);
+      --text:   rgba(255,255,255,0.9);
+      --text2:  rgba(255,255,255,0.4);
+      --hdr-bg: rgba(10,14,39,.92);
+      --bar-bg: rgba(10,14,39,.95);
       --sh1: 0 1px 4px rgba(0,0,0,.25), 0 3px 10px rgba(0,0,0,.3);
       --sh2: 0 2px 8px rgba(0,0,0,.3), 0 8px 26px rgba(0,0,0,.38);
       --sh3: 0 4px 16px rgba(0,0,0,.35), 0 20px 48px rgba(0,0,0,.44);
@@ -73,7 +80,15 @@
       content: '';
       position: fixed; top: -60px; right: -60px;
       width: 320px; height: 320px; border-radius: 50%;
-      background: radial-gradient(circle, rgba(255,31,125,.08) 0%, transparent 68%);
+      background: radial-gradient(circle, rgba(255,45,120,.12) 0%, transparent 60%);
+      pointer-events: none; z-index: 0;
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      bottom: -150px; left: -150px;
+      width: 500px; height: 500px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,229,255,0.08) 0%, transparent 60%);
       pointer-events: none; z-index: 0;
     }
 
@@ -477,11 +492,11 @@
       background: var(--card); border-radius: var(--r); padding: 20px; box-shadow: var(--sh2);
       display: flex; flex-direction: column; gap: 12px;
     }
-    .warmup-card-title { font-family: var(--fd); font-size: 21px; font-weight: 800; color: var(--text); letter-spacing: .3px; }
+    .warmup-card-title { font-family: var(--fc); font-size: 22px; font-weight: 700; color: var(--text); letter-spacing: .3px; }
     .warmup-card-desc { color: var(--text2); font-size: 14px; line-height: 1.5; }
 
     .input-form { background: var(--card); border-radius: var(--r); padding: 20px; box-shadow: var(--sh2); }
-    .input-form-title { font-family: var(--fd); font-size: 21px; font-weight: 800; color: var(--text); margin-bottom: 16px; letter-spacing: .3px; }
+    .input-form-title { font-family: var(--fc); font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 16px; letter-spacing: .3px; }
     .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .inp-group label { display: block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.1px; color: var(--text2); margin-bottom: 7px; }
     .inp-group input {
@@ -612,11 +627,10 @@
       margin-bottom: 20px;
     }
     .splash-logo {
-      font-family: var(--fd); font-size: 68px; font-weight: 900;
-      color: white; letter-spacing: 3px; line-height: 1;
-      text-shadow: 0 2px 24px rgba(0,0,0,.5);
+      max-width: 200px; width: 100%;
+      display: block; margin: 0 auto 4px;
+      border-radius: 16px;
     }
-    .splash-logo span { color: var(--pink); }
     .splash-tagline {
       font-size: 16px; color: rgba(255,255,255,.75);
       margin-top: 10px; font-weight: 500; letter-spacing: .3px;
@@ -645,7 +659,7 @@
       display: flex; flex-direction: column; gap: 28px;
     }
     .setup-hero { text-align: center; padding-bottom: 4px; }
-    .setup-logo { font-family: var(--fd); font-size: 38px; font-weight: 900; color: var(--pink); letter-spacing: 2px; }
+    .setup-logo { max-width: 120px; width: 100%; display: block; margin: 0 auto; border-radius: 10px; }
     .setup-title { font-family: var(--fd); font-size: 32px; font-weight: 900; color: var(--text); margin-top: 20px; line-height: 1.1; }
     .setup-subtitle { font-size: 15px; color: var(--text2); margin-top: 5px; line-height: 1.5; }
     .setup-field { display: flex; flex-direction: column; gap: 7px; }
@@ -718,16 +732,105 @@
     .custom-ex-grp  { font-size: 11px; color: var(--text2); margin-top: 1px; }
     .del-btn {
       width: 28px; height: 28px; border-radius: 50%; border: none;
-      background: rgba(255,31,125,.12); color: var(--pink);
+      background: rgba(255,45,120,.12); color: var(--pink);
       font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center;
       flex-shrink: 0;
     }
+
+    /* ── Neon glow ── */
+    .neon-pink {
+      color: var(--pink);
+      text-shadow: 0 0 7px rgba(255,45,120,0.8), 0 0 20px rgba(255,45,120,0.5), 0 0 42px rgba(255,45,120,0.3), 0 0 80px rgba(255,45,120,0.15);
+    }
+    .neon-cyan {
+      color: var(--cyan);
+      text-shadow: 0 0 7px rgba(0,229,255,0.8), 0 0 20px rgba(0,229,255,0.5), 0 0 42px rgba(0,229,255,0.3), 0 0 80px rgba(0,229,255,0.15);
+    }
+    .neon-purple {
+      color: var(--purple);
+      text-shadow: 0 0 7px rgba(178,77,255,0.8), 0 0 20px rgba(178,77,255,0.5), 0 0 42px rgba(178,77,255,0.3);
+    }
+
+    /* ── Daily Quote card ── */
+    .quote-card {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-left: 3px solid var(--pink);
+      border-radius: 16px; padding: 20px;
+    }
+    .quote-text {
+      font-family: var(--fc); font-size: 17px;
+      color: rgba(255,255,255,0.7); line-height: 1.5; margin-bottom: 10px;
+    }
+    .quote-ref {
+      font-family: var(--fb); font-size: 12px;
+      color: rgba(255,255,255,0.4); margin-bottom: 10px;
+    }
+    .quote-badge {
+      display: inline-block;
+      background: rgba(255,45,120,0.15); color: var(--pink);
+      border: 1px solid rgba(255,45,120,0.25);
+      border-radius: 20px; padding: 4px 12px; font-size: 11px;
+      font-family: var(--fb); font-weight: 600;
+    }
+    [data-theme="light"] .quote-card {
+      background: rgba(10,14,39,0.04);
+      border-color: rgba(10,14,39,0.08);
+      border-left-color: var(--pink);
+    }
+    [data-theme="light"] .quote-text { color: var(--text2); }
+    [data-theme="light"] .quote-ref  { color: var(--text2); opacity: .6; }
   </style>
 </head>
 <body>
 <div id="root"></div>
 <script type="text/babel">
 const { useState, useEffect, useMemo } = React;
+
+const dailyQuotes = [
+  { ref: "Joshua 1:9", text: "Be strong and courageous. Do not be afraid; do not be discouraged, for the Lord your God will be with you wherever you go.", category: "Strength" },
+  { ref: "Isaiah 40:31", text: "But those who hope in the Lord will renew their strength. They will soar on wings like eagles; they will run and not grow weary, they will walk and not be faint.", category: "Strength" },
+  { ref: "Philippians 4:13", text: "I can do all this through him who gives me strength.", category: "Strength" },
+  { ref: "2 Timothy 1:7", text: "For the Spirit God gave us does not make us timid, but gives us power, love and self-discipline.", category: "Strength" },
+  { ref: "Psalm 27:1", text: "The Lord is my light and my salvation — whom shall I fear? The Lord is the stronghold of my life — of whom shall I be afraid?", category: "Strength" },
+  { ref: "Psalm 18:2", text: "The Lord is my rock, my fortress and my deliverer; my God is my rock, in whom I take refuge, my shield and the horn of my salvation, my stronghold.", category: "Strength" },
+  { ref: "Matthew 11:28", text: "Come to me, all you who are weary and burdened, and I will give you rest.", category: "Peace" },
+  { ref: "John 14:27", text: "Peace I leave with you; my peace I give you. I do not give to you as the world gives. Do not let your hearts be troubled and do not be afraid.", category: "Peace" },
+  { ref: "Philippians 4:6-7", text: "Do not be anxious about anything, but in every situation, by prayer and petition, with thanksgiving, present your requests to God. And the peace of God, which transcends all understanding, will guard your hearts and your minds.", category: "Peace" },
+  { ref: "Psalm 23:1", text: "The Lord is my shepherd, I lack nothing.", category: "Peace" },
+  { ref: "Psalm 34:18", text: "The Lord is close to the brokenhearted and saves those who are crushed in spirit.", category: "Peace" },
+  { ref: "Matthew 5:4", text: "Blessed are those who mourn, for they will be comforted.", category: "Peace" },
+  { ref: "Proverbs 3:5-6", text: "Trust in the Lord with all your heart and lean not on your own understanding; in all your ways submit to him, and he will make your paths straight.", category: "Faith" },
+  { ref: "Hebrews 11:1", text: "Now faith is confidence in what we hope for and assurance about what we do not see.", category: "Faith" },
+  { ref: "Matthew 17:20", text: "Truly I tell you, if you have faith as small as a mustard seed, you can say to this mountain, Move from here to there, and it will move. Nothing will be impossible for you.", category: "Faith" },
+  { ref: "Romans 8:28", text: "And we know that in all things God works for the good of those who love him, who have been called according to his purpose.", category: "Faith" },
+  { ref: "Mark 10:27", text: "Jesus looked at them and said, With man this is impossible, but not with God; all things are possible with God.", category: "Faith" },
+  { ref: "Psalm 37:4", text: "Take delight in the Lord, and he will give you the desires of your heart.", category: "Faith" },
+  { ref: "1 Corinthians 13:4-7", text: "Love is patient, love is kind. It does not envy, it does not boast, it is not proud. It always protects, always trusts, always hopes, always perseveres.", category: "Love" },
+  { ref: "1 Corinthians 16:14", text: "Do everything in love.", category: "Love" },
+  { ref: "1 John 4:19", text: "We love because he first loved us.", category: "Love" },
+  { ref: "Proverbs 17:17", text: "A friend loves at all times, and a brother is born for a time of adversity.", category: "Love" },
+  { ref: "John 15:12", text: "My command is this: Love each other as I have loved you.", category: "Love" },
+  { ref: "Galatians 5:22-23", text: "But the fruit of the Spirit is love, joy, peace, forbearance, kindness, goodness, faithfulness, gentleness and self-control.", category: "Love" },
+  { ref: "Jeremiah 29:11", text: "For I know the plans I have for you, declares the Lord, plans to prosper you and not to harm you, plans to give you hope and a future.", category: "Purpose" },
+  { ref: "Psalm 119:105", text: "Your word is a lamp for my feet, a light on my path.", category: "Purpose" },
+  { ref: "Matthew 6:33", text: "But seek first his kingdom and his righteousness, and all these things will be given to you as well.", category: "Purpose" },
+  { ref: "Micah 6:8", text: "He has shown you, O mortal, what is good. And what does the Lord require of you? To act justly and to love mercy and to walk humbly with your God.", category: "Purpose" },
+  { ref: "Colossians 3:23", text: "Whatever you do, work at it with all your heart, as working for the Lord, not for human masters.", category: "Purpose" },
+  { ref: "Proverbs 16:3", text: "Commit to the Lord whatever you do, and he will establish your plans.", category: "Purpose" }
+];
+
+function DailyQuoteCard() {
+  const quoteIndex = (new Date().getDate() - 1) % 30;
+  const q = dailyQuotes[quoteIndex];
+  return (
+    <div className="quote-card">
+      <div className="quote-text">"{q.text}"</div>
+      <div className="quote-ref">— {q.ref}</div>
+      <span className="quote-badge">{q.category}</span>
+    </div>
+  );
+}
 
 /* ═══════════════════════════════════════
    EXERCISE ICONS
@@ -1308,8 +1411,9 @@ function SplashScreen({ isFirstTime, onContinue }) {
       <div className="splash-overlay" />
       <div className="splash-content">
         <div className="splash-text-wrap">
-          <div className="splash-logo">Vibe<span>Lift</span></div>
+          <img src="./Logo.png" alt="VibeLift" className="splash-logo" />
           <div className="splash-tagline">Work out, not stress out.</div>
+          <div style={{ marginTop: 16 }}><DailyQuoteCard /></div>
         </div>
         {isFirstTime && (
           <button className="splash-btn" onClick={handleBtn}>Get Started →</button>
@@ -1333,7 +1437,7 @@ function ProfileSetupScreen({ onSave }) {
     <div className="screen">
       <div className="setup-body">
         <div className="setup-hero">
-          <div className="setup-logo">VibeLift</div>
+          <img src="./Logo.png" alt="VibeLift" className="setup-logo" />
         </div>
         <div>
           <div className="setup-title">What should we call you?</div>
@@ -1530,7 +1634,7 @@ function HomeScreen({ onStart, onViewHistory, onOpenSettings, history, hasActive
               <div className="hero-stat-lbl">Day Streak</div>
             </div>
             <div className="hero-stat-chip">
-              <div className="hero-stat-val">{history.length}</div>
+              <div className="hero-stat-val neon-pink">{history.length}</div>
               <div className="hero-stat-lbl">Total Workouts</div>
             </div>
           </div>
@@ -1539,6 +1643,8 @@ function HomeScreen({ onStart, onViewHistory, onOpenSettings, history, hasActive
 
       {/* ── Scrollable content below hero ── */}
       <div className="home-scroll-body" style={{ flex:'none', overflowY:'visible' }}>
+        <DailyQuoteCard />
+
         <div className="card">
           <WorkoutCalendar history={history} current={current} />
         </div>
@@ -1648,6 +1754,7 @@ function GroupSelectScreen({ onBack, onSelectGroup, onFinish, completedIds, allE
           : <div style={{ width: 38 }} />}
       </div>
       <div className="group-select-body">
+        <DailyQuoteCard />
         {groups.map(grp => {
           const meta = GROUP_META[grp];
           const exs  = exList.filter(e => e.group === grp);
@@ -1912,6 +2019,7 @@ function SummaryScreen({ workout, baseHistory, onDone }) {
         </div>
       </div>
       <div className="sum-body">
+        <DailyQuoteCard />
         <div className="sec-label">Exercise Breakdown</div>
         {workout.exercises.map((ex, i) => {
           const prevBest = getPersonalBest(baseHistory, ex.id);
