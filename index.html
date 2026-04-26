@@ -623,7 +623,7 @@
       background: rgba(0,0,0,.42);
       backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
       border: 1px solid rgba(255,255,255,.10);
-      border-radius: 20px; padding: 28px 40px 24px;
+      border-radius: 20px; padding: 44px 40px 38px;
       margin-bottom: 20px;
     }
     .splash-logo {
@@ -1667,7 +1667,7 @@ function HomeScreen({ onStart, onViewHistory, onOpenSettings, history, hasActive
           </div>
         </div>
 
-        {/* ── Centered area: button + program info + Bible verse ── */}
+        {/* ── Centered area: button + program info + stats ── */}
         <div style={{ position:'relative', zIndex:1, flex:1, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'0 20px', gap:14 }}>
           <div className="hero-btn-wrap" style={{ textAlign:'center' }}>
             <button className="home-hero-btn" onClick={onStart} style={{ width:'auto', padding:'18px 48px', fontSize:22, letterSpacing:1 }}>{btnLabel}</button>
@@ -1679,14 +1679,7 @@ function HomeScreen({ onStart, onViewHistory, onOpenSettings, history, hasActive
             <div className="home-hero-sub" style={{ marginBottom:0 }}>{heroSub}</div>
           </div>
 
-          <div className="hero-quote-box" style={{ width:'100%', background:'rgba(0,0,0,.50)', backdropFilter:'blur(14px)', WebkitBackdropFilter:'blur(14px)', borderRadius:16, border:'1px solid rgba(255,255,255,.10)', padding:'14px 16px' }}>
-            <div style={{ fontFamily:'var(--fc)', fontSize:14, color:'rgba(255,255,255,.85)', lineHeight:1.5, marginBottom:6 }}>"{heroQuote.text}"</div>
-            <div style={{ fontSize:11, color:'rgba(255,255,255,.48)', fontWeight:500 }}>— {heroQuote.ref}</div>
-          </div>
-        </div>
-
-        <div className="home-hero-bottom" style={{ padding:'0 18px 26px' }}>
-          <div className="hero-stats-row">
+          <div className="hero-stats-row" style={{ width:'100%' }}>
             <div className="hero-stat-chip">
               <div className={`hero-stat-val${streak > 0 ? ' amber' : ''}`}>{streak}</div>
               <div className="hero-stat-lbl">Day Streak</div>
@@ -1697,11 +1690,18 @@ function HomeScreen({ onStart, onViewHistory, onOpenSettings, history, hasActive
             </div>
           </div>
         </div>
+
+        {/* ── Bible verse at the very bottom of the hero ── */}
+        <div className="home-hero-bottom" style={{ padding:'0 18px 26px' }}>
+          <div className="hero-quote-box" style={{ width:'100%', background:'rgba(0,0,0,.50)', backdropFilter:'blur(14px)', WebkitBackdropFilter:'blur(14px)', borderRadius:16, border:'1px solid rgba(255,255,255,.10)', padding:'14px 16px' }}>
+            <div style={{ fontFamily:'var(--fc)', fontSize:14, color:'rgba(255,255,255,.85)', lineHeight:1.5, marginBottom:6 }}>"{heroQuote.text}"</div>
+            <div style={{ fontSize:11, color:'rgba(255,255,255,.48)', fontWeight:500 }}>— {heroQuote.ref}</div>
+          </div>
+        </div>
       </div>
 
       {/* ── Scrollable content below hero ── */}
       <div className="home-scroll-body" style={{ flex:'none', overflowY:'visible' }}>
-        <DailyQuoteCard />
 
         <div className="card">
           <WorkoutCalendar history={history} current={current} />
@@ -1814,7 +1814,6 @@ function GroupSelectScreen({ onBack, onSelectGroup, onFinish, completedIds, allE
           : <div style={{ width: 38 }} />}
       </div>
       <div className="group-select-body">
-        <DailyQuoteCard />
         {groups.map(grp => {
           const meta = GROUP_META[grp];
           const exs  = exList.filter(e => e.group === grp);
@@ -2237,7 +2236,6 @@ function SummaryScreen({ workout, baseHistory, onDone, weightUnit = 'kg' }) {
         </div>
       </div>
       <div className="sum-body">
-        <DailyQuoteCard />
         {workout.exercises.some(ex => ex.sessionAdded) && (
           <div style={{ background:'rgba(245,158,11,.1)', border:'1px solid rgba(245,158,11,.25)', borderRadius:14, padding:'14px 16px', display:'flex', gap:12, alignItems:'flex-start' }}>
             <div style={{ fontSize:22, lineHeight:1 }}>📋</div>
