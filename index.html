@@ -2075,11 +2075,16 @@ function LogScreen({ exercise, onBack, onComplete, history, weightUnit = 'kg' })
             <div className="weight-type-choice">
               <button className="wt-choice-btn" onClick={() => setWeightType('free')}>
                 <svg width="38" height="20" viewBox="0 0 38 20" fill="none">
-                  <rect x="0" y="7" width="7" height="6" rx="2" fill="var(--text)" opacity=".65"/>
-                  <rect x="7" y="5" width="4" height="10" rx="2" fill="var(--text)" opacity=".65"/>
-                  <rect x="11" y="8" width="16" height="4" rx="2" fill="var(--text)" opacity=".65"/>
-                  <rect x="27" y="5" width="4" height="10" rx="2" fill="var(--text)" opacity=".65"/>
-                  <rect x="31" y="7" width="7" height="6" rx="2" fill="var(--text)" opacity=".65"/>
+                  {/* Left round dumbbell head */}
+                  <rect x="1" y="2" width="9" height="16" rx="4" fill="var(--text)" opacity=".65"/>
+                  {/* Left collar */}
+                  <rect x="10" y="7" width="3" height="6" rx="1" fill="var(--text)" opacity=".65"/>
+                  {/* Short center handle */}
+                  <rect x="13" y="8.5" width="12" height="3" rx="1.5" fill="var(--text)" opacity=".65"/>
+                  {/* Right collar */}
+                  <rect x="25" y="7" width="3" height="6" rx="1" fill="var(--text)" opacity=".65"/>
+                  {/* Right round dumbbell head */}
+                  <rect x="28" y="2" width="9" height="16" rx="4" fill="var(--text)" opacity=".65"/>
                 </svg>
                 <span>Free Weight</span>
                 <span style={{ fontSize:10, color:'var(--text2)', fontFamily:'var(--fb)', fontWeight:500, textAlign:'center', lineHeight:1.4 }}>Dumbbells · Cables<br/>Machines</span>
