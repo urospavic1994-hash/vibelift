@@ -654,6 +654,79 @@
     .splash.fading { animation: splashFadeOut .4s ease forwards; }
 
     /* ══════════════════════════════════
+       ONBOARDING TOUR
+    ══════════════════════════════════ */
+    .onboarding-wrap {
+      position: fixed; inset: 0; z-index: 9990;
+      display: flex; align-items: flex-end; justify-content: center;
+    }
+    @keyframes obFadeOut {
+      to { opacity: 0; pointer-events: none; }
+    }
+    .onboarding-wrap.fading { animation: obFadeOut .35s ease forwards; }
+    .onboarding-bg {
+      position: absolute; inset: 0;
+      background: rgba(10,14,39,.80);
+      backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
+    }
+    .onboarding-card {
+      position: relative; z-index: 1;
+      width: 100%; max-width: 430px;
+      background: #0d1633;
+      border-top: 1px solid rgba(255,255,255,.10);
+      border-radius: 28px 28px 0 0;
+      padding: 28px 28px 48px;
+      text-align: center;
+      animation: slideUp .32s cubic-bezier(.18,.82,.4,1) both;
+    }
+    .ob-dots {
+      display: flex; justify-content: center; gap: 8px; margin-bottom: 24px;
+    }
+    .ob-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: rgba(255,255,255,.18);
+      transition: width .25s, border-radius .25s, background .25s;
+    }
+    .ob-dot.active { width: 24px; border-radius: 4px; background: var(--pink); }
+    .ob-dot.done   { background: rgba(255,45,120,.45); }
+    .ob-icon-wrap {
+      width: 68px; height: 68px; border-radius: 20px; margin: 0 auto 18px;
+      background: rgba(255,45,120,.10); border: 1px solid rgba(255,45,120,.22);
+      display: flex; align-items: center; justify-content: center;
+    }
+    @keyframes obStepIn {
+      from { opacity: 0; transform: translateX(16px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    .ob-step-content { animation: obStepIn .22s ease both; }
+    .ob-step-num {
+      font-size: 11px; font-weight: 700; letter-spacing: 1.6px;
+      text-transform: uppercase; color: var(--pink); margin-bottom: 8px;
+    }
+    .ob-title {
+      font-family: var(--fd); font-size: 26px; font-weight: 900; color: rgba(255,255,255,.95);
+      letter-spacing: .3px; line-height: 1.1; margin-bottom: 12px;
+    }
+    .ob-body {
+      font-size: 15px; color: rgba(255,255,255,.58); line-height: 1.65; margin-bottom: 26px;
+    }
+    .ob-next-btn {
+      width: 100%; padding: 17px; border-radius: 14px; border: none;
+      background: linear-gradient(135deg, var(--pink) 0%, var(--pink2) 100%);
+      color: white; font-family: var(--fd); font-size: 19px; font-weight: 800;
+      letter-spacing: .8px; cursor: pointer;
+      box-shadow: 0 4px 28px rgba(255,31,125,.45);
+      transition: transform .1s; margin-bottom: 10px;
+    }
+    .ob-next-btn:active { transform: scale(.97); }
+    .ob-skip-btn {
+      background: none; border: none; color: rgba(255,255,255,.30);
+      font-size: 14px; font-family: var(--fb); cursor: pointer;
+      padding: 8px; width: 100%; text-align: center; transition: color .15s;
+    }
+    .ob-skip-btn:active { color: rgba(255,255,255,.6); }
+
+    /* ══════════════════════════════════
        PROFILE SETUP
     ══════════════════════════════════ */
     .setup-body {
@@ -1484,8 +1557,8 @@ function SplashScreen({ isFirstTime, onContinue }) {
 
   useEffect(() => {
     if (!isFirstTime) {
-      const t1 = setTimeout(() => setFading(true), 1100);
-      const t2 = setTimeout(onContinue, 1500);
+      const t1 = setTimeout(() => setFading(true), 2600);
+      const t2 = setTimeout(onContinue, 3000);
       return () => { clearTimeout(t1); clearTimeout(t2); };
     }
   }, []);
@@ -1500,7 +1573,7 @@ function SplashScreen({ isFirstTime, onContinue }) {
       <div className="splash-overlay" />
       <div className="splash-content">
         <div className="splash-text-wrap">
-          <img src="./Logo.png" alt="VibeLift" className="splash-logo" />
+          <img src="./Logo%20resized.png" alt="VibeLift" className="splash-logo" />
           <div className="splash-tagline">Work out, not stress out.</div>
           <div style={{ marginTop: 16 }}><DailyQuoteCard /></div>
         </div>
@@ -1527,7 +1600,7 @@ function ProfileSetupScreen({ onSave }) {
     <div className="screen">
       <div className="setup-body">
         <div className="setup-hero">
-          <img src="./Logo.png" alt="VibeLift" className="setup-logo" />
+          <img src="./Logo%20resized.png" alt="VibeLift" className="setup-logo" />
         </div>
         <div>
           <div className="setup-title">What should we call you?</div>
@@ -1569,7 +1642,7 @@ function ProfileSetupScreen({ onSave }) {
 /* ═══════════════════════════════════════
    SETTINGS / PROFILE SCREEN
 ═══════════════════════════════════════ */
-function SettingsScreen({ onBack, profile, onSaveProfile, theme, onToggleTheme, customEx, onSaveCustomEx }) {
+function SettingsScreen({ onBack, profile, onSaveProfile, theme, onToggleTheme, customEx, onSaveCustomEx, onShowTour }) {
   const [editingName, setEditingName] = useState(false);
   const [name, setName] = useState((profile && profile.name) || '');
   const [showAdd, setShowAdd] = useState(false);
@@ -1691,6 +1764,21 @@ function SettingsScreen({ onBack, profile, onSaveProfile, theme, onToggleTheme, 
             <div className="s-arrow">›</div>
           </div>
         )}
+
+        <div className="settings-sec">Help</div>
+        <div className="settings-row" onClick={onShowTour}>
+          <div className="s-icon">
+            <svg width="17" height="17" viewBox="0 0 17 17" fill="none" stroke="rgba(255,255,255,.7)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M2 8.5C2 8.5 5.5 3 8.5 3s6.5 5.5 6.5 5.5-3 5.5-6.5 5.5S2 8.5 2 8.5z"/>
+              <circle cx="8.5" cy="8.5" r="2" fill="rgba(255,255,255,.2)" stroke="rgba(255,255,255,.7)" strokeWidth="1.5"/>
+            </svg>
+          </div>
+          <div>
+            <div className="s-label">App Tour</div>
+            <div className="s-value">Replay the intro walkthrough</div>
+          </div>
+          <div className="s-arrow">›</div>
+        </div>
 
       </div>
     </div>
@@ -2419,6 +2507,108 @@ function ExerciseDoneSheet({ exerciseName, group, onSameGroup, onNewGroup, onFin
 }
 
 /* ═══════════════════════════════════════
+   ONBOARDING TOUR SCREEN
+═══════════════════════════════════════ */
+function OnboardingScreen({ onDone }) {
+  const [step, setStep]     = useState(0);
+  const [fading, setFading] = useState(false);
+
+  const steps = [
+    {
+      icon: (
+        <svg width="30" height="30" viewBox="0 0 30 30" fill="none" stroke="var(--pink)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M3 15C3 15 8 6 15 6s12 9 12 9-5 9-12 9S3 15 3 15z"/>
+          <circle cx="15" cy="15" r="4" fill="rgba(255,45,120,.2)" stroke="var(--pink)" strokeWidth="1.8"/>
+          <circle cx="15" cy="15" r="1.5" fill="var(--pink)" stroke="none"/>
+        </svg>
+      ),
+      title: "Read the Room",
+      body: "The bench is taken. The cables are free. VibeLift works with the gym as it is — not as you planned it.",
+    },
+    {
+      icon: (
+        <svg width="30" height="30" viewBox="0 0 30 30" fill="none" stroke="var(--pink)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="3" y="3" width="10" height="10" rx="2.5" fill="rgba(255,45,120,.3)" stroke="var(--pink)"/>
+          <rect x="17" y="3" width="10" height="10" rx="2.5" fill="rgba(255,255,255,.04)" stroke="rgba(255,255,255,.2)"/>
+          <rect x="3" y="17" width="10" height="10" rx="2.5" fill="rgba(255,255,255,.04)" stroke="rgba(255,255,255,.2)"/>
+          <rect x="17" y="17" width="10" height="10" rx="2.5" fill="rgba(255,255,255,.04)" stroke="rgba(255,255,255,.2)"/>
+        </svg>
+      ),
+      title: "Pick What's Open",
+      body: "Choose a muscle group based on what equipment is free right now. Start with what you've got.",
+    },
+    {
+      icon: (
+        <svg width="30" height="30" viewBox="0 0 30 30" fill="none" stroke="var(--pink)" strokeWidth="1.8" strokeLinecap="round">
+          <line x1="9" y1="15" x2="21" y2="15"/>
+          <rect x="4" y="11" width="5" height="8" rx="2" fill="rgba(255,45,120,.2)" stroke="var(--pink)" strokeWidth="1.8"/>
+          <rect x="21" y="11" width="5" height="8" rx="2" fill="rgba(255,45,120,.2)" stroke="var(--pink)" strokeWidth="1.8"/>
+          <rect x="6" y="13" width="2" height="4" rx="1" fill="var(--pink)" stroke="none"/>
+          <rect x="22" y="13" width="2" height="4" rx="1" fill="var(--pink)" stroke="none"/>
+        </svg>
+      ),
+      title: "Log as You Go",
+      body: "Free weights or barbell — log every set and rep on the fly. No pre-planning needed.",
+    },
+    {
+      icon: (
+        <svg width="30" height="30" viewBox="0 0 30 30" fill="none" stroke="var(--pink)" strokeWidth="1.8" strokeLinecap="round">
+          <line x1="3" y1="26" x2="27" y2="26" strokeWidth="1.4"/>
+          <rect x="4" y="19" width="5" height="7" rx="1.5" fill="rgba(255,45,120,.25)" stroke="var(--pink)"/>
+          <rect x="12.5" y="13" width="5" height="13" rx="1.5" fill="rgba(255,45,120,.45)" stroke="var(--pink)"/>
+          <rect x="21" y="7" width="5" height="19" rx="1.5" fill="var(--pink)" stroke="var(--pink)"/>
+        </svg>
+      ),
+      title: "Watch Yourself Grow",
+      body: "Streaks, personal bests, full history. Every session counts — no matter how the gym looked that day.",
+    },
+  ];
+
+  function next() {
+    if (step < steps.length - 1) { setStep(s => s + 1); }
+    else { finish(); }
+  }
+
+  function finish() {
+    localStorage.setItem('fittrack_toured', 'true');
+    setFading(true);
+    setTimeout(onDone, 350);
+  }
+
+  const s = steps[step];
+  const isLast = step === steps.length - 1;
+
+  return (
+    <div className={`onboarding-wrap ${fading ? 'fading' : ''}`}>
+      <div className="onboarding-bg" onClick={isLast ? undefined : undefined} />
+      <div className="onboarding-card">
+
+        <div className="ob-dots">
+          {steps.map((_, i) => (
+            <div key={i} className={`ob-dot${i === step ? ' active' : i < step ? ' done' : ''}`} />
+          ))}
+        </div>
+
+        <div className="ob-step-content" key={step}>
+          <div className="ob-icon-wrap">{s.icon}</div>
+          <div className="ob-step-num">Step {step + 1} of {steps.length}</div>
+          <div className="ob-title">{s.title}</div>
+          <div className="ob-body">{s.body}</div>
+        </div>
+
+        <button className="ob-next-btn" onClick={next}>
+          {isLast ? 'Start Training →' : 'Next →'}
+        </button>
+        {!isLast && (
+          <button className="ob-skip-btn" onClick={finish}>Skip tour</button>
+        )}
+
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════
    APP ROOT
 ═══════════════════════════════════════ */
 function App() {
@@ -2434,6 +2624,7 @@ function App() {
   const [screen, setScreen]         = useState('home');
   const [breakModal, setBreakModal] = useState(false);
   const [exerciseDoneSheet, setExerciseDoneSheet] = useState(null);
+  const [showTour, setShowTour]     = useState(false);
 
   // Apply theme to body immediately
   useEffect(() => {
@@ -2459,6 +2650,7 @@ function App() {
     saveProfile(p);
     setProfile(p);
     setScreen('home');
+    if (!localStorage.getItem('fittrack_toured')) setShowTour(true);
   }
 
   function onSaveProfile(p) { saveProfile(p); setProfile(p); }
@@ -2537,8 +2729,10 @@ function App() {
       )}
 
       {!splash && screen === 'settings' && (
-        <SettingsScreen onBack={() => setScreen('home')} profile={profile} onSaveProfile={onSaveProfile} theme={theme} onToggleTheme={toggleTheme} customEx={customEx} onSaveCustomEx={onSaveCustomEx} />
+        <SettingsScreen onBack={() => setScreen('home')} profile={profile} onSaveProfile={onSaveProfile} theme={theme} onToggleTheme={toggleTheme} customEx={customEx} onSaveCustomEx={onSaveCustomEx} onShowTour={() => setShowTour(true)} />
       )}
+
+      {showTour && <OnboardingScreen onDone={() => setShowTour(false)} />}
 
       {!splash && screen === 'group-select' && (
         <GroupSelectScreen onBack={backFromGroupSelect} onSelectGroup={selectGroup} onFinish={finishWorkout} completedIds={completedIds} allExercises={allExercises} />
