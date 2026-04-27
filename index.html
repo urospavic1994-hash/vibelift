@@ -2288,13 +2288,27 @@ function LogScreen({ exercise, onBack, onComplete, history, weightUnit = 'kg' })
 
             {/* Total weight display — iOS style */}
             <div style={{ textAlign:'center', padding:'8px 0 4px' }}>
-              <div style={{ display:'inline-flex', alignItems:'flex-start', justifyContent:'center' }}>
-                <span style={{ fontFamily:'var(--fd)', fontSize:110, fontWeight:900, color:'var(--text)', lineHeight:1, letterSpacing:'-4px' }}>{totalBarbellWeight}</span>
-                <span style={{ fontFamily:'var(--fb)', fontSize:26, fontWeight:800, color:'var(--text)', opacity:.7, marginTop:18, marginLeft:10, letterSpacing:'0' }}>{unit}</span>
-              </div>
-              <div style={{ fontSize:12, color:'var(--text2)', fontWeight:600, letterSpacing:'.4px', marginTop:2 }}>
-                {barWeight}{unit} bar + {platesPerSide.reduce((a,b)=>a+b,0)}{unit}/side{addBothSides ? ' × 2' : ' (per side)'}
-              </div>
+              {addBothSides ? (
+                <>
+                  <div style={{ display:'inline-flex', alignItems:'flex-start', justifyContent:'center' }}>
+                    <span style={{ fontFamily:'var(--fd)', fontSize:110, fontWeight:900, color:'var(--text)', lineHeight:1, letterSpacing:'-4px' }}>{totalBarbellWeight}</span>
+                    <span style={{ fontFamily:'var(--fb)', fontSize:26, fontWeight:800, color:'var(--text)', opacity:.7, marginTop:18, marginLeft:10, letterSpacing:'0' }}>{unit}</span>
+                  </div>
+                  <div style={{ fontSize:12, color:'var(--text2)', fontWeight:600, letterSpacing:'.4px', marginTop:2 }}>
+                    {barWeight}{unit} bar + {platesPerSide.reduce((a,b)=>a+b,0)}{unit}/side × 2
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div style={{ display:'inline-flex', alignItems:'flex-start', justifyContent:'center' }}>
+                    <span style={{ fontFamily:'var(--fd)', fontSize:110, fontWeight:900, color:'var(--text)', lineHeight:1, letterSpacing:'-4px' }}>{platesPerSide.reduce((a,b)=>a+b,0)}</span>
+                    <span style={{ fontFamily:'var(--fb)', fontSize:20, fontWeight:800, color:'var(--text)', opacity:.7, marginTop:22, marginLeft:10, letterSpacing:'0' }}>{unit}/side</span>
+                  </div>
+                  <div style={{ fontSize:12, color:'var(--text2)', fontWeight:600, letterSpacing:'.4px', marginTop:2 }}>
+                    {totalBarbellWeight} {unit} total · {barWeight}{unit} bar included
+                  </div>
+                </>
+              )}
             </div>
 
             {/* Barbell visual — metallic serious style */}
@@ -2327,13 +2341,13 @@ function LogScreen({ exercise, onBack, onComplete, history, weightUnit = 'kg' })
               <button onClick={() => setAddBothSides(false)} style={{ flex:1, padding:'12px', borderRadius:9, border:'none', background:!addBothSides?'rgba(255,255,255,.16)':'transparent', fontFamily:'var(--fd)', fontSize:14, fontWeight:700, color:!addBothSides?'white':'rgba(255,255,255,.38)', cursor:'pointer', transition:'background .15s, color .15s' }}>Per Side</button>
             </div>
 
-            {/* Plate buttons — 3-column grid, large */}
+            {/* Plate buttons — 3-column grid, smallest to largest */}
             <div>
-              <div style={{ fontSize:10, fontWeight:800, textTransform:'uppercase', letterSpacing:2, color:'var(--text2)', marginBottom:12 }}>Add Plates</div>
-              <div style={{ display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:10 }}>
-                {plateData.map(pd => (
+              <div style={{ fontSize:10, fontWeight:800, textTransform:'uppercase', letterSpacing:2, color:'var(--text2)', marginBottom:14 }}>Add Plates</div>
+              <div style={{ display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:14 }}>
+                {[...plateData].reverse().map(pd => (
                   <button key={pd.w} onClick={() => setPlatesPerSide(p => [...p, pd.w])}
-                    style={{ padding:'20px 0', borderRadius:14, border:'none', background:pd.color, color:'white', fontFamily:'var(--fd)', fontSize:22, fontWeight:900, cursor:'pointer', boxShadow:`0 4px 20px ${pd.color}55`, letterSpacing:'.3px' }}>
+                    style={{ padding:'30px 0', borderRadius:18, border:'none', background:pd.color, color:'white', fontFamily:'var(--fd)', fontSize:30, fontWeight:900, cursor:'pointer', boxShadow:`0 6px 24px ${pd.color}66`, letterSpacing:'.3px' }}>
                     +{pd.w}
                   </button>
                 ))}
@@ -2382,6 +2396,18 @@ function LogScreen({ exercise, onBack, onComplete, history, weightUnit = 'kg' })
             <button className="sets-ctrl-btn" onClick={() => setTotalSets(Math.max(1, totalSets - 1))}>−</button>
             <span className="sets-ctrl-lbl">{totalSets} sets</span>
             <button className="sets-ctrl-btn" onClick={() => setTotalSets(Math.min(8, totalSets + 1))}>+</button>
+          </div>
+        )}
+        {!inWarmup && weightType && !allDone && (
+          <div style={{ display:'flex', justifyContent:'center', gap:8, marginBottom:4 }}>
+            <button onClick={() => { setWeightType('free'); setPlatesPerSide([]); }}
+              style={{ padding:'7px 18px', borderRadius:20, border:`1px solid ${weightType==='free'?'rgba(255,45,120,.6)':'rgba(255,255,255,.12)'}`, background:weightType==='free'?'rgba(255,45,120,.1)':'transparent', color:weightType==='free'?'var(--pink)':'rgba(255,255,255,.32)', fontFamily:'var(--fd)', fontSize:12, fontWeight:700, cursor:'pointer', letterSpacing:'.4px', transition:'all .15s' }}>
+              Dumbbell
+            </button>
+            <button onClick={() => { setWeightType('barbell'); setWeight(''); }}
+              style={{ padding:'7px 18px', borderRadius:20, border:`1px solid ${weightType==='barbell'?'rgba(255,45,120,.6)':'rgba(255,255,255,.12)'}`, background:weightType==='barbell'?'rgba(255,45,120,.1)':'transparent', color:weightType==='barbell'?'var(--pink)':'rgba(255,255,255,.32)', fontFamily:'var(--fd)', fontSize:12, fontWeight:700, cursor:'pointer', letterSpacing:'.4px', transition:'all .15s' }}>
+              Barbell
+            </button>
           </div>
         )}
         {!inWarmup && weightType && (!allDone
