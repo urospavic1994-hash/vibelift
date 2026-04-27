@@ -2291,8 +2291,8 @@ function LogScreen({ exercise, onBack, onComplete, history, weightUnit = 'kg' })
               {addBothSides ? (
                 <>
                   <div style={{ display:'inline-flex', alignItems:'flex-start', justifyContent:'center' }}>
-                    <span style={{ fontFamily:'var(--fd)', fontSize:110, fontWeight:900, color:'var(--text)', lineHeight:1, letterSpacing:'-4px' }}>{totalBarbellWeight}</span>
-                    <span style={{ fontFamily:'var(--fb)', fontSize:26, fontWeight:800, color:'var(--text)', opacity:.7, marginTop:18, marginLeft:10, letterSpacing:'0' }}>{unit}</span>
+                    <span style={{ fontFamily:'var(--fd)', fontSize:88, fontWeight:900, color:'var(--text)', lineHeight:1, letterSpacing:'-3px' }}>{totalBarbellWeight}</span>
+                    <span style={{ fontFamily:'var(--fb)', fontSize:21, fontWeight:800, color:'var(--text)', opacity:.7, marginTop:14, marginLeft:8, letterSpacing:'0' }}>{unit}</span>
                   </div>
                   <div style={{ fontSize:12, color:'var(--text2)', fontWeight:600, letterSpacing:'.4px', marginTop:2 }}>
                     {barWeight}{unit} bar + {platesPerSide.reduce((a,b)=>a+b,0)}{unit}/side × 2
@@ -2301,8 +2301,8 @@ function LogScreen({ exercise, onBack, onComplete, history, weightUnit = 'kg' })
               ) : (
                 <>
                   <div style={{ display:'inline-flex', alignItems:'flex-start', justifyContent:'center' }}>
-                    <span style={{ fontFamily:'var(--fd)', fontSize:110, fontWeight:900, color:'var(--text)', lineHeight:1, letterSpacing:'-4px' }}>{platesPerSide.reduce((a,b)=>a+b,0)}</span>
-                    <span style={{ fontFamily:'var(--fb)', fontSize:20, fontWeight:800, color:'var(--text)', opacity:.7, marginTop:22, marginLeft:10, letterSpacing:'0' }}>{unit}/side</span>
+                    <span style={{ fontFamily:'var(--fd)', fontSize:88, fontWeight:900, color:'var(--text)', lineHeight:1, letterSpacing:'-3px' }}>{platesPerSide.reduce((a,b)=>a+b,0)}</span>
+                    <span style={{ fontFamily:'var(--fb)', fontSize:17, fontWeight:800, color:'var(--text)', opacity:.7, marginTop:18, marginLeft:8, letterSpacing:'0' }}>{unit}/side</span>
                   </div>
                   <div style={{ fontSize:12, color:'var(--text2)', fontWeight:600, letterSpacing:'.4px', marginTop:2 }}>
                     {totalBarbellWeight} {unit} total · {barWeight}{unit} bar included
