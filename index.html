@@ -1847,13 +1847,13 @@ function HomeScreen({ onStart, onViewHistory, onOpenSettings, history, hasActive
               <div className="hero-stat-lbl">Total Workouts</div>
             </div>
           </div>
-        </div>
 
-        {/* ── Bible verse at the very bottom of the hero ── */}
-        <div className="home-hero-bottom" style={{ padding:'0 18px 26px' }}>
-          <div className="hero-quote-box" style={{ width:'100%', background:'rgba(0,0,0,.50)', backdropFilter:'blur(14px)', WebkitBackdropFilter:'blur(14px)', borderRadius:16, border:'1px solid rgba(255,255,255,.10)', padding:'14px 16px' }}>
-            <div style={{ fontFamily:'var(--fc)', fontSize:14, color:'rgba(255,255,255,.85)', lineHeight:1.5, marginBottom:6 }}>"{heroQuote.text}"</div>
-            <div style={{ fontSize:11, color:'rgba(255,255,255,.48)', fontWeight:500 }}>— {heroQuote.ref}</div>
+          {/* ── Bible verse just below the stats chips ── */}
+          <div style={{ width:'100%', padding:'0 0 4px' }}>
+            <div className="hero-quote-box" style={{ width:'100%', background:'rgba(0,0,0,.50)', backdropFilter:'blur(14px)', WebkitBackdropFilter:'blur(14px)', borderRadius:16, border:'1px solid rgba(255,255,255,.10)', padding:'14px 16px' }}>
+              <div style={{ fontFamily:'var(--fc)', fontSize:14, color:'rgba(255,255,255,.85)', lineHeight:1.5, marginBottom:6 }}>"{heroQuote.text}"</div>
+              <div style={{ fontSize:11, color:'rgba(255,255,255,.48)', fontWeight:500 }}>— {heroQuote.ref}</div>
+            </div>
           </div>
         </div>
       </div>
