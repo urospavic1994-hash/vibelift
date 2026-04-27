@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>VibeLift</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -326,7 +326,7 @@
     /* ══════════════════════════════════
        HISTORY SCREEN
     ══════════════════════════════════ */
-    .hist-body { flex: 1; overflow-y: auto; padding: 20px 18px 60px; display: flex; flex-direction: column; gap: 14px; -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; }
+    .hist-body { flex: 1; overflow-y: auto; padding: 20px 18px calc(60px + env(safe-area-inset-bottom, 0px)); display: flex; flex-direction: column; gap: 14px; -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; }
 
     .hist-workout-card { background: var(--card); border-radius: var(--r); overflow: hidden; box-shadow: var(--sh2); }
     .hist-workout-hdr {
@@ -359,7 +359,7 @@
     /* ══════════════════════════════════
        GROUP SELECT SCREEN
     ══════════════════════════════════ */
-    .group-select-body { flex: 1; overflow-y: auto; padding: 16px 18px 100px; display: flex; flex-direction: column; gap: 12px; -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; }
+    .group-select-body { flex: 1; overflow-y: auto; padding: 16px 18px calc(100px + env(safe-area-inset-bottom, 0px)); display: flex; flex-direction: column; gap: 12px; -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; }
 
     .grp-card {
       position: relative; border-radius: 20px; overflow: hidden; height: 148px;
@@ -402,7 +402,7 @@
     /* ══════════════════════════════════
        GROUP DETAIL (exercise list)
     ══════════════════════════════════ */
-    .group-detail-body { flex: 1; overflow-y: auto; padding: 16px 18px 100px; display: flex; flex-direction: column; gap: 8px; -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; }
+    .group-detail-body { flex: 1; overflow-y: auto; padding: 16px 18px calc(100px + env(safe-area-inset-bottom, 0px)); display: flex; flex-direction: column; gap: 8px; -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; }
 
     .grp-detail-hero {
       border-radius: 16px; overflow: hidden; height: 100px; position: relative; margin-bottom: 8px;
@@ -468,7 +468,7 @@
     .pr-glow { color: #ffd700; font-size: 13px; font-weight: 700; }
 
     .log-body {
-      flex: 1; overflow-y: auto; padding: 16px 18px 144px;
+      flex: 1; overflow-y: auto; padding: 16px 18px calc(144px + env(safe-area-inset-bottom, 0px));
       display: flex; flex-direction: column; gap: 14px;
       -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain;
     }
@@ -573,7 +573,7 @@
     .sum-stat  { background: rgba(255,255,255,.1); border-radius: 13px; padding: 13px 8px; text-align: center; border: 1px solid rgba(255,255,255,.13); }
     .sum-stat-v { font-family: var(--fd); font-size: 30px; font-weight: 900; }
     .sum-stat-l { font-size: 11px; opacity: .58; margin-top: 2px; font-weight: 500; }
-    .sum-body { flex: 1; overflow-y: auto; padding: 20px 18px 100px; display: flex; flex-direction: column; gap: 12px; -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; }
+    .sum-body { flex: 1; overflow-y: auto; padding: 20px 18px calc(100px + env(safe-area-inset-bottom, 0px)); display: flex; flex-direction: column; gap: 12px; -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; }
     .sum-ex-card { background: var(--card); border-radius: var(--r); padding: 16px; box-shadow: var(--sh2); }
     .sum-ex-hdr { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
     .sum-ex-icon { width: 30px; height: 30px; display: flex; align-items: center; }
@@ -730,7 +730,7 @@
        PROFILE SETUP
     ══════════════════════════════════ */
     .setup-body {
-      flex: 1; overflow-y: auto; padding: 32px 22px 120px;
+      flex: 1; overflow-y: auto; padding: 32px 22px calc(120px + env(safe-area-inset-bottom, 0px));
       display: flex; flex-direction: column; gap: 28px;
       -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain;
     }
@@ -805,7 +805,7 @@
     .settings-edit-hint { font-size: 10px; color: rgba(255,45,120,.55); font-weight: 700; letter-spacing: 1.6px; text-transform: uppercase; margin-top: 4px; }
 
     .settings-body {
-      flex: 1; overflow-y: auto; padding: 0 0 80px;
+      flex: 1; overflow-y: auto; padding: 0 0 calc(80px + env(safe-area-inset-bottom, 0px));
       display: flex; flex-direction: column;
       -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain;
     }
