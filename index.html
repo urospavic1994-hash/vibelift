@@ -70,7 +70,7 @@
       color: var(--text);
       max-width: 430px;
       margin: 0 auto;
-      min-height: 100vh;
+      min-height: 100vh; min-height: 100dvh;
       -webkit-tap-highlight-color: transparent;
       -webkit-font-smoothing: antialiased;
       transition: background .25s, color .25s;
@@ -92,10 +92,10 @@
       pointer-events: none; z-index: 0;
     }
 
-    #root { min-height: 100vh; display: flex; flex-direction: column; position: relative; z-index: 1; }
+    #root { min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; position: relative; z-index: 1; }
 
     .screen {
-      min-height: 100vh; display: flex; flex-direction: column;
+      min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column;
       animation: slideUp .26s cubic-bezier(.18,.82,.4,1) both;
     }
     @keyframes slideUp {
@@ -168,7 +168,7 @@
        HOME SCREEN
     ══════════════════════════════════ */
     .home-hero {
-      height: 100vh; flex-shrink: 0;
+      height: 100vh; height: 100dvh; flex-shrink: 0;
       position: relative;
       background: url('./Main%20page%20hero%20image.png') center/cover no-repeat #0a1020;
       display: flex; flex-direction: column;
@@ -763,7 +763,7 @@
        SETTINGS / PROFILE SCREEN — dark editorial
     ══════════════════════════════════ */
     .settings-screen {
-      background: #080b18; min-height: 100vh;
+      background: #080b18; min-height: 100vh; min-height: 100dvh;
       display: flex; flex-direction: column;
       animation: slideUp .26s cubic-bezier(.18,.82,.4,1) both;
     }
@@ -1800,7 +1800,7 @@ function HomeScreen({ onStart, onViewHistory, onOpenSettings, history, hasActive
   const iconBtn = { background:'rgba(0,0,0,.32)', border:'1px solid rgba(255,255,255,.18)', color:'white' };
 
   return (
-    <div className="screen home-scroll-wrap" style={{ height:'100vh', overflowY:'auto', display:'flex', flexDirection:'column' }}>
+    <div className="screen home-scroll-wrap" style={{ height:'100dvh', overflowY:'auto', display:'flex', flexDirection:'column' }}>
 
       {/* ── Full-screen hero ── */}
       <div className="home-hero">
