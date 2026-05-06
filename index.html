@@ -22,26 +22,7 @@
       --success:   #7ec832;
       --pink-glow: rgba(200,242,53,.22);
 
-      /* Semantic — light defaults */
-      --bg:     #f4f7e8;
-      --card:   #ffffff;
-      --sfx:    #edf2d8;
-      --border: rgba(18,21,8,0.1);
-      --text:   #121508;
-      --text2:  rgba(18,21,8,0.5);
-      --hdr-bg: rgba(255,255,255,.88);
-      --bar-bg: rgba(255,255,255,.92);
-      --sh1: 0 1px 4px rgba(18,21,8,.05), 0 3px 10px rgba(18,21,8,.06);
-      --sh2: 0 2px 8px rgba(18,21,8,.05), 0 8px 26px rgba(18,21,8,.09);
-      --sh3: 0 4px 16px rgba(18,21,8,.08), 0 20px 48px rgba(18,21,8,.12);
-
-      --r:    18px;
-      --r-sm: 12px;
-      --fd: 'Passion One', sans-serif;
-      --fb: 'DM Sans', sans-serif;
-    }
-
-    [data-theme="dark"] {
+      /* Dark defaults — app loads dark before JS runs */
       --bg:     #121508;
       --card:   #1b2010;
       --sfx:    #242d16;
@@ -53,7 +34,29 @@
       --sh1: 0 1px 4px rgba(0,0,0,.3), 0 3px 10px rgba(0,0,0,.35);
       --sh2: 0 2px 8px rgba(0,0,0,.35), 0 8px 26px rgba(0,0,0,.42);
       --sh3: 0 4px 16px rgba(0,0,0,.4), 0 20px 48px rgba(0,0,0,.50);
+
+      --r:    18px;
+      --r-sm: 12px;
+      --fd: 'Passion One', sans-serif;
+      --fb: 'DM Sans', sans-serif;
     }
+
+    [data-theme="light"] {
+      --bg:     #f4f7e8;
+      --card:   #ffffff;
+      --sfx:    #edf2d8;
+      --border: rgba(18,21,8,0.1);
+      --text:   #121508;
+      --text2:  rgba(18,21,8,0.5);
+      --hdr-bg: rgba(255,255,255,.88);
+      --bar-bg: rgba(255,255,255,.92);
+      --sh1: 0 1px 4px rgba(18,21,8,.05), 0 3px 10px rgba(18,21,8,.06);
+      --sh2: 0 2px 8px rgba(18,21,8,.05), 0 8px 26px rgba(18,21,8,.09);
+      --sh3: 0 4px 16px rgba(18,21,8,.08), 0 20px 48px rgba(18,21,8,.12);
+    }
+
+    /* Keep dark selector as a no-op alias so existing stored 'dark' value still works */
+    [data-theme="dark"] {}
 
     html, body { height: 100%; overflow-x: hidden; overscroll-behavior: none; }
 
