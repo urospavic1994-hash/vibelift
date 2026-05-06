@@ -6,7 +6,7 @@
   <title>VibeLift</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Passion+One:wght@400;700;900&family=Sacramento&family=Dancing+Script:wght@400;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Passion+One:wght@400;700;900&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/react@18.2.0/umd/react.development.js"></script>
   <script src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/@babel/standalone@7.23.5/babel.min.js"></script>
@@ -14,52 +14,45 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --pink:    #ff2d78;
-      --pink2:   #ff0a6c;
-      --navy:    #0a0e27;
-      --navy2:   #0f1a3c;
-      --navy3:   #162350;
-      --success: #0daa74;
-      --pink-glow: rgba(255,45,120,.30);
-      --cyan:      #00e5ff;
-      --purple:    #b24dff;
-      --amber:     #f59e0b;
-      --sunset:    #ff6b35;
-      --cyan-glow: rgba(0,229,255,.30);
+      --pink:      #c8f235;
+      --pink2:     #b0d929;
+      --navy:      #121508;
+      --navy2:     #1b2010;
+      --navy3:     #242d16;
+      --success:   #7ec832;
+      --pink-glow: rgba(200,242,53,.22);
 
       /* Semantic — light defaults */
-      --bg:     #f0f2ff;
+      --bg:     #f4f7e8;
       --card:   #ffffff;
-      --sfx:    #e8ecff;
-      --border: rgba(10,14,39,0.1);
-      --text:   #0a0e27;
-      --text2:  rgba(10,14,39,0.5);
+      --sfx:    #edf2d8;
+      --border: rgba(18,21,8,0.1);
+      --text:   #121508;
+      --text2:  rgba(18,21,8,0.5);
       --hdr-bg: rgba(255,255,255,.88);
       --bar-bg: rgba(255,255,255,.92);
-      --sh1: 0 1px 4px rgba(10,14,39,.05), 0 3px 10px rgba(10,14,39,.06);
-      --sh2: 0 2px 8px rgba(10,14,39,.05), 0 8px 26px rgba(10,14,39,.09);
-      --sh3: 0 4px 16px rgba(10,14,39,.08), 0 20px 48px rgba(10,14,39,.12);
+      --sh1: 0 1px 4px rgba(18,21,8,.05), 0 3px 10px rgba(18,21,8,.06);
+      --sh2: 0 2px 8px rgba(18,21,8,.05), 0 8px 26px rgba(18,21,8,.09);
+      --sh3: 0 4px 16px rgba(18,21,8,.08), 0 20px 48px rgba(18,21,8,.12);
 
-      --r:   18px;
+      --r:    18px;
       --r-sm: 12px;
       --fd: 'Passion One', sans-serif;
       --fb: 'DM Sans', sans-serif;
-      --fl: 'Sacramento', cursive;
-      --fc: 'Dancing Script', cursive;
     }
 
     [data-theme="dark"] {
-      --bg:     #0a0e27;
-      --card:   #0f1a3c;
-      --sfx:    #0a0e27;
-      --border: rgba(255,255,255,0.08);
-      --text:   rgba(255,255,255,0.9);
-      --text2:  rgba(255,255,255,0.4);
-      --hdr-bg: rgba(10,14,39,.92);
-      --bar-bg: rgba(10,14,39,.95);
-      --sh1: 0 1px 4px rgba(0,0,0,.25), 0 3px 10px rgba(0,0,0,.3);
-      --sh2: 0 2px 8px rgba(0,0,0,.3), 0 8px 26px rgba(0,0,0,.38);
-      --sh3: 0 4px 16px rgba(0,0,0,.35), 0 20px 48px rgba(0,0,0,.44);
+      --bg:     #121508;
+      --card:   #1b2010;
+      --sfx:    #242d16;
+      --border: rgba(200,242,53,0.12);
+      --text:   #f0f5d8;
+      --text2:  rgba(240,245,216,0.45);
+      --hdr-bg: rgba(18,21,8,.92);
+      --bar-bg: rgba(18,21,8,.96);
+      --sh1: 0 1px 4px rgba(0,0,0,.3), 0 3px 10px rgba(0,0,0,.35);
+      --sh2: 0 2px 8px rgba(0,0,0,.35), 0 8px 26px rgba(0,0,0,.42);
+      --sh3: 0 4px 16px rgba(0,0,0,.4), 0 20px 48px rgba(0,0,0,.50);
     }
 
     html, body { height: 100%; overflow-x: hidden; overscroll-behavior: none; }
@@ -80,7 +73,7 @@
       content: '';
       position: fixed; top: -60px; right: -60px;
       width: 320px; height: 320px; border-radius: 50%;
-      background: radial-gradient(circle, rgba(255,45,120,.12) 0%, transparent 60%);
+      background: radial-gradient(circle, rgba(200,242,53,.08) 0%, transparent 60%);
       pointer-events: none; z-index: 0;
     }
     body::after {
@@ -88,7 +81,7 @@
       position: fixed;
       bottom: -150px; left: -150px;
       width: 500px; height: 500px; border-radius: 50%;
-      background: radial-gradient(circle, rgba(0,229,255,0.08) 0%, transparent 60%);
+      background: radial-gradient(circle, rgba(126,200,50,0.06) 0%, transparent 60%);
       pointer-events: none; z-index: 0;
     }
 
@@ -139,13 +132,13 @@
       width: 100%; padding: 16px; border-radius: var(--r-sm);
       border: none;
       background: linear-gradient(135deg, var(--pink) 0%, var(--pink2) 100%);
-      color: white; font-family: var(--fd);
+      color: #121508; font-family: var(--fd);
       font-size: 18px; font-weight: 800; letter-spacing: .8px;
       cursor: pointer;
-      box-shadow: 0 4px 20px rgba(255,31,125,.38), 0 1px 4px rgba(212,0,94,.25);
+      box-shadow: 0 4px 20px rgba(200,242,53,.35), 0 1px 4px rgba(176,217,41,.22);
       transition: transform .12s, box-shadow .12s;
     }
-    .btn-pink:active { transform: scale(.97); box-shadow: 0 2px 8px rgba(255,31,125,.28); }
+    .btn-pink:active { transform: scale(.97); box-shadow: 0 2px 8px rgba(200,242,53,.25); }
     .btn-pink:disabled { opacity: .38; }
 
     .btn-outline {
@@ -167,75 +160,84 @@
     /* ══════════════════════════════════
        HOME SCREEN
     ══════════════════════════════════ */
-    .home-hero {
-      height: 100vh; height: 100dvh; flex-shrink: 0;
-      position: relative;
-      background: url('./Main%20page%20hero%20image.jpg') center/cover no-repeat #0a1020;
+    .home-screen {
+      min-height: 100vh; min-height: 100dvh;
+      background: var(--bg);
       display: flex; flex-direction: column;
+      overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain;
     }
-    .home-hero-overlay {
-      position: absolute; inset: 0;
-      background: linear-gradient(to bottom, rgba(0,0,0,.58) 0%, rgba(0,0,0,.08) 38%, rgba(0,0,0,.72) 100%);
+    .home-compact-hdr {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--hdr-bg);
+      backdrop-filter: blur(28px) saturate(160%);
+      -webkit-backdrop-filter: blur(28px) saturate(160%);
+      border-bottom: 1px solid var(--border);
+      padding: calc(14px + env(safe-area-inset-top)) 18px 14px;
+      display: flex; align-items: center; justify-content: space-between;
     }
-    .hero-stats-row {
-      display: flex; gap: 10px;
+    .home-hdr-left { display: flex; align-items: center; gap: 12px; }
+    .home-avatar {
+      width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+      background: var(--navy3); border: 2px solid var(--pink);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--fd); font-size: 15px; font-weight: 900; color: var(--pink);
     }
-    .hero-stat-chip {
-      flex: 1;
-      background: rgba(0,0,0,.35);
-      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,.12);
-      border-radius: 14px; padding: 12px 14px;
+    .home-greeting { font-family: var(--fd); font-size: 19px; font-weight: 900; color: var(--text); letter-spacing: .3px; }
+    .home-date-sub { font-size: 11px; color: var(--text2); font-weight: 500; margin-top: 1px; }
+    .home-hdr-btn {
+      width: 36px; height: 36px; border-radius: 50%;
+      border: 1.5px solid var(--border); background: var(--sfx);
+      color: var(--text2); font-size: 16px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .14s;
     }
-    .hero-stat-val { font-family: var(--fd); font-size: 34px; font-weight: 900; color: white; line-height: 1; }
-    .hero-stat-val.amber { color: #f59e0b; }
-    .hero-stat-lbl { font-size: 11px; color: rgba(255,255,255,.58); margin-top: 3px; font-weight: 500; }
-    .home-hero-top {
-      position: relative; z-index: 1;
-      display: flex; align-items: flex-start; justify-content: space-between;
-      padding: calc(18px + env(safe-area-inset-top)) 18px 0;
+    .home-hdr-btn:active { background: var(--card); }
+
+    /* Week date strip */
+    .week-strip {
+      display: flex; gap: 8px; padding: 16px 18px 8px;
+      overflow-x: auto; -webkit-overflow-scrolling: touch;
     }
-    .home-hero-greeting {
-      font-family: var(--fd); font-size: 38px; font-weight: 900;
-      color: white; line-height: 1; letter-spacing: .4px;
+    .week-strip::-webkit-scrollbar { display: none; }
+    .week-day {
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+      padding: 10px 14px; border-radius: 22px; min-width: 48px; flex-shrink: 0;
+      font-size: 11px; font-weight: 700; color: var(--text2); cursor: default;
+      transition: background .15s;
     }
-    .home-hero-date { font-size: 13px; color: rgba(255,255,255,.62); margin-top: 5px; font-weight: 500; }
-    .home-hero-bottom {
-      position: relative; z-index: 1;
-      margin-top: auto; padding: 0 18px 26px;
+    .week-day-name { font-size: 10px; text-transform: uppercase; letter-spacing: .6px; }
+    .week-day-num { font-family: var(--fd); font-size: 18px; font-weight: 900; line-height: 1; }
+    .week-day.today { background: var(--pink); color: #121508; box-shadow: 0 4px 14px rgba(200,242,53,.35); }
+    .week-day.has-workout:not(.today) { border: 1.5px solid var(--pink); }
+
+    /* Stat cards grid */
+    .home-stats-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 12px 18px 4px; }
+    .home-stat-card {
+      background: var(--card); border-radius: var(--r); padding: 16px 14px;
+      box-shadow: var(--sh2); display: flex; flex-direction: column; gap: 4px;
     }
-    .home-hero-eyebrow {
-      font-family: var(--fd); font-size: 11px; font-weight: 700;
-      text-transform: uppercase; letter-spacing: 2.2px;
-      color: rgba(255,255,255,.52); margin-bottom: 7px;
+    .home-stat-icon { font-size: 20px; margin-bottom: 2px; }
+    .home-stat-val { font-family: var(--fd); font-size: 40px; font-weight: 900; color: var(--text); line-height: 1; }
+    .home-stat-val.accent { color: var(--pink); }
+    .home-stat-lbl { font-size: 11px; color: var(--text2); font-weight: 600; }
+
+    /* Home body padding */
+    .home-body {
+      flex: 1; padding: 12px 18px calc(88px + env(safe-area-inset-bottom));
+      display: flex; flex-direction: column; gap: 14px;
     }
-    .home-hero-title {
-      font-family: var(--fd); font-size: 42px; font-weight: 900;
-      color: white; line-height: 1; letter-spacing: .3px; margin-bottom: 6px;
-    }
-    .home-hero-sub {
-      font-size: 14px; color: rgba(255,255,255,.62); margin-bottom: 22px; font-weight: 500;
-    }
-    .home-hero-btn {
-      padding: 15px 32px; border-radius: var(--r-sm); border: none;
-      background: #f59e0b; color: #0f2557;
-      font-family: var(--fd); font-size: 18px; font-weight: 900; letter-spacing: .8px;
-      cursor: pointer;
-      box-shadow: 0 4px 22px rgba(245,158,11,.45);
-      transition: transform .12s, box-shadow .12s;
-    }
-    .home-hero-btn:active { transform: scale(.97); box-shadow: 0 2px 8px rgba(245,158,11,.3); }
+
+    /* Legacy classes for other screens still using these */
     .home-scroll-wrap { -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; }
     .home-scroll-body {
       flex: 1; overflow-y: auto;
       padding: 18px 18px 60px;
       display: flex; flex-direction: column; gap: 14px;
     }
-
     .stats-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .stat-card { background: var(--card); border-radius: var(--r); padding: 18px 16px; box-shadow: var(--sh2); }
     .stat-val        { font-family: var(--fd); font-size: 44px; font-weight: 900; color: var(--text); line-height: 1; }
-    .stat-val.amber  { color: #f59e0b; }
+    .stat-val.accent { color: var(--pink); }
     .stat-lbl        { font-size: 12px; color: var(--text2); margin-top: 4px; font-weight: 500; }
 
     /* calendar */
@@ -247,13 +249,13 @@
       font-size: 12px; font-weight: 600; color: var(--text2);
       cursor: default; transition: background .15s;
     }
-    .cal-day.has-workout { background: rgba(255,31,125,.15); color: var(--pink); cursor: pointer; font-weight: 700; }
-    .cal-day.has-workout:active { background: rgba(255,31,125,.25); }
-    .cal-day.in-progress { background: rgba(245,158,11,.18); color: #f59e0b; cursor: pointer; font-weight: 700; }
+    .cal-day.has-workout { background: rgba(200,242,53,.15); color: var(--pink); cursor: pointer; font-weight: 700; }
+    .cal-day.has-workout:active { background: rgba(200,242,53,.28); }
+    .cal-day.in-progress { background: rgba(200,242,53,.18); color: var(--pink); cursor: pointer; font-weight: 700; }
     .cal-day.today-ring { box-shadow: 0 0 0 2px var(--text); }
     .cal-day.future { opacity: .3; }
-    .cal-day.selected { background: var(--pink) !important; color: white !important; box-shadow: 0 2px 10px rgba(255,31,125,.35); }
-    .cal-day.in-progress.selected { background: #f59e0b !important; color: #0f2557 !important; }
+    .cal-day.selected { background: var(--pink) !important; color: #121508 !important; box-shadow: 0 2px 12px rgba(200,242,53,.40); }
+    .cal-day.in-progress.selected { background: var(--pink) !important; color: #121508 !important; }
     .cal-expand {
       grid-column: 1 / -1;
       background: var(--sfx); border-radius: 12px;
@@ -261,13 +263,13 @@
       border-left: 3px solid var(--pink);
       animation: slideDown .2s ease;
     }
-    .cal-expand.active-expand { border-left-color: #f59e0b; }
+    .cal-expand.active-expand { border-left-color: var(--pink); }
     @keyframes slideDown { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
     .cal-expand-date { font-family: var(--fd); font-size: 14px; font-weight: 800; color: var(--text); margin-bottom: 8px; letter-spacing: .3px; }
     .cal-expand-ex { font-size: 12px; color: var(--text2); padding: 4px 0; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
     .cal-expand-ex:last-child { border-bottom: none; }
     .cal-expand-ex-name { font-weight: 600; color: var(--text); }
-    .cal-in-progress-badge { font-size: 10px; font-weight: 700; color: #f59e0b; background: rgba(245,158,11,.14); padding: 2px 8px; border-radius: 20px; }
+    .cal-in-progress-badge { font-size: 10px; font-weight: 700; color: var(--pink); background: rgba(200,242,53,.14); padding: 2px 8px; border-radius: 20px; }
 
     /* break modal & exercise-done sheet */
     .modal-backdrop {
@@ -302,7 +304,7 @@
       background: transparent; color: var(--text2);
       font-size: 14px; font-weight: 600; cursor: pointer; transition: color .14s;
     }
-    .ex-done-finish:active { color: var(--pink); }
+    .ex-done-finish:active { color: var(--text); }
 
     /* Home history preview */
     .hist-preview-row {
@@ -326,7 +328,27 @@
     /* ══════════════════════════════════
        HISTORY SCREEN
     ══════════════════════════════════ */
-    .hist-body { flex: 1; overflow-y: auto; padding: 20px 18px calc(60px + env(safe-area-inset-bottom, 0px)); display: flex; flex-direction: column; gap: 14px; -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; }
+    .hist-body { flex: 1; overflow-y: auto; padding: 0 18px calc(88px + env(safe-area-inset-bottom, 0px)); display: flex; flex-direction: column; gap: 14px; -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; }
+
+    /* History stat cards */
+    .hist-stats-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 16px 0 4px; }
+    .hist-stat-card {
+      background: var(--card); border-radius: var(--r); padding: 16px 14px; box-shadow: var(--sh2);
+    }
+    .hist-stat-icon { font-size: 20px; margin-bottom: 4px; }
+    .hist-stat-val { font-family: var(--fd); font-size: 38px; font-weight: 900; color: var(--text); line-height: 1; }
+    .hist-stat-lbl { font-size: 11px; color: var(--text2); font-weight: 600; margin-top: 3px; }
+
+    /* Filter pills */
+    .hist-filter-row { display: flex; gap: 8px; padding: 4px 0 12px; overflow-x: auto; }
+    .hist-filter-row::-webkit-scrollbar { display: none; }
+    .hist-filter-pill {
+      padding: 8px 18px; border-radius: 22px; flex-shrink: 0;
+      font-family: var(--fb); font-size: 13px; font-weight: 700;
+      background: var(--sfx); color: var(--text2); cursor: pointer;
+      border: none; transition: background .15s, color .15s;
+    }
+    .hist-filter-pill.active { background: var(--pink); color: #121508; }
 
     .hist-workout-card { background: var(--card); border-radius: var(--r); overflow: hidden; box-shadow: var(--sh2); }
     .hist-workout-hdr {
@@ -337,7 +359,7 @@
     .hist-workout-meta { font-size: 12px; color: var(--text2); margin-top: 2px; }
     .hist-workout-vol {
       font-family: var(--fd); font-size: 16px; font-weight: 800; color: var(--pink);
-      background: rgba(255,31,125,.1); padding: 4px 10px; border-radius: 20px;
+      background: rgba(200,242,53,.12); padding: 4px 10px; border-radius: 20px;
     }
     .hist-ex-list { padding: 4px 0; }
     .hist-ex-row {
@@ -359,7 +381,7 @@
     /* ══════════════════════════════════
        GROUP SELECT SCREEN
     ══════════════════════════════════ */
-    .group-select-body { flex: 1; overflow-y: auto; padding: 16px 18px calc(100px + env(safe-area-inset-bottom, 0px)); display: flex; flex-direction: column; gap: 12px; -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; }
+    .group-select-body { flex: 1; overflow-y: auto; padding: 16px 18px calc(120px + env(safe-area-inset-bottom, 0px)); display: flex; flex-direction: column; gap: 12px; -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; }
 
     .grp-card {
       position: relative; border-radius: 20px; overflow: hidden; height: 148px;
@@ -395,14 +417,14 @@
       border-top: 1px solid var(--border); z-index: 200;
     }
     .done-count-badge {
-      font-family: var(--fd); font-size: 13px; font-weight: 800; color: var(--pink);
-      background: rgba(255,31,125,.1); padding: 4px 12px; border-radius: 20px; letter-spacing: .4px;
+      font-family: var(--fd); font-size: 13px; font-weight: 800; color: #121508;
+      background: var(--pink); padding: 4px 12px; border-radius: 20px; letter-spacing: .4px;
     }
 
     /* ══════════════════════════════════
        GROUP DETAIL (exercise list)
     ══════════════════════════════════ */
-    .group-detail-body { flex: 1; overflow-y: auto; padding: 16px 18px calc(100px + env(safe-area-inset-bottom, 0px)); display: flex; flex-direction: column; gap: 8px; -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; }
+    .group-detail-body { flex: 1; overflow-y: auto; padding: 16px 18px calc(120px + env(safe-area-inset-bottom, 0px)); display: flex; flex-direction: column; gap: 8px; -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; }
 
     .grp-detail-hero {
       border-radius: 16px; overflow: hidden; height: 100px; position: relative; margin-bottom: 8px;
@@ -468,7 +490,7 @@
     .pr-glow { color: #ffd700; font-size: 13px; font-weight: 700; }
 
     .log-body {
-      flex: 1; overflow-y: auto; padding: 16px 18px calc(144px + env(safe-area-inset-bottom, 0px));
+      flex: 1; overflow-y: auto; padding: 16px 18px calc(164px + env(safe-area-inset-bottom, 0px));
       display: flex; flex-direction: column; gap: 14px;
       -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain;
     }
@@ -477,7 +499,7 @@
     .set-dots { display: flex; align-items: flex-start; gap: 0; justify-content: center; }
     .set-dot-wrap { display: flex; flex-direction: column; align-items: center; gap: 5px; flex: 1; max-width: 64px; }
     .set-dot-connector { flex: 1; height: 2px; margin-top: 19px; background: var(--border); max-width: 28px; transition: background .3s; }
-    .set-dot-connector.done-conn { background: var(--navy); }
+    .set-dot-connector.done-conn { background: var(--pink); }
     .set-dot {
       width: 38px; height: 38px; border-radius: 50%;
       border: 2.5px solid var(--border); background: var(--card);
@@ -485,8 +507,8 @@
       font-size: 13px; font-weight: 800; color: var(--text2);
       transition: all .25s cubic-bezier(.2,.8,.4,1);
     }
-    .set-dot.completed { background: var(--navy); border-color: var(--navy); color: white; }
-    .set-dot.active { background: var(--pink); border-color: var(--pink); color: white; box-shadow: 0 0 0 6px rgba(255,31,125,.16); transform: scale(1.1); }
+    .set-dot.completed { background: var(--navy2); border-color: var(--navy2); color: var(--text); }
+    .set-dot.active { background: var(--pink); border-color: var(--pink); color: #121508; box-shadow: 0 0 0 6px rgba(200,242,53,.18); transform: scale(1.1); }
     .set-dot.warmup-skipped { background: var(--sfx); border-color: var(--border); color: var(--text2); }
     .set-dot-lbl { font-size: 9px; color: var(--text2); font-weight: 700; text-transform: uppercase; letter-spacing: .5px; }
 
@@ -494,11 +516,11 @@
       background: var(--card); border-radius: var(--r); padding: 20px; box-shadow: var(--sh2);
       display: flex; flex-direction: column; gap: 12px;
     }
-    .warmup-card-title { font-family: var(--fc); font-size: 22px; font-weight: 700; color: var(--text); letter-spacing: .3px; }
+    .warmup-card-title { font-family: var(--fd); font-size: 22px; font-weight: 800; color: var(--text); letter-spacing: .3px; }
     .warmup-card-desc { color: var(--text2); font-size: 14px; line-height: 1.5; }
 
     .input-form { background: var(--card); border-radius: var(--r); padding: 20px; box-shadow: var(--sh2); }
-    .input-form-title { font-family: var(--fc); font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 16px; letter-spacing: .3px; }
+    .input-form-title { font-family: var(--fd); font-size: 22px; font-weight: 800; color: var(--text); margin-bottom: 16px; letter-spacing: .3px; }
     .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .inp-group label { display: block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.1px; color: var(--text2); margin-bottom: 7px; }
     .inp-group input {
@@ -511,7 +533,7 @@
     }
     .inp-group input::-webkit-inner-spin-button,
     .inp-group input::-webkit-outer-spin-button { -webkit-appearance: none; }
-    .inp-group input:focus { border-color: var(--pink); box-shadow: 0 0 0 4px rgba(255,31,125,.1); }
+    .inp-group input:focus { border-color: var(--pink); box-shadow: 0 0 0 4px rgba(200,242,53,.12); }
 
     .prev-sets { background: var(--card); border-radius: var(--r); padding: 16px; box-shadow: var(--sh2); }
     .prev-set-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); }
@@ -520,8 +542,8 @@
     .prev-set-val { font-size: 14px; font-weight: 700; color: var(--text); }
 
     .pr-badge {
-      display: inline-block; background: linear-gradient(90deg, var(--pink), #ff7240);
-      color: white; font-size: 9px; font-weight: 800;
+      display: inline-block; background: var(--pink);
+      color: #121508; font-size: 9px; font-weight: 800;
       padding: 2px 7px; border-radius: 5px; text-transform: uppercase; letter-spacing: .6px; margin-left: 6px;
     }
 
@@ -549,7 +571,7 @@
       display: flex; align-items: center; justify-content: center;
       transition: border-color .14s, transform .1s;
     }
-    .sets-ctrl-btn:active { border-color: var(--pink); transform: scale(.9); }
+    .sets-ctrl-btn:active { border-color: var(--pink); transform: scale(.9); background: rgba(200,242,53,.08); }
     .sets-ctrl-lbl { font-family: var(--fd); font-size: 17px; font-weight: 800; color: var(--text); letter-spacing: .4px; }
 
     /* ══════════════════════════════════
@@ -557,14 +579,14 @@
     ══════════════════════════════════ */
     .sum-hero {
       background: linear-gradient(148deg, var(--navy3) 0%, var(--navy) 50%, var(--navy2) 100%);
-      padding: calc(34px + env(safe-area-inset-top)) 22px 26px; color: white; text-align: center;
+      padding: calc(34px + env(safe-area-inset-top)) 22px 26px; color: var(--text); text-align: center;
       position: relative; overflow: hidden;
-      box-shadow: 0 8px 32px rgba(15,37,87,.25);
+      box-shadow: 0 8px 32px rgba(0,0,0,.35);
     }
     .sum-hero::before {
       content: ''; position: absolute; right: -40px; top: -40px;
       width: 180px; height: 180px; border-radius: 50%;
-      background: radial-gradient(circle, rgba(255,31,125,.24) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(200,242,53,.18) 0%, transparent 70%);
     }
     .sum-hero-emoji { font-size: 52px; position: relative; z-index: 1; }
     .sum-title { font-family: var(--fd); font-size: 34px; font-weight: 900; margin-top: 6px; letter-spacing: .5px; position: relative; z-index: 1; }
@@ -573,7 +595,7 @@
     .sum-stat  { background: rgba(255,255,255,.1); border-radius: 13px; padding: 13px 8px; text-align: center; border: 1px solid rgba(255,255,255,.13); }
     .sum-stat-v { font-family: var(--fd); font-size: 30px; font-weight: 900; }
     .sum-stat-l { font-size: 11px; opacity: .58; margin-top: 2px; font-weight: 500; }
-    .sum-body { flex: 1; overflow-y: auto; padding: 20px 18px calc(100px + env(safe-area-inset-bottom, 0px)); display: flex; flex-direction: column; gap: 12px; -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; }
+    .sum-body { flex: 1; overflow-y: auto; padding: 20px 18px calc(120px + env(safe-area-inset-bottom, 0px)); display: flex; flex-direction: column; gap: 12px; -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; }
     .sum-ex-card { background: var(--card); border-radius: var(--r); padding: 16px; box-shadow: var(--sh2); }
     .sum-ex-hdr { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
     .sum-ex-icon { width: 30px; height: 30px; display: flex; align-items: center; }
@@ -599,7 +621,7 @@
     }
 
     .trend-up   { color: var(--success); font-weight: 700; font-size: 12px; }
-    .trend-down { color: var(--pink);    font-weight: 700; font-size: 12px; }
+    .trend-down { color: #e05050;        font-weight: 700; font-size: 12px; }
 
     /* ══════════════════════════════════
        SPLASH SCREEN
@@ -647,10 +669,10 @@
       width: 100%;
       padding: 18px; border-radius: 14px; border: none;
       background: linear-gradient(135deg, var(--pink) 0%, var(--pink2) 100%);
-      color: white; font-family: var(--fd);
+      color: #121508; font-family: var(--fd);
       font-size: 20px; font-weight: 800; letter-spacing: .8px;
       cursor: pointer;
-      box-shadow: 0 4px 28px rgba(255,31,125,.55);
+      box-shadow: 0 4px 28px rgba(200,242,53,.45);
       transition: transform .1s;
     }
     .splash-btn:active { transform: scale(.97); }
@@ -679,14 +701,14 @@
     .onboarding-wrap.fading { animation: obFadeOut .35s ease forwards; }
     .onboarding-bg {
       position: absolute; inset: 0;
-      background: rgba(10,14,39,.80);
+      background: rgba(18,21,8,.82);
       backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
     }
     .onboarding-card {
       position: relative; z-index: 1;
       width: 100%; max-width: 430px;
-      background: #0d1633;
-      border-top: 1px solid rgba(255,255,255,.10);
+      background: #1b2010;
+      border-top: 1px solid rgba(200,242,53,.10);
       border-radius: 28px 28px 0 0;
       padding: 28px 28px 48px;
       text-align: center;
@@ -701,10 +723,10 @@
       transition: width .25s, border-radius .25s, background .25s;
     }
     .ob-dot.active { width: 24px; border-radius: 4px; background: var(--pink); }
-    .ob-dot.done   { background: rgba(255,45,120,.45); }
+    .ob-dot.done   { background: rgba(200,242,53,.45); }
     .ob-icon-wrap {
       width: 68px; height: 68px; border-radius: 20px; margin: 0 auto 18px;
-      background: rgba(255,45,120,.10); border: 1px solid rgba(255,45,120,.22);
+      background: rgba(200,242,53,.10); border: 1px solid rgba(200,242,53,.22);
       display: flex; align-items: center; justify-content: center;
     }
     @keyframes obStepIn {
@@ -726,9 +748,9 @@
     .ob-next-btn {
       width: 100%; padding: 17px; border-radius: 14px; border: none;
       background: linear-gradient(135deg, var(--pink) 0%, var(--pink2) 100%);
-      color: white; font-family: var(--fd); font-size: 19px; font-weight: 800;
+      color: #121508; font-family: var(--fd); font-size: 19px; font-weight: 800;
       letter-spacing: .8px; cursor: pointer;
-      box-shadow: 0 4px 28px rgba(255,31,125,.45);
+      box-shadow: 0 4px 28px rgba(200,242,53,.38);
       transition: transform .1s; margin-bottom: 10px;
     }
     .ob-next-btn:active { transform: scale(.97); }
@@ -759,7 +781,7 @@
       font-family: var(--fb); font-size: 16px; color: var(--text);
       outline: none; transition: border-color .15s, box-shadow .15s;
     }
-    .setup-input:focus { border-color: var(--pink); box-shadow: 0 0 0 4px rgba(255,31,125,.1); }
+    .setup-input:focus { border-color: var(--pink); box-shadow: 0 0 0 4px rgba(200,242,53,.12); }
     .setup-hint { font-size: 12px; color: var(--text2); font-style: italic; }
     .setup-select {
       width: 100%; padding: 14px 16px; border-radius: var(--r-sm);
@@ -770,20 +792,20 @@
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' viewBox='0 0 12 7'%3E%3Cpath fill='%236674a8' d='M6 7L0 0h12z'/%3E%3C/svg%3E");
       background-repeat: no-repeat; background-position: right 16px center;
     }
-    .setup-select:focus { border-color: var(--pink); }
+    .setup-select:focus { border-color: var(--pink); box-shadow: 0 0 0 4px rgba(200,242,53,.12); }
 
     /* ══════════════════════════════════
        SETTINGS / PROFILE SCREEN — dark editorial
     ══════════════════════════════════ */
     .settings-screen {
-      background: #080b18; min-height: 100vh; min-height: 100dvh;
+      background: #111508; min-height: 100vh; min-height: 100dvh;
       display: flex; flex-direction: column;
       animation: slideUp .26s cubic-bezier(.18,.82,.4,1) both;
     }
     .settings-hdr {
       padding: calc(13px + env(safe-area-inset-top)) 18px 13px;
       display: flex; align-items: center; justify-content: space-between;
-      background: #080b18;
+      background: #111508;
       border-bottom: 1px solid rgba(255,255,255,.06);
       position: sticky; top: 0; z-index: 100;
     }
@@ -806,19 +828,19 @@
     .settings-profile-hero:active { background: rgba(255,255,255,.02); }
     .settings-avatar {
       width: 78px; height: 78px; border-radius: 50%;
-      background: rgba(255,255,255,.04);
-      border: 1.5px solid rgba(255,45,120,.38);
-      box-shadow: 0 0 0 7px rgba(255,45,120,.06), 0 0 40px rgba(255,45,120,.14);
+      background: rgba(200,242,53,.06);
+      border: 1.5px solid rgba(200,242,53,.40);
+      box-shadow: 0 0 0 7px rgba(200,242,53,.06), 0 0 40px rgba(200,242,53,.12);
       display: flex; align-items: center; justify-content: center;
       font-family: var(--fd); font-size: 33px; font-weight: 900; color: white;
       margin-bottom: 6px; flex-shrink: 0;
     }
     .settings-profile-name { font-family: var(--fd); font-size: 24px; font-weight: 900; color: white; letter-spacing: .3px; }
     .settings-profile-meta { font-size: 12px; color: rgba(255,255,255,.28); font-weight: 500; letter-spacing: .2px; }
-    .settings-edit-hint { font-size: 10px; color: rgba(255,45,120,.55); font-weight: 700; letter-spacing: 1.6px; text-transform: uppercase; margin-top: 4px; }
+    .settings-edit-hint { font-size: 10px; color: rgba(200,242,53,.55); font-weight: 700; letter-spacing: 1.6px; text-transform: uppercase; margin-top: 4px; }
 
     .settings-body {
-      flex: 1; overflow-y: auto; padding: 0 0 calc(80px + env(safe-area-inset-bottom, 0px));
+      flex: 1; overflow-y: auto; padding: 0 0 calc(88px + env(safe-area-inset-bottom, 0px));
       display: flex; flex-direction: column;
       -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain;
     }
@@ -864,7 +886,7 @@
     }
     .settings-name-edit .setup-label { color: rgba(255,255,255,.38); }
     .settings-name-edit .setup-input { background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.1); color: white; }
-    .settings-name-edit .setup-input:focus { border-color: var(--pink); box-shadow: 0 0 0 4px rgba(255,31,125,.12); }
+    .settings-name-edit .setup-input:focus { border-color: var(--pink); box-shadow: 0 0 0 4px rgba(200,242,53,.12); }
     .add-ex-form {
       background: rgba(255,255,255,.03); border-radius: 0; padding: 18px 22px;
       border-bottom: 1px solid rgba(255,255,255,.05);
@@ -872,7 +894,7 @@
     }
     .add-ex-form .setup-label { color: rgba(255,255,255,.38); }
     .add-ex-form .setup-input { background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.1); color: white; }
-    .add-ex-form .setup-input:focus { border-color: var(--pink); box-shadow: 0 0 0 4px rgba(255,31,125,.12); }
+    .add-ex-form .setup-input:focus { border-color: var(--pink); box-shadow: 0 0 0 4px rgba(200,242,53,.12); }
     .add-ex-form .setup-select { background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.1); color: white; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' viewBox='0 0 12 7'%3E%3Cpath fill='%23888' d='M6 7L0 0h12z'/%3E%3C/svg%3E"); }
     .custom-ex-item {
       background: transparent; border-radius: 0; padding: 14px 22px;
@@ -883,7 +905,7 @@
     .custom-ex-grp  { font-size: 11px; color: rgba(255,255,255,.3); margin-top: 2px; text-transform: uppercase; letter-spacing: .5px; }
     .del-btn {
       width: 28px; height: 28px; border-radius: 50%; border: none;
-      background: rgba(255,45,120,.1); color: rgba(255,45,120,.75);
+      background: rgba(224,80,80,.15); color: rgba(224,80,80,.8);
       font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center;
       flex-shrink: 0;
     }
@@ -907,51 +929,60 @@
       cursor: pointer; transition: border-color .14s, background .14s, transform .12s;
       font-family: var(--fd); font-size: 15px; font-weight: 800; color: var(--text);
     }
-    .wt-choice-btn:active { transform: scale(.96); border-color: var(--pink); background: rgba(255,31,125,.07); }
+    .wt-choice-btn:active { transform: scale(.96); border-color: var(--pink); background: rgba(200,242,53,.08); }
 
     /* ── Neon glow ── */
-    .neon-pink {
+    .neon-pink, .neon-green {
       color: var(--pink);
-      text-shadow: 0 0 7px rgba(255,45,120,0.8), 0 0 20px rgba(255,45,120,0.5), 0 0 42px rgba(255,45,120,0.3), 0 0 80px rgba(255,45,120,0.15);
+      text-shadow: 0 0 7px rgba(200,242,53,0.7), 0 0 20px rgba(200,242,53,0.4), 0 0 42px rgba(200,242,53,0.2);
     }
-    .neon-cyan {
-      color: var(--cyan);
-      text-shadow: 0 0 7px rgba(0,229,255,0.8), 0 0 20px rgba(0,229,255,0.5), 0 0 42px rgba(0,229,255,0.3), 0 0 80px rgba(0,229,255,0.15);
-    }
-    .neon-purple {
-      color: var(--purple);
-      text-shadow: 0 0 7px rgba(178,77,255,0.8), 0 0 20px rgba(178,77,255,0.5), 0 0 42px rgba(178,77,255,0.3);
-    }
+    .neon-cyan  { color: var(--pink); text-shadow: 0 0 7px rgba(200,242,53,0.7), 0 0 20px rgba(200,242,53,0.4); }
+    .neon-purple { color: var(--pink); text-shadow: 0 0 7px rgba(200,242,53,0.7), 0 0 20px rgba(200,242,53,0.4); }
 
     /* ── Daily Quote card ── */
     .quote-card {
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.1);
+      background: var(--card);
+      border: 1px solid var(--border);
       border-left: 3px solid var(--pink);
       border-radius: 16px; padding: 20px;
     }
     .quote-text {
-      font-family: var(--fc); font-size: 17px;
-      color: rgba(255,255,255,0.7); line-height: 1.5; margin-bottom: 10px;
+      font-family: var(--fb); font-size: 15px; font-style: italic;
+      color: var(--text2); line-height: 1.6; margin-bottom: 10px;
     }
     .quote-ref {
       font-family: var(--fb); font-size: 12px;
-      color: rgba(255,255,255,0.4); margin-bottom: 10px;
+      color: var(--text2); margin-bottom: 10px; opacity: .7;
     }
     .quote-badge {
       display: inline-block;
-      background: rgba(255,45,120,0.15); color: var(--pink);
-      border: 1px solid rgba(255,45,120,0.25);
+      background: rgba(200,242,53,0.12); color: var(--pink);
+      border: 1px solid rgba(200,242,53,0.22);
       border-radius: 20px; padding: 4px 12px; font-size: 11px;
-      font-family: var(--fb); font-weight: 600;
+      font-family: var(--fb); font-weight: 700;
     }
-    [data-theme="light"] .quote-card {
-      background: rgba(10,14,39,0.04);
-      border-color: rgba(10,14,39,0.08);
-      border-left-color: var(--pink);
+
+    /* ── Bottom Navigation Bar ── */
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 100%; max-width: 430px;
+      background: var(--bar-bg);
+      backdrop-filter: blur(28px) saturate(160%);
+      -webkit-backdrop-filter: blur(28px) saturate(160%);
+      border-top: 1px solid var(--border);
+      padding: 10px 28px calc(10px + env(safe-area-inset-bottom));
+      display: flex; justify-content: space-around; align-items: center;
+      z-index: 200;
     }
-    [data-theme="light"] .quote-text { color: var(--text2); }
-    [data-theme="light"] .quote-ref  { color: var(--text2); opacity: .6; }
+    .bnav-item {
+      display: flex; flex-direction: column; align-items: center; gap: 3px;
+      padding: 8px 18px; border-radius: 24px; border: none;
+      font-family: var(--fb); font-size: 10px; font-weight: 700; letter-spacing: .3px;
+      color: var(--text2); cursor: pointer;
+      transition: background .2s, color .2s; background: transparent;
+    }
+    .bnav-item.active { background: var(--pink); color: #121508; }
+    .bnav-item svg { width: 20px; height: 20px; }
   </style>
 </head>
 <body>
@@ -1007,7 +1038,7 @@ function DailyQuoteCard() {
 /* ═══════════════════════════════════════
    EXERCISE ICONS
 ═══════════════════════════════════════ */
-function ExIcon({ id, size = 28, color = '#0f2557' }) {
+function ExIcon({ id, size = 28, color = '#242d16' }) {
   const icons = {
     bench_press: (<>
       <rect x="8" y="38" width="48" height="5" rx="2"/>
@@ -1418,7 +1449,7 @@ function saveCurrent(w) {
   if (w) localStorage.setItem('fittrack_current', JSON.stringify(w));
   else localStorage.removeItem('fittrack_current');
 }
-function loadTheme() { return localStorage.getItem('fittrack_theme') || 'light'; }
+function loadTheme() { return localStorage.getItem('fittrack_theme') || 'dark'; }
 function saveTheme(t) { localStorage.setItem('fittrack_theme', t); }
 
 function loadProfile() {
@@ -1560,8 +1591,176 @@ function WorkoutCalendar({ history, current }) {
 }
 
 /* ═══════════════════════════════════════
+   BOTTOM NAVIGATION BAR
+═══════════════════════════════════════ */
+function BottomNav({ screen, setScreen }) {
+  const homeScreens = ['home','group-select','group-detail','log','summary'];
+  const tab = homeScreens.includes(screen) ? 'home' : screen === 'history' ? 'history' : 'settings';
+  const hiddenScreens = ['splash','profile-setup'];
+  if (hiddenScreens.includes(screen)) return null;
+
+  return (
+    <div className="bottom-nav">
+      <button className={`bnav-item ${tab === 'home' ? 'active' : ''}`} onClick={() => setScreen('home')}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z"/>
+          <path d="M9 21V12h6v9"/>
+        </svg>
+        Home
+      </button>
+      <button className={`bnav-item ${tab === 'history' ? 'active' : ''}`} onClick={() => setScreen('history')}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="12" r="9"/>
+          <polyline points="12 7 12 12 15 15"/>
+        </svg>
+        History
+      </button>
+      <button className={`bnav-item ${tab === 'settings' ? 'active' : ''}`} onClick={() => setScreen('settings')}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="8" r="3"/>
+          <path d="M6 20v-2a6 6 0 0 1 12 0v2"/>
+        </svg>
+        Profile
+      </button>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════
    HOME SCREEN
 ═══════════════════════════════════════ */
+function HomeScreen({ onStart, onViewHistory, onOpenSettings, history, hasActive, profile, current }) {
+  const today = todayISO();
+  const streak = getStreak(history);
+  const workedToday = history.some(w => w.date === today);
+  const recent = [...history].reverse().slice(0, 3);
+  const firstName = (profile && profile.name) ? profile.name.split(' ')[0] : null;
+  const initial = firstName ? firstName.charAt(0).toUpperCase() : '?';
+  const heroQuote = dailyQuotes[(new Date().getDate() - 1) % 30];
+
+  const heroTitle = hasActive ? 'Resume Workout' : workedToday ? 'Train Again?' : 'Ready to lift';
+  const heroSub   = hasActive ? 'You have a workout in progress.' : workedToday ? 'You already trained today.' : 'Build your session in real time.';
+  const btnLabel  = hasActive ? 'Resume →' : 'Start Workout →';
+
+  // Build 7-day week strip centred on today
+  const todayDate = new Date();
+  const weekDays = [];
+  for (let i = -3; i <= 3; i++) {
+    const d = new Date(todayDate);
+    d.setDate(todayDate.getDate() + i);
+    const iso = d.toISOString().slice(0,10);
+    const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    weekDays.push({ iso, num: d.getDate(), name: dayNames[d.getDay()], isToday: iso === today });
+  }
+  const doneDates = new Set(history.map(w => w.date));
+  const inProgressDate = (current && current.exercises && current.exercises.length > 0) ? todayISO() : null;
+
+  return (
+    <div className="home-screen screen">
+
+      {/* ── Compact sticky header ── */}
+      <div className="home-compact-hdr">
+        <div className="home-hdr-left">
+          <div className="home-avatar">{initial}</div>
+          <div>
+            <div className="home-greeting">{firstName ? `Hey, ${firstName}` : 'Hey there'}</div>
+            <div className="home-date-sub">{fmtDate(today)}</div>
+          </div>
+        </div>
+        <button className="home-hdr-btn" onClick={onOpenSettings}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <circle cx="12" cy="8" r="3"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/>
+          </svg>
+        </button>
+      </div>
+
+      {/* ── Week date strip ── */}
+      <div className="week-strip">
+        {weekDays.map(({ iso, num, name, isToday }) => {
+          const hasDone = doneDates.has(iso) || iso === inProgressDate;
+          let cls = 'week-day';
+          if (isToday) cls += ' today';
+          else if (hasDone) cls += ' has-workout';
+          return (
+            <div key={iso} className={cls}>
+              <div className="week-day-name">{name}</div>
+              <div className="week-day-num">{num}</div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* ── Stat cards ── */}
+      <div className="home-stats-row">
+        <div className="home-stat-card">
+          <div className="home-stat-icon">🔥</div>
+          <div className={`home-stat-val${streak > 0 ? ' accent' : ''}`}>{streak}</div>
+          <div className="home-stat-lbl">Day Streak</div>
+        </div>
+        <div className="home-stat-card">
+          <div className="home-stat-icon">🏋</div>
+          <div className="home-stat-val accent">{history.length}</div>
+          <div className="home-stat-lbl">Total Workouts</div>
+        </div>
+      </div>
+
+      {/* ── Scrollable body ── */}
+      <div className="home-body">
+
+        {/* CTA card */}
+        <div className="card" style={{ textAlign:'center', padding:'28px 20px' }}>
+          <div style={{ fontFamily:'var(--fd)', fontSize:11, fontWeight:700, textTransform:'uppercase', letterSpacing:'2px', color:'var(--text2)', marginBottom:8 }}>Today's Program</div>
+          <div style={{ fontFamily:'var(--fd)', fontSize:28, fontWeight:900, color:'var(--text)', lineHeight:1.1, marginBottom:6 }}>{heroTitle}</div>
+          <div style={{ fontSize:13, color:'var(--text2)', marginBottom:22, fontWeight:500 }}>{heroSub}</div>
+          <button className="btn-pink" onClick={onStart} style={{ fontSize:18, letterSpacing:'.8px' }}>{btnLabel}</button>
+        </div>
+
+        {/* Bible verse */}
+        <div className="quote-card">
+          <div className="quote-text">"{heroQuote.text}"</div>
+          <div className="quote-ref">— {heroQuote.ref}</div>
+          <span className="quote-badge">{heroQuote.category}</span>
+        </div>
+
+        {/* Calendar */}
+        <div className="card">
+          <WorkoutCalendar history={history} current={current} />
+        </div>
+
+        {/* History preview */}
+        <div className="card">
+          <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom: recent.length > 0 ? 14 : 0 }}>
+            <div className="sec-label" style={{ marginBottom:0 }}>Recent Workouts</div>
+            <button className="view-all-btn" onClick={onViewHistory} style={{ width:'auto', marginTop:0, padding:'5px 12px', fontSize:12 }}>
+              View All →
+            </button>
+          </div>
+          {recent.length === 0 ? (
+            <div style={{ textAlign:'center', padding:'24px 0', color:'var(--text2)' }}>
+              <div style={{ fontSize:14, lineHeight:1.6 }}>No workouts yet.<br/>Complete your first session to see history here.</div>
+            </div>
+          ) : (
+            recent.map((w, i) => (
+              <div key={i} className="hist-preview-row" onClick={onViewHistory}>
+                <div>
+                  <div className="hist-preview-date">{fmtDate(w.date)}</div>
+                  <div className="hist-preview-meta">{w.exercises.length} exercises · {w.exercises.reduce((s,e)=>s+e.sets.length,0)} sets</div>
+                </div>
+                <div style={{ display:'flex', gap:4, flexWrap:'wrap', justifyContent:'flex-end', maxWidth:120 }}>
+                  {w.exercises.slice(0,3).map((ex,j) => (
+                    <span key={j} style={{ fontSize:10, fontWeight:700, letterSpacing:.4, color:'var(--text2)', background:'var(--sfx)', padding:'2px 7px', borderRadius:20 }}>{ex.gl}</span>
+                  ))}
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+      </div>
+    </div>
+  );
+}
+
 /* ═══════════════════════════════════════
    SPLASH SCREEN
 ═══════════════════════════════════════ */
@@ -1638,8 +1837,8 @@ function ProfileSetupScreen({ onSave }) {
         <div className="setup-field">
           <div className="setup-label">Weight Units</div>
           <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
-            <button type="button" onClick={() => setWeightUnit('kg')} style={{ padding:'14px', borderRadius:12, border:`2px solid ${weightUnit==='kg'?'var(--pink)':'var(--border)'}`, background:weightUnit==='kg'?'rgba(255,31,125,.07)':'var(--sfx)', fontFamily:'var(--fd)', fontSize:20, fontWeight:800, color:weightUnit==='kg'?'var(--pink)':'var(--text)', cursor:'pointer' }}>kg</button>
-            <button type="button" onClick={() => setWeightUnit('lb')} style={{ padding:'14px', borderRadius:12, border:`2px solid ${weightUnit==='lb'?'var(--pink)':'var(--border)'}`, background:weightUnit==='lb'?'rgba(255,31,125,.07)':'var(--sfx)', fontFamily:'var(--fd)', fontSize:20, fontWeight:800, color:weightUnit==='lb'?'var(--pink)':'var(--text)', cursor:'pointer' }}>lb</button>
+            <button type="button" onClick={() => setWeightUnit('kg')} style={{ padding:'14px', borderRadius:12, border:`2px solid ${weightUnit==='kg'?'var(--pink)':'var(--border)'}`, background:weightUnit==='kg'?'rgba(200,242,53,.1)':'var(--sfx)', fontFamily:'var(--fd)', fontSize:20, fontWeight:800, color:weightUnit==='kg'?'#121508':'var(--text)', cursor:'pointer' }}>kg</button>
+            <button type="button" onClick={() => setWeightUnit('lb')} style={{ padding:'14px', borderRadius:12, border:`2px solid ${weightUnit==='lb'?'var(--pink)':'var(--border)'}`, background:weightUnit==='lb'?'rgba(200,242,53,.1)':'var(--sfx)', fontFamily:'var(--fd)', fontSize:20, fontWeight:800, color:weightUnit==='lb'?'#121508':'var(--text)', cursor:'pointer' }}>lb</button>
           </div>
           <div className="setup-hint">You can change this any time in Settings</div>
         </div>
@@ -1918,22 +2117,57 @@ function HomeScreen({ onStart, onViewHistory, onOpenSettings, history, hasActive
    HISTORY SCREEN
 ═══════════════════════════════════════ */
 function HistoryScreen({ onBack, history, weightUnit = 'kg' }) {
+  const [filter, setFilter] = React.useState('all');
+
+  const today = todayISO();
+  const weekStart = (() => {
+    const d = new Date(); d.setDate(d.getDate() - d.getDay()); return d.toISOString().slice(0,10);
+  })();
+  const monthStart = today.slice(0,7);
+
   const sorted = [...history].reverse();
+  const filtered = filter === 'all' ? sorted
+    : filter === 'week'  ? sorted.filter(w => w.date >= weekStart)
+    : sorted.filter(w => w.date.slice(0,7) === monthStart);
+
+  const thisWeekCount = sorted.filter(w => w.date >= weekStart).length;
+
   return (
     <div className="screen">
       <div className="hdr">
         <button className="back-btn" onClick={onBack}>←</button>
-        <span className="hdr-title">Workout History</span>
+        <span className="hdr-title">History</span>
         <div style={{ width: 38 }} />
       </div>
       <div className="hist-body">
-        {sorted.length === 0 && (
+        {/* Stat cards */}
+        <div className="hist-stats-row">
+          <div className="hist-stat-card">
+            <div className="hist-stat-icon">🏋</div>
+            <div className="hist-stat-val">{history.length}</div>
+            <div className="hist-stat-lbl">Total Workouts</div>
+          </div>
+          <div className="hist-stat-card">
+            <div className="hist-stat-icon">📅</div>
+            <div className="hist-stat-val" style={{ color: 'var(--pink)' }}>{thisWeekCount}</div>
+            <div className="hist-stat-lbl">This Week</div>
+          </div>
+        </div>
+
+        {/* Filter pills */}
+        <div className="hist-filter-row">
+          {[['all','All'],['week','This Week'],['month','This Month']].map(([val, lbl]) => (
+            <button key={val} className={`hist-filter-pill ${filter === val ? 'active' : ''}`} onClick={() => setFilter(val)}>{lbl}</button>
+          ))}
+        </div>
+
+        {filtered.length === 0 && (
           <div className="hist-empty">
             <div className="hist-empty-icon">📋</div>
             <div className="hist-empty-txt">No workouts yet.<br/>Start your first session to see history here.</div>
           </div>
         )}
-        {sorted.map((w, i) => {
+        {filtered.map((w, i) => {
           const totalSets = w.exercises.reduce((s,e)=>s+e.sets.length,0);
           const totalVol  = w.exercises.reduce((s,e)=>e.sets.reduce((a,t)=>a+t.weight*t.reps,s),0);
           return (
@@ -2418,11 +2652,11 @@ function LogScreen({ exercise, onBack, onComplete, history, weightUnit = 'kg' })
         {!inWarmup && weightType && !allDone && (
           <div style={{ display:'flex', justifyContent:'center', gap:8, marginBottom:4 }}>
             <button onClick={() => { setWeightType('free'); setPlatesPerSide([]); }}
-              style={{ padding:'7px 18px', borderRadius:20, border:`1px solid ${weightType==='free'?'rgba(255,45,120,.6)':'rgba(255,255,255,.12)'}`, background:weightType==='free'?'rgba(255,45,120,.1)':'transparent', color:weightType==='free'?'var(--pink)':'rgba(255,255,255,.32)', fontFamily:'var(--fd)', fontSize:12, fontWeight:700, cursor:'pointer', letterSpacing:'.4px', transition:'all .15s' }}>
+              style={{ padding:'7px 18px', borderRadius:20, border:`1px solid ${weightType==='free'?'var(--pink)':'var(--border)'}`, background:weightType==='free'?'var(--pink)':'transparent', color:weightType==='free'?'#121508':'var(--text2)', fontFamily:'var(--fd)', fontSize:12, fontWeight:700, cursor:'pointer', letterSpacing:'.4px', transition:'all .15s' }}>
               Dumbbell
             </button>
             <button onClick={() => { setWeightType('barbell'); setWeight(''); }}
-              style={{ padding:'7px 18px', borderRadius:20, border:`1px solid ${weightType==='barbell'?'rgba(255,45,120,.6)':'rgba(255,255,255,.12)'}`, background:weightType==='barbell'?'rgba(255,45,120,.1)':'transparent', color:weightType==='barbell'?'var(--pink)':'rgba(255,255,255,.32)', fontFamily:'var(--fd)', fontSize:12, fontWeight:700, cursor:'pointer', letterSpacing:'.4px', transition:'all .15s' }}>
+              style={{ padding:'7px 18px', borderRadius:20, border:`1px solid ${weightType==='barbell'?'var(--pink)':'var(--border)'}`, background:weightType==='barbell'?'var(--pink)':'transparent', color:weightType==='barbell'?'#121508':'var(--text2)', fontFamily:'var(--fd)', fontSize:12, fontWeight:700, cursor:'pointer', letterSpacing:'.4px', transition:'all .15s' }}>
               Barbell
             </button>
           </div>
@@ -2457,10 +2691,10 @@ function SummaryScreen({ workout, baseHistory, onDone, weightUnit = 'kg' }) {
       </div>
       <div className="sum-body">
         {workout.exercises.some(ex => ex.sessionAdded) && (
-          <div style={{ background:'rgba(245,158,11,.1)', border:'1px solid rgba(245,158,11,.25)', borderRadius:14, padding:'14px 16px', display:'flex', gap:12, alignItems:'flex-start' }}>
+          <div style={{ background:'rgba(200,242,53,.08)', border:'1px solid rgba(200,242,53,.22)', borderRadius:14, padding:'14px 16px', display:'flex', gap:12, alignItems:'flex-start' }}>
             <div style={{ fontSize:22, lineHeight:1 }}>📋</div>
             <div>
-              <div style={{ fontFamily:'var(--fd)', fontSize:14, fontWeight:800, color:'#f59e0b', marginBottom:4 }}>New exercises this session</div>
+              <div style={{ fontFamily:'var(--fd)', fontSize:14, fontWeight:800, color:'var(--pink)', marginBottom:4 }}>New exercises this session</div>
               <div style={{ fontSize:12, color:'var(--text2)', lineHeight:1.5 }}>
                 {workout.exercises.filter(ex => ex.sessionAdded).map(ex => ex.name).join(', ')} — no icon yet. Add them permanently in Settings → Custom Exercises.
               </div>
@@ -2575,7 +2809,7 @@ function OnboardingScreen({ onDone }) {
       icon: (
         <svg width="30" height="30" viewBox="0 0 30 30" fill="none" stroke="var(--pink)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
           <path d="M3 15C3 15 8 6 15 6s12 9 12 9-5 9-12 9S3 15 3 15z"/>
-          <circle cx="15" cy="15" r="4" fill="rgba(255,45,120,.2)" stroke="var(--pink)" strokeWidth="1.8"/>
+          <circle cx="15" cy="15" r="4" fill="rgba(200,242,53,.2)" stroke="var(--pink)" strokeWidth="1.8"/>
           <circle cx="15" cy="15" r="1.5" fill="var(--pink)" stroke="none"/>
         </svg>
       ),
@@ -2585,7 +2819,7 @@ function OnboardingScreen({ onDone }) {
     {
       icon: (
         <svg width="30" height="30" viewBox="0 0 30 30" fill="none" stroke="var(--pink)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-          <rect x="3" y="3" width="10" height="10" rx="2.5" fill="rgba(255,45,120,.3)" stroke="var(--pink)"/>
+          <rect x="3" y="3" width="10" height="10" rx="2.5" fill="rgba(200,242,53,.3)" stroke="var(--pink)"/>
           <rect x="17" y="3" width="10" height="10" rx="2.5" fill="rgba(255,255,255,.04)" stroke="rgba(255,255,255,.2)"/>
           <rect x="3" y="17" width="10" height="10" rx="2.5" fill="rgba(255,255,255,.04)" stroke="rgba(255,255,255,.2)"/>
           <rect x="17" y="17" width="10" height="10" rx="2.5" fill="rgba(255,255,255,.04)" stroke="rgba(255,255,255,.2)"/>
@@ -2598,8 +2832,8 @@ function OnboardingScreen({ onDone }) {
       icon: (
         <svg width="30" height="30" viewBox="0 0 30 30" fill="none" stroke="var(--pink)" strokeWidth="1.8" strokeLinecap="round">
           <line x1="9" y1="15" x2="21" y2="15"/>
-          <rect x="4" y="11" width="5" height="8" rx="2" fill="rgba(255,45,120,.2)" stroke="var(--pink)" strokeWidth="1.8"/>
-          <rect x="21" y="11" width="5" height="8" rx="2" fill="rgba(255,45,120,.2)" stroke="var(--pink)" strokeWidth="1.8"/>
+          <rect x="4" y="11" width="5" height="8" rx="2" fill="rgba(200,242,53,.2)" stroke="var(--pink)" strokeWidth="1.8"/>
+          <rect x="21" y="11" width="5" height="8" rx="2" fill="rgba(200,242,53,.2)" stroke="var(--pink)" strokeWidth="1.8"/>
           <rect x="6" y="13" width="2" height="4" rx="1" fill="var(--pink)" stroke="none"/>
           <rect x="22" y="13" width="2" height="4" rx="1" fill="var(--pink)" stroke="none"/>
         </svg>
@@ -2611,8 +2845,8 @@ function OnboardingScreen({ onDone }) {
       icon: (
         <svg width="30" height="30" viewBox="0 0 30 30" fill="none" stroke="var(--pink)" strokeWidth="1.8" strokeLinecap="round">
           <line x1="3" y1="26" x2="27" y2="26" strokeWidth="1.4"/>
-          <rect x="4" y="19" width="5" height="7" rx="1.5" fill="rgba(255,45,120,.25)" stroke="var(--pink)"/>
-          <rect x="12.5" y="13" width="5" height="13" rx="1.5" fill="rgba(255,45,120,.45)" stroke="var(--pink)"/>
+          <rect x="4" y="19" width="5" height="7" rx="1.5" fill="rgba(200,242,53,.25)" stroke="var(--pink)"/>
+          <rect x="12.5" y="13" width="5" height="13" rx="1.5" fill="rgba(200,242,53,.45)" stroke="var(--pink)"/>
           <rect x="21" y="7" width="5" height="19" rx="1.5" fill="var(--pink)" stroke="var(--pink)"/>
         </svg>
       ),
@@ -2806,6 +3040,9 @@ function App() {
       {!splash && screen === 'summary' && summary && (
         <SummaryScreen workout={summary.workout} baseHistory={summary.baseHistory} onDone={() => { setSummary(null); setScreen('home'); }} weightUnit={weightUnit} />
       )}
+
+      {/* ── Persistent bottom nav (hidden on splash + profile-setup) ── */}
+      {!splash && <BottomNav screen={screen} setScreen={setScreen} />}
     </>
   );
 }
