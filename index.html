@@ -493,7 +493,7 @@
     .pr-glow { color: #ffd700; font-size: 13px; font-weight: 700; }
 
     .log-body {
-      flex: 1; overflow-y: auto; padding: 16px 18px calc(164px + env(safe-area-inset-bottom, 0px));
+      flex: 1; overflow-y: auto; padding: 16px 18px calc(200px + env(safe-area-inset-bottom, 0px));
       display: flex; flex-direction: column; gap: 14px;
       -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain;
     }
@@ -1599,7 +1599,7 @@ function WorkoutCalendar({ history, current }) {
 function BottomNav({ screen, setScreen }) {
   const homeScreens = ['home','group-select','group-detail','log','summary'];
   const tab = homeScreens.includes(screen) ? 'home' : screen === 'history' ? 'history' : 'settings';
-  const hiddenScreens = ['splash','profile-setup'];
+  const hiddenScreens = ['splash','profile-setup','log','summary'];
   if (hiddenScreens.includes(screen)) return null;
 
   return (
