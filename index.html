@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -631,7 +631,7 @@
     ══════════════════════════════════ */
     .splash {
       position: fixed; inset: 0;
-      background: url('./welcome.jpg') center/cover no-repeat #0a1020;
+      background: url('./assets/welcome.jpg') center/cover no-repeat #0a1020;
       display: flex; flex-direction: column;
       align-items: center;
       z-index: 9999;
@@ -1041,7 +1041,18 @@ function DailyQuoteCard() {
 /* ═══════════════════════════════════════
    EXERCISE ICONS
 ═══════════════════════════════════════ */
-function ExIcon({ id, size = 28, color = '#242d16' }) {
+function ExIcon({ id, size = 28, color = '#242d16', img = null }) {
+  if (img) {
+    return (
+      <img
+        src={`./assets/exercises/${encodeURIComponent(img)}`}
+        width={size}
+        height={size}
+        style={{ display:'block', flexShrink:0, objectFit:'contain' }}
+        alt=""
+      />
+    );
+  }
   const icons = {
     bench_press: (<>
       <rect x="8" y="38" width="48" height="5" rx="2"/>
@@ -1383,36 +1394,92 @@ function ExIcon({ id, size = 28, color = '#242d16' }) {
    DATA
 ═══════════════════════════════════════ */
 const DB = [
-  { group:'chest',     gl:'Chest',     id:'bench_press',     name:'Bench Press' },
-  { group:'chest',     gl:'Chest',     id:'incline_press',   name:'Incline Press' },
-  { group:'chest',     gl:'Chest',     id:'chest_fly',       name:'Chest Fly' },
-  { group:'chest',     gl:'Chest',     id:'cable_crossover', name:'Cable Crossover' },
-  { group:'chest',     gl:'Chest',     id:'pushup',          name:'Push-Up' },
-  { group:'back',      gl:'Back',      id:'deadlift',        name:'Deadlift' },
-  { group:'back',      gl:'Back',      id:'pullup',          name:'Pull-Up' },
-  { group:'back',      gl:'Back',      id:'barbell_row',     name:'Barbell Row' },
-  { group:'back',      gl:'Back',      id:'lat_pulldown',    name:'Lat Pulldown' },
-  { group:'back',      gl:'Back',      id:'cable_row',       name:'Cable Row' },
-  { group:'shoulders', gl:'Shoulders', id:'ohp',             name:'Overhead Press' },
-  { group:'shoulders', gl:'Shoulders', id:'lateral_raise',   name:'Lateral Raise' },
-  { group:'shoulders', gl:'Shoulders', id:'front_raise',     name:'Front Raise' },
-  { group:'shoulders', gl:'Shoulders', id:'face_pull',       name:'Face Pull' },
-  { group:'shoulders', gl:'Shoulders', id:'arnold_press',    name:'Arnold Press' },
-  { group:'legs',      gl:'Legs',      id:'squat',           name:'Squat' },
-  { group:'legs',      gl:'Legs',      id:'leg_press',       name:'Leg Press' },
-  { group:'legs',      gl:'Legs',      id:'lunges',          name:'Lunges' },
-  { group:'legs',      gl:'Legs',      id:'leg_curl',        name:'Leg Curl' },
-  { group:'legs',      gl:'Legs',      id:'calf_raise',      name:'Calf Raise' },
-  { group:'arms',      gl:'Arms',      id:'bicep_curl',      name:'Bicep Curl' },
-  { group:'arms',      gl:'Arms',      id:'hammer_curl',     name:'Hammer Curl' },
-  { group:'arms',      gl:'Arms',      id:'tricep_pushdown', name:'Tricep Pushdown' },
-  { group:'arms',      gl:'Arms',      id:'skull_crusher',   name:'Skull Crusher' },
-  { group:'arms',      gl:'Arms',      id:'preacher_curl',   name:'Preacher Curl' },
-  { group:'core',      gl:'Core',      id:'plank',           name:'Plank' },
-  { group:'core',      gl:'Core',      id:'crunches',        name:'Crunches' },
-  { group:'core',      gl:'Core',      id:'leg_raise',       name:'Leg Raise' },
-  { group:'core',      gl:'Core',      id:'russian_twist',   name:'Russian Twist' },
-  { group:'core',      gl:'Core',      id:'ab_wheel',        name:'Ab Wheel' },
+  // ── CHEST ──────────────────────────────────────────────────────────
+  { group:'chest', gl:'Chest', id:'barbell_bench_press',   name:'Barbell Bench Press',         img:'Barbell Bench Press.png' },
+  { group:'chest', gl:'Chest', id:'cable_crossover',       name:'Cable Crossover',              img:'Cable Crossover.png' },
+  { group:'chest', gl:'Chest', id:'chest_dip',             name:'Chest Dip',                    img:'Chest Dip.png' },
+  { group:'chest', gl:'Chest', id:'decline_bench_press',   name:'Decline Barbell Bench Press',  img:'Decline Barbell Bench Press.png' },
+  { group:'chest', gl:'Chest', id:'db_bench_press',        name:'Dumbbell Bench Press',         img:'Dumbbell Bench Press.png' },
+  { group:'chest', gl:'Chest', id:'db_chest_fly',          name:'Dumbbell Chest Fly',           img:'Dumbbell Chest Fly.png' },
+  { group:'chest', gl:'Chest', id:'db_pullover',           name:'Dumbbell Pullover',            img:'Dumbbell Pullover.png' },
+  { group:'chest', gl:'Chest', id:'incline_barbell_press', name:'Incline Barbell Bench Press',  img:'Incline Barbell Bench Press.png' },
+  { group:'chest', gl:'Chest', id:'incline_cable_fly',     name:'Incline Cable Fly',            img:'Incline Cable Fly.png' },
+  { group:'chest', gl:'Chest', id:'incline_db_press',      name:'Incline Dumbbell Press',       img:'Incline Dumbbell Press.png' },
+  { group:'chest', gl:'Chest', id:'landmine_press',        name:'Landmine Press',               img:'Landmine Press.png' },
+  { group:'chest', gl:'Chest', id:'machine_chest_press',   name:'Machine Chest Press',          img:'Machine Chest Press.png' },
+  { group:'chest', gl:'Chest', id:'pec_deck',              name:'Pec Deck Machine',             img:'Pec Deck Machine.png' },
+  { group:'chest', gl:'Chest', id:'pushup',                name:'Push-Up',                      img:'Push-Up.png' },
+  { group:'chest', gl:'Chest', id:'smith_bench_press',     name:'Smith Machine Bench Press',    img:'Smith Machine Bench Press.png' },
+  // ── BACK ───────────────────────────────────────────────────────────
+  { group:'back', gl:'Back', id:'barbell_row',           name:'Barbell Row',               img:'Barbell Row.png' },
+  { group:'back', gl:'Back', id:'chin_up',               name:'Chin-Up',                   img:'Chin-Up.png' },
+  { group:'back', gl:'Back', id:'deadlift',              name:'Deadlift',                  img:'Deadlift.png' },
+  { group:'back', gl:'Back', id:'db_single_arm_row',     name:'Dumbbell Single Arm Row',   img:'Dumbbell Single Arm Row.png' },
+  { group:'back', gl:'Back', id:'face_pull_back',        name:'Face Pull',                 img:'Face Pull.png' },
+  { group:'back', gl:'Back', id:'inverted_row',          name:'Inverted Row',              img:'Inverted Row.png' },
+  { group:'back', gl:'Back', id:'lat_pulldown',          name:'Lat Pulldown',              img:'Lat Pulldown.png' },
+  { group:'back', gl:'Back', id:'meadows_row',           name:'Meadows Row',               img:'Meadows Row.png' },
+  { group:'back', gl:'Back', id:'pullup',                name:'Pull-Up',                   img:'Pull-Up.png' },
+  { group:'back', gl:'Back', id:'rack_pull',             name:'Rack Pull',                 img:'Rack Pull.png' },
+  { group:'back', gl:'Back', id:'romanian_deadlift',     name:'Romanian Deadlift',         img:'Romanian Deadlift.png' },
+  { group:'back', gl:'Back', id:'seated_cable_row',      name:'Seated Cable Row',          img:'Seated Cable Row.png' },
+  { group:'back', gl:'Back', id:'seated_machine_row',    name:'Seated Machine Row',        img:'Seated Machine Row.png' },
+  { group:'back', gl:'Back', id:'straight_arm_pulldown', name:'Straight Arm Pulldown',     img:'Straight Arm Pulldown.png' },
+  { group:'back', gl:'Back', id:'tbar_row',              name:'T-Bar Row',                 img:'T-Bar Row using a T-bar row machine.png' },
+  // ── SHOULDERS ──────────────────────────────────────────────────────
+  { group:'shoulders', gl:'Shoulders', id:'arnold_press',           name:'Arnold Press',                    img:'Arnold Press.png' },
+  { group:'shoulders', gl:'Shoulders', id:'barbell_ohp',            name:'Barbell Overhead Press',          img:'Barbell Overhead Press.png' },
+  { group:'shoulders', gl:'Shoulders', id:'barbell_shrug',          name:'Barbell Shrug',                   img:'Barbell Shrug.png' },
+  { group:'shoulders', gl:'Shoulders', id:'cable_lateral_raise',    name:'Cable Lateral Raise',             img:'Cable Lateral Raise.png' },
+  { group:'shoulders', gl:'Shoulders', id:'db_front_raise',         name:'Dumbbell Front Raise',            img:'Dumbbell Front Raise.png' },
+  { group:'shoulders', gl:'Shoulders', id:'db_lateral_raise',       name:'Dumbbell Lateral Raise',          img:'Dumbbell Lateral Raise.png' },
+  { group:'shoulders', gl:'Shoulders', id:'db_rear_delt_fly',       name:'Dumbbell Rear Delt Fly',          img:'Dumbbell Rear Delt Fly.png' },
+  { group:'shoulders', gl:'Shoulders', id:'face_pull',              name:'Face Pull',                       img:'Face Pull.png' },
+  { group:'shoulders', gl:'Shoulders', id:'landmine_lateral_raise', name:'Landmine Lateral Raise',          img:'Landmine Lateral Raise.png' },
+  { group:'shoulders', gl:'Shoulders', id:'machine_shoulder_press', name:'Machine Shoulder Press',          img:'Machine Shoulder Press.png' },
+  { group:'shoulders', gl:'Shoulders', id:'plate_front_raise',      name:'Plate Front Raise',               img:'Plate Front Raise.png' },
+  { group:'shoulders', gl:'Shoulders', id:'push_press',             name:'Push Press',                      img:'Push Press.png' },
+  { group:'shoulders', gl:'Shoulders', id:'reverse_pec_deck',       name:'Reverse Pec Deck',                img:'Reverse Pec Deck.png' },
+  { group:'shoulders', gl:'Shoulders', id:'seated_db_ohp',          name:'Seated Dumbbell Overhead Press',  img:'Seated Dumbbell Overhead Press.png' },
+  { group:'shoulders', gl:'Shoulders', id:'upright_row',            name:'Upright Row',                     img:'Upright Row.png' },
+  // ── LEGS ───────────────────────────────────────────────────────────
+  { group:'legs', gl:'Legs', id:'barbell_back_squat',    name:'Barbell Back Squat',    img:'Barbell Back Squat.png' },
+  { group:'legs', gl:'Legs', id:'barbell_lunge',         name:'Barbell Lunge',         img:'Barbell Lunge.png' },
+  { group:'legs', gl:'Legs', id:'bulgarian_split_squat', name:'Bulgarian Split Squat', img:'Bulgarian Split Squat.png' },
+  { group:'legs', gl:'Legs', id:'front_squat',           name:'Front Squat',           img:'Front Squat.png' },
+  { group:'legs', gl:'Legs', id:'goblet_squat',          name:'Goblet Squat',          img:'Goblet Squat.png' },
+  { group:'legs', gl:'Legs', id:'hack_squat',            name:'Hack Squat',            img:'Hack Squat.png' },
+  { group:'legs', gl:'Legs', id:'hip_thrust',            name:'Hip Thrust',            img:'Hip Thrust.png' },
+  { group:'legs', gl:'Legs', id:'leg_extension',         name:'Leg Extension',         img:'Leg Extension.png' },
+  { group:'legs', gl:'Legs', id:'leg_press',             name:'Leg Press',             img:'Leg Press.png' },
+  { group:'legs', gl:'Legs', id:'lying_leg_curl',        name:'Lying Leg Curl',        img:'Lying Leg Curl.png' },
+  { group:'legs', gl:'Legs', id:'rdl_legs',              name:'Romanian Deadlift',     img:'Romanian Deadlift.png' },
+  { group:'legs', gl:'Legs', id:'seated_calf_raise',     name:'Seated Calf Raise',     img:'Seated Calf Raise.png' },
+  { group:'legs', gl:'Legs', id:'seated_leg_curl',       name:'Seated Leg Curl',       img:'Seated Leg Curl.png' },
+  { group:'legs', gl:'Legs', id:'standing_calf_raise',   name:'Standing Calf Raise',   img:'Standing Calf Raise.png' },
+  { group:'legs', gl:'Legs', id:'step_up',               name:'Step Up',               img:'Step Up.png' },
+  // ── ARMS ───────────────────────────────────────────────────────────
+  { group:'arms', gl:'Arms', id:'barbell_bicep_curl',        name:'Barbell Bicep Curl',              img:'Barbell Bicep Curl.png' },
+  { group:'arms', gl:'Arms', id:'cable_overhead_tricep_ext', name:'Cable Overhead Tricep Extension', img:'Cable Overhead Tricep Extension.png' },
+  { group:'arms', gl:'Arms', id:'cable_rope_hammer_curl',    name:'Cable Rope Hammer Curl',          img:'Cable Rope Hammer Curl.png' },
+  { group:'arms', gl:'Arms', id:'cable_tricep_pushdown',     name:'Cable Tricep Pushdown',           img:'Cable Tricep Pushdown.png' },
+  { group:'arms', gl:'Arms', id:'concentration_curl',        name:'Concentration Curl',              img:'Concentration Curl.png' },
+  { group:'arms', gl:'Arms', id:'diamond_pushup',            name:'Diamond Push-Up',                 img:'Diamond Push-Up.png' },
+  { group:'arms', gl:'Arms', id:'db_hammer_curl',            name:'Dumbbell Hammer Curl',            img:'Dumbbell Hammer Curl.png' },
+  { group:'arms', gl:'Arms', id:'ez_bar_curl',               name:'EZ Bar Curl',                     img:'EZ Bar Curl.png' },
+  { group:'arms', gl:'Arms', id:'incline_db_curl',           name:'Incline Dumbbell Curl',           img:'Incline Dumbbell Curl.png' },
+  { group:'arms', gl:'Arms', id:'machine_bicep_curl',        name:'Machine Bicep Curl',              img:'Machine Bicep Curl.png' },
+  { group:'arms', gl:'Arms', id:'overhead_tricep_ext',       name:'Overhead Tricep Extension',       img:'Overhead Tricep Extension.png' },
+  { group:'arms', gl:'Arms', id:'preacher_curl',             name:'Preacher Curl',                   img:'Preacher Curl.png' },
+  { group:'arms', gl:'Arms', id:'skull_crusher',             name:'Skull Crusher',                   img:'Skull Crusher.png' },
+  { group:'arms', gl:'Arms', id:'tricep_dip',                name:'Tricep Dip',                      img:'Tricep Dip.png' },
+  { group:'arms', gl:'Arms', id:'tricep_rope_pushdown',      name:'Tricep Rope Pushdown',            img:'Tricep Rope Pushdown.png' },
+  // ── CORE (no illustrations yet) ────────────────────────────────────
+  { group:'core', gl:'Core', id:'plank',        name:'Plank' },
+  { group:'core', gl:'Core', id:'crunches',     name:'Crunches' },
+  { group:'core', gl:'Core', id:'leg_raise',    name:'Leg Raise' },
+  { group:'core', gl:'Core', id:'russian_twist',name:'Russian Twist' },
+  { group:'core', gl:'Core', id:'ab_wheel',     name:'Ab Wheel' },
 ];
 
 const GROUP_META = {
@@ -1787,7 +1854,7 @@ function SplashScreen({ isFirstTime, onContinue }) {
     <div className={`splash ${fading ? 'fading' : ''}`}>
       <div className="splash-overlay" />
       <div className="splash-content">
-        <img src="./Logo%20resized.png" alt="VibeLift" className="splash-logo" />
+        <img src="./assets/Logo%20resized.png" alt="VibeLift" className="splash-logo" />
         <div className="splash-tagline">Work out, not stress out.</div>
         <div className="splash-verse-wrap">
           <DailyQuoteCard />
@@ -1819,7 +1886,7 @@ function ProfileSetupScreen({ onSave }) {
     <div className="screen">
       <div className="setup-body">
         <div className="setup-hero">
-          <img src="./Logo%20resized.png" alt="VibeLift" className="setup-logo" />
+          <img src="./assets/Logo%20resized.png" alt="VibeLift" className="setup-logo" />
         </div>
         <div>
           <div className="setup-title">What should we call you?</div>
@@ -2077,7 +2144,7 @@ function HistoryScreen({ onBack, history, weightUnit = 'kg' }) {
                     <div key={j} className="hist-ex-row">
                       {ex.sessionAdded
                         ? <div style={{ width:26, height:26, borderRadius:8, background:meta.color+'22', display:'flex', alignItems:'center', justifyContent:'center', fontSize:8, fontWeight:800, color:meta.color, textAlign:'center', lineHeight:1, flexShrink:0 }}>{ex.name.substring(0,3).toUpperCase()}</div>
-                        : <ExIcon id={ex.id} size={26} color={meta.color} />}
+                        : <ExIcon id={ex.id} size={26} color={meta.color} img={ex.img || null} />}
                       <div className="hist-ex-info">
                         <div className="hist-ex-name">{ex.name}</div>
                         <div className="hist-ex-sets">
@@ -2123,7 +2190,7 @@ function GroupSelectScreen({ onBack, onSelectGroup, onFinish, completedIds, allE
               key={grp}
               className="grp-card"
               style={meta.img
-                ? { backgroundImage: `url('./${meta.img}')`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundColor: '#111' }
+                ? { backgroundImage: `url('./assets/${meta.img}')`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundColor: '#111' }
                 : { background: meta.grad }}
               onClick={() => onSelectGroup(grp)}
             >
@@ -2176,7 +2243,7 @@ function GroupDetailScreen({ group, onBack, onPick, onFinish, completedIds, hist
       <div className="group-detail-body">
         <div className="grp-detail-hero">
           <div className="grp-detail-hero-inner" style={meta.img
-            ? { backgroundImage: `url('./${meta.img}')`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundColor: '#111' }
+            ? { backgroundImage: `url('./assets/${meta.img}')`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundColor: '#111' }
             : { background: meta.grad }}>
             <div style={{ position:'absolute', inset:0, background:'linear-gradient(to right, rgba(0,0,0,.72) 0%, rgba(0,0,0,.2) 100%)', zIndex:0 }} />
             <div style={{ position:'relative', zIndex:1 }}>
@@ -2192,7 +2259,7 @@ function GroupDetailScreen({ group, onBack, onPick, onFinish, completedIds, hist
           return (
             <div key={ex.id} className={`ex-row-card ${done ? 'done-row' : ''}`} onClick={() => onPick(ex)}>
               <div className="ex-row-icon">
-                <ExIcon id={ex.id} size={28} color={done ? '#0daa74' : meta.color} />
+                <ExIcon id={ex.id} size={28} color={done ? '#0daa74' : meta.color} img={ex.img || null} />
               </div>
               <div className="ex-row-info">
                 <div className="ex-row-name">{ex.name}</div>
@@ -2310,12 +2377,12 @@ function LogScreen({ exercise, onBack, onComplete, history, weightUnit = 'kg' })
   return (
     <div className="screen">
       <div className="log-hero" style={meta.img
-        ? { backgroundImage: `url('./${meta.img}')`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundColor: '#111' }
+        ? { backgroundImage: `url('./assets/${meta.img}')`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundColor: '#111' }
         : { background: meta.grad }}>
         {meta.img && <div style={{ position:'absolute', inset:0, background:'rgba(0,0,0,0.42)', zIndex:0 }} />}
         <button className="log-hero-back" onClick={onBack}>←</button>
-        <div className="log-hero-bg-icon">
-          <ExIcon id={exercise.id} size={160} color="white" />
+        <div className="log-hero-bg-icon" style={exercise.img ? { opacity:.8, transform:'none', right:'-5px', top:'5px' } : {}}>
+          <ExIcon id={exercise.id} size={exercise.img ? 200 : 160} color="white" img={exercise.img || null} />
         </div>
         <div className="log-hero-content">
           <div className="log-hero-eyebrow">{exercise.gl}</div>
@@ -2603,7 +2670,7 @@ function SummaryScreen({ workout, baseHistory, onDone, weightUnit = 'kg' }) {
               <div className="sum-ex-hdr">
                 {ex.sessionAdded
                   ? <div style={{ width:30, height:30, borderRadius:8, background:meta.color+'22', display:'flex', alignItems:'center', justifyContent:'center', fontSize:9, fontWeight:800, color:meta.color, textAlign:'center', lineHeight:1, flexShrink:0 }}>{ex.name.substring(0,3).toUpperCase()}</div>
-                  : <ExIcon id={ex.id} size={30} color={meta.color} />}
+                  : <ExIcon id={ex.id} size={30} color={meta.color} img={ex.img || null} />}
                 <div>
                   <div className="sum-ex-name">
                     {ex.name}
