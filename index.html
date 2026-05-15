@@ -2381,9 +2381,11 @@ function LogScreen({ exercise, onBack, onComplete, history, weightUnit = 'kg' })
         : { background: meta.grad }}>
         {meta.img && <div style={{ position:'absolute', inset:0, background:'rgba(0,0,0,0.42)', zIndex:0 }} />}
         <button className="log-hero-back" onClick={onBack}>←</button>
-        <div className="log-hero-bg-icon" style={exercise.img ? { opacity:.8, transform:'none', right:'-5px', top:'5px' } : {}}>
-          <ExIcon id={exercise.id} size={exercise.img ? 200 : 160} color="white" img={exercise.img || null} />
-        </div>
+        {!exercise.img && (
+          <div className="log-hero-bg-icon">
+            <ExIcon id={exercise.id} size={160} color="white" />
+          </div>
+        )}
         <div className="log-hero-content">
           <div className="log-hero-eyebrow">{exercise.gl}</div>
           <div className="log-hero-name">{exercise.name}</div>
@@ -2393,6 +2395,12 @@ function LogScreen({ exercise, onBack, onComplete, history, weightUnit = 'kg' })
           </div>
         </div>
       </div>
+
+      {exercise.img && (
+        <div style={{ display:'flex', justifyContent:'center', alignItems:'center', padding:'12px 0 4px', background:'var(--bg)' }}>
+          <ExIcon id={exercise.id} size={120} color="white" img={exercise.img} />
+        </div>
+      )}
 
       <div className="log-body">
         {/* Set progress dots — Warmup dot + working set dots */}
