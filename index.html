@@ -633,8 +633,12 @@
     ══════════════════════════════════ */
     /* ─── SPLASH ROOT ─── */
     .sp-root {
-      position: fixed; inset: 0; z-index: 9999;
+      position: fixed; top: 0; bottom: 0;
+      left: 50%; transform: translateX(-50%);
+      width: 100%; max-width: 430px;
+      z-index: 9999;
       background: #0a0d04;
+      overflow: hidden;
       transition: opacity .5s ease;
     }
     .sp-root.sp-exit { opacity: 0; pointer-events: none; }
@@ -671,18 +675,6 @@
       to   { opacity: 1; transform: scale(1)   translateY(0); }
     }
 
-    .sp-wordmark {
-      position: relative; z-index: 1;
-      font-family: var(--fd); font-size: 13px; font-weight: 800;
-      letter-spacing: 5px; text-transform: uppercase;
-      color: var(--pink); margin-top: 18px;
-      animation: sp-tag-in .55s ease both;
-      animation-delay: .62s;
-    }
-    @keyframes sp-tag-in {
-      from { opacity: 0; transform: translateY(7px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
 
     /* ─── PHASE 2: photo + quote ─── */
     .sp-p2 {
@@ -1918,7 +1910,6 @@ function SplashScreen({ isFirstTime, onContinue }) {
       <div className={`sp-p1 ${p1Out ? 'sp-p1-out' : ''}`}>
         <div className="sp-logo-glow" />
         <img src="./assets/Logo%20resized.png" alt="VibeLift" className="sp-logo" />
-        <div className="sp-wordmark">VibeLift</div>
       </div>
 
       {/* Phase 2 — photo + quote */}
