@@ -2425,6 +2425,11 @@ function LogScreen({ exercise, onBack, onComplete, history, weightUnit = 'kg' })
       if (ex && ex.sets.length > 0) { setWeight(String(ex.sets[0].weight)); setReps(String(ex.sets[0].reps)); break; }
     }
     if (exercise.name && exercise.name.toLowerCase().includes('ez bar')) setBarType('ez');
+    // Auto-select mode so the chooser never interrupts — user can still switch via bottom toggle
+    if (exercise.eq) {
+      const auto = exercise.eq === 'barbell' ? 'barbell' : exercise.eq === 'bodyweight' ? 'bodyweight' : 'free';
+      setWeightType(auto);
+    }
   }, []);
 
   // Restore in-progress log session if user left the app mid-exercise
@@ -3098,6 +3103,7 @@ function App() {
   function backFromGroupSelect() {
     const hasWork = current && current.exercises.length > 0;
     if (hasWork) { setBreakModal(true); return; }
+    if (current) setCurrent(null); // Clear empty session — don't leave "Resume Workout" falsely active
     setScreen('home');
   }
 
