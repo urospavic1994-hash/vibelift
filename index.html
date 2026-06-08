@@ -248,9 +248,9 @@
     .cal-day-lbl { text-align: center; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--text2); padding-bottom: 6px; }
     .cal-day {
       aspect-ratio: 1; border-radius: 8px;
-      display: flex; align-items: center; justify-content: center;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
       font-size: 12px; font-weight: 600; color: var(--text2);
-      cursor: default; transition: background .15s;
+      cursor: default; transition: background .15s; position: relative;
     }
     .cal-day.has-workout { background: rgba(200,242,53,.15); color: var(--pink); cursor: pointer; font-weight: 700; }
     .cal-day.has-workout:active { background: rgba(200,242,53,.28); }
@@ -259,6 +259,8 @@
     .cal-day.future { opacity: .3; }
     .cal-day.selected { background: var(--pink) !important; color: #121508 !important; box-shadow: 0 2px 12px rgba(200,242,53,.40); }
     .cal-day.in-progress.selected { background: var(--pink) !important; color: #121508 !important; }
+    .cal-day-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--pink); flex-shrink: 0; }
+    .cal-day.selected .cal-day-dot { background: #121508; }
     .cal-expand {
       grid-column: 1 / -1;
       background: var(--sfx); border-radius: 12px;
@@ -1629,7 +1631,7 @@ function WorkoutCalendar({ history, current }) {
           else if (isDone) cls += ' has-workout';
           if (isToday) cls += ' today-ring';
           if (isSelected) cls += ' selected';
-          return <div key={iso} className={cls} onClick={() => handleDayTap(iso)}>{day}</div>;
+          return <div key={iso} className={cls} onClick={() => handleDayTap(iso)}><span>{day}</span>{(isDone || isActive) && <span className="cal-day-dot" />}</div>;
         })}
       </div>
       {expanded && (
@@ -2068,6 +2070,21 @@ function SettingsScreen({ onBack, profile, onSaveProfile, theme, onToggleTheme, 
           <div className="s-arrow">›</div>
         </div>
 
+        {(() => {
+          try {
+            const raw = localStorage.getItem('fittrack_v1') || '[]';
+            const count = JSON.parse(raw).length;
+            const kb = (raw.length / 1024).toFixed(1);
+            const totalKb = (() => { let t = 0; for (let k of Object.keys(localStorage)) { if (k.startsWith('fittrack')) t += (localStorage.getItem(k) || '').length; } return (t/1024).toFixed(1); })();
+            return (
+              <div style={{ textAlign:'center', padding:'18px 0 4px', fontSize:11, color:'rgba(255,255,255,.28)', fontWeight:600, letterSpacing:'.5px' }}>
+                {count} workouts logged · {totalKb} KB stored<br/>
+                <span style={{ fontSize:10, opacity:.7 }}>localStorage holds ~5 MB · you have room for years</span>
+              </div>
+            );
+          } catch { return null; }
+        })()}
+
       </div>
     </div>
   );
@@ -2335,10 +2352,11 @@ function LogScreen({ exercise, onBack, onComplete, history, weightUnit = 'kg' })
   const [weightType, setWeightType] = useState(null); // null | 'free' | 'barbell'
   const [platesPerSide, setPlatesPerSide] = useState([]);
   const [addBothSides, setAddBothSides] = useState(true);
+  const [barType, setBarType] = useState('straight'); // 'straight' | 'ez'
 
   const unit = weightUnit || 'kg';
   const plateData = unit === 'lb' ? PLATE_DATA_LB : PLATE_DATA_KG;
-  const barWeight = unit === 'lb' ? 44 : 20;
+  const barWeight = barType === 'ez' ? (unit === 'lb' ? 22 : 10) : (unit === 'lb' ? 44 : 20);
   const totalBarbellWeight = barWeight + platesPerSide.reduce((a,b)=>a+b,0) * (addBothSides ? 2 : 1);
 
   const pb    = useMemo(() => getPersonalBest(history, exercise.id), [history, exercise.id]);
@@ -2350,7 +2368,36 @@ function LogScreen({ exercise, onBack, onComplete, history, weightUnit = 'kg' })
       const ex = history[i].exercises.find(e => e.id === exercise.id);
       if (ex && ex.sets.length > 0) { setWeight(String(ex.sets[0].weight)); setReps(String(ex.sets[0].reps)); break; }
     }
+    if (exercise.name && exercise.name.toLowerCase().includes('ez bar')) setBarType('ez');
   }, []);
+
+  // Restore in-progress log session if user left the app mid-exercise
+  useEffect(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem('fittrack_log_state') || 'null');
+      if (saved && saved.exerciseId === exercise.id) {
+        setTotalSets(saved.totalSets);
+        setWarmup(saved.warmup);
+        setCurrentSet(saved.currentSet);
+        setDoneSets(saved.doneSets);
+        setWeight(saved.weight);
+        setReps(saved.reps);
+        setWeightType(saved.weightType);
+        setPlatesPerSide(saved.platesPerSide);
+        setAddBothSides(saved.addBothSides);
+        setBarType(saved.barType || 'straight');
+        setAllDone(saved.allDone || false);
+      }
+    } catch {}
+  }, []);
+
+  // Save log state to localStorage on every state change so we can resume if app is suspended
+  useEffect(() => {
+    localStorage.setItem('fittrack_log_state', JSON.stringify({
+      exerciseId: exercise.id, totalSets, warmup, currentSet, doneSets,
+      weight, reps, weightType, platesPerSide, addBothSides, barType, allDone
+    }));
+  }, [totalSets, warmup, currentSet, doneSets, weight, reps, weightType, platesPerSide, addBothSides, barType, allDone]);
 
   const maxLogged   = doneSets.length ? Math.max(...doneSets.map(s => s.weight)) : 0;
   const isNewPR     = maxLogged > pb && pb > 0;
@@ -2384,7 +2431,8 @@ function LogScreen({ exercise, onBack, onComplete, history, weightUnit = 'kg' })
     }
   }
 
-  function finish() { onComplete({ ...exercise, sets: doneSets }); }
+  function finish() { localStorage.removeItem('fittrack_log_state'); onComplete({ ...exercise, sets: doneSets }); }
+  function handleBack() { localStorage.removeItem('fittrack_log_state'); onBack(); }
 
   return (
     <div className="screen">
@@ -2392,7 +2440,7 @@ function LogScreen({ exercise, onBack, onComplete, history, weightUnit = 'kg' })
         ? { backgroundImage: `url('./assets/${meta.img}')`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundColor: '#111' }
         : { background: meta.grad }}>
         {meta.img && <div style={{ position:'absolute', inset:0, background:'rgba(0,0,0,0.42)', zIndex:0 }} />}
-        <button className="log-hero-back" onClick={onBack}>←</button>
+        <button className="log-hero-back" onClick={handleBack}>←</button>
         {!exercise.img && (
           <div className="log-hero-bg-icon">
             <ExIcon id={exercise.id} size={160} color="white" />
@@ -2509,7 +2557,7 @@ function LogScreen({ exercise, onBack, onComplete, history, weightUnit = 'kg' })
             <div className="input-row">
               <div className="inp-group">
                 <label>Weight ({unit})</label>
-                <input type="number" inputMode="numeric" pattern="[0-9]*" value={weight} placeholder="0" min="0" step={unit === 'lb' ? 5 : 2.5} onChange={e => setWeight(e.target.value)} />
+                <input type="number" inputMode="decimal" pattern="[0-9.]*" value={weight} placeholder="0" min="0" step="0.5" onChange={e => setWeight(e.target.value)} />
               </div>
               <div className="inp-group">
                 <label>Reps</label>
@@ -2573,6 +2621,12 @@ function LogScreen({ exercise, onBack, onComplete, history, weightUnit = 'kg' })
               })}
               {/* Right end cap */}
               <div style={{ width:24, height:18, background:'linear-gradient(to bottom,#c8c8c8 0%,#787878 45%,#a8a8a8 100%)', borderRadius:'0 5px 5px 0', flexShrink:0, boxShadow:'2px 3px 6px rgba(0,0,0,.5)' }} />
+            </div>
+
+            {/* Bar type toggle — Straight vs EZ */}
+            <div style={{ display:'flex', background:'rgba(255,255,255,.07)', borderRadius:12, padding:4 }}>
+              <button onClick={() => setBarType('straight')} style={{ flex:1, padding:'10px', borderRadius:9, border:'none', background:barType==='straight'?'rgba(255,255,255,.16)':'transparent', fontFamily:'var(--fd)', fontSize:13, fontWeight:700, color:barType==='straight'?'white':'rgba(255,255,255,.38)', cursor:'pointer', transition:'background .15s, color .15s' }}>Straight Bar</button>
+              <button onClick={() => setBarType('ez')} style={{ flex:1, padding:'10px', borderRadius:9, border:'none', background:barType==='ez'?'rgba(200,242,53,.22)':'transparent', fontFamily:'var(--fd)', fontSize:13, fontWeight:700, color:barType==='ez'?'var(--pink)':'rgba(255,255,255,.38)', cursor:'pointer', transition:'background .15s, color .15s' }}>EZ Bar</button>
             </div>
 
             {/* Both sides / per side — iOS segmented control */}
