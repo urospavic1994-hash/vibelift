@@ -631,47 +631,98 @@
     /* ══════════════════════════════════
        SPLASH SCREEN
     ══════════════════════════════════ */
-    .splash {
-      position: fixed; inset: 0;
-      background: url('./assets/welcome.jpg') center/cover no-repeat #0a1020;
-      display: flex; flex-direction: column;
-      align-items: center;
-      z-index: 9999;
+    /* ─── SPLASH ROOT ─── */
+    .sp-root {
+      position: fixed; inset: 0; z-index: 9999;
+      background: #0a0d04;
+      transition: opacity .5s ease;
     }
-    .splash-overlay {
+    .sp-root.sp-exit { opacity: 0; pointer-events: none; }
+
+    /* ─── PHASE 1: dark + logo ─── */
+    .sp-p1 {
       position: absolute; inset: 0;
-      background: linear-gradient(to bottom, rgba(0,0,0,.30) 0%, rgba(0,0,0,.18) 35%, rgba(0,0,0,.22) 65%, rgba(0,0,0,.48) 100%);
-    }
-    .splash-content {
-      position: absolute;
-      top: 0; bottom: 0;
-      left: 50%; transform: translateX(-50%);
-      width: 100%; max-width: 430px;
-      z-index: 1;
       display: flex; flex-direction: column;
-      align-items: center;
-      padding: 0 28px;
-      padding-top: calc(env(safe-area-inset-top, 0px) + 60px);
-      padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 44px);
+      align-items: center; justify-content: center;
+      z-index: 2;
+      transition: opacity .35s ease;
     }
-    .splash-logo {
-      max-width: 190px; width: 100%;
-      display: block; margin: 0 auto 0;
-      border-radius: 16px;
+    .sp-p1.sp-p1-out { opacity: 0; pointer-events: none; }
+
+    .sp-logo-glow {
+      position: absolute;
+      width: 320px; height: 320px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(200,242,53,.16) 0%, transparent 68%);
+      animation: sp-glow-pulse 2.4s ease-in-out infinite alternate;
     }
-    .splash-tagline {
-      font-size: 16px; color: rgba(255,255,255,.80);
-      margin-top: 12px; font-weight: 500; letter-spacing: .3px;
-      text-shadow: 0 1px 10px rgba(0,0,0,.7);
-      text-align: center;
+    @keyframes sp-glow-pulse {
+      from { transform: scale(.88); opacity: .6; }
+      to   { transform: scale(1.08); opacity: 1; }
     }
-    .splash-verse-wrap {
-      flex: 1; display: flex; align-items: center;
-      width: 100%; padding: 0;
+
+    .sp-logo {
+      position: relative; z-index: 1;
+      width: 180px; border-radius: 20px;
+      animation: sp-logo-in .7s cubic-bezier(.16,1,.3,1) both;
+      animation-delay: .12s;
     }
-    .splash-btn-wrap { width: 100%; }
+    @keyframes sp-logo-in {
+      from { opacity: 0; transform: scale(.75) translateY(12px); }
+      to   { opacity: 1; transform: scale(1)   translateY(0); }
+    }
+
+    .sp-wordmark {
+      position: relative; z-index: 1;
+      font-family: var(--fd); font-size: 13px; font-weight: 800;
+      letter-spacing: 5px; text-transform: uppercase;
+      color: var(--pink); margin-top: 18px;
+      animation: sp-tag-in .55s ease both;
+      animation-delay: .62s;
+    }
+    @keyframes sp-tag-in {
+      from { opacity: 0; transform: translateY(7px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── PHASE 2: photo + quote ─── */
+    .sp-p2 {
+      position: absolute; inset: 0;
+      background: url('./assets/welcome.jpg') center/cover no-repeat #0a0d04;
+      display: flex; flex-direction: column;
+      z-index: 1;
+      opacity: 0;
+      transition: opacity .55s ease;
+    }
+    .sp-p2.sp-p2-in { opacity: 1; }
+
+    .sp-img-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to bottom, rgba(0,0,0,.22) 0%, rgba(0,0,0,.08) 45%, rgba(0,0,0,.60) 100%);
+    }
+
+    .sp-p2-content {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 0 24px calc(env(safe-area-inset-bottom,0px) + 52px);
+      z-index: 1;
+    }
+    .sp-p2-in .sp-p2-content {
+      animation: sp-content-up .55s cubic-bezier(.16,1,.3,1) both;
+      animation-delay: .28s;
+    }
+    @keyframes sp-content-up {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .sp-p2-content .quote-card {
+      background: rgba(0,0,0,.22);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      border-color: rgba(255,255,255,.14);
+    }
+    .sp-p2-content .quote-text { color: rgba(255,255,255,.88); text-shadow: 0 1px 6px rgba(0,0,0,.5); }
+    .sp-p2-content .quote-ref  { color: rgba(255,255,255,.5); }
+
     .splash-btn {
-      width: 100%;
+      width: 100%; margin-top: 14px;
       padding: 18px; border-radius: 14px; border: none;
       background: linear-gradient(135deg, var(--pink) 0%, var(--pink2) 100%);
       color: #121508; font-family: var(--fd);
@@ -681,17 +732,20 @@
       transition: transform .1s;
     }
     .splash-btn:active { transform: scale(.97); }
-    .splash-verse-wrap .quote-card {
-      background: rgba(0,0,0,.18);
-      backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
-      border-color: rgba(255,255,255,.15);
+
+    /* ─── DOTS ─── */
+    .sp-dots {
+      position: absolute; bottom: calc(env(safe-area-inset-bottom,0px) + 18px);
+      left: 50%; transform: translateX(-50%);
+      display: flex; gap: 7px; z-index: 10;
     }
-    .splash-verse-wrap .quote-text { color: rgba(255,255,255,.88); text-shadow: 0 1px 6px rgba(0,0,0,.5); }
-    .splash-verse-wrap .quote-ref  { color: rgba(255,255,255,.55); }
-    @keyframes splashFadeOut {
-      to { opacity: 0; pointer-events: none; }
+    .sp-dot {
+      height: 6px; border-radius: 3px;
+      background: rgba(255,255,255,.28);
+      transition: width .35s cubic-bezier(.4,0,.2,1), background .35s;
+      width: 6px;
     }
-    .splash.fading { animation: splashFadeOut .4s ease forwards; }
+    .sp-dot.sp-dot-active { width: 22px; background: var(--pink); }
 
     /* ══════════════════════════════════
        ONBOARDING TOUR
@@ -1839,38 +1893,49 @@ function HomeScreen({ onStart, onViewHistory, onOpenSettings, history, hasActive
    SPLASH SCREEN
 ═══════════════════════════════════════ */
 function SplashScreen({ isFirstTime, onContinue }) {
-  const [fading, setFading] = useState(false);
+  const [phase, setPhase]     = useState(1);
+  const [p1Out, setP1Out]     = useState(false);
+  const [p2In,  setP2In]      = useState(false);
+  const [exiting, setExiting] = useState(false);
 
   useEffect(() => {
+    const t1 = setTimeout(() => setP1Out(true), 1300);
+    const t2 = setTimeout(() => { setP2In(true); setPhase(2); }, 1620);
+    let t3, t4;
     if (!isFirstTime) {
-      const t1 = setTimeout(() => setFading(true), 2600);
-      const t2 = setTimeout(onContinue, 3000);
-      return () => { clearTimeout(t1); clearTimeout(t2); };
+      t3 = setTimeout(() => setExiting(true), 3300);
+      t4 = setTimeout(onContinue, 3800);
     }
+    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4); };
   }, []);
 
-  function handleBtn() {
-    setFading(true);
-    setTimeout(onContinue, 400);
-  }
+  function handleBtn() { setExiting(true); setTimeout(onContinue, 500); }
 
   return (
-    <div className={`splash ${fading ? 'fading' : ''}`}>
-      <div className="splash-overlay" />
-      <div className="splash-content">
-        <img src="./assets/Logo%20resized.png" alt="VibeLift" className="splash-logo" />
-        <div className="splash-tagline">Work out, not stress out.</div>
-        <div className="splash-verse-wrap">
-          <DailyQuoteCard />
-        </div>
-        {isFirstTime ? (
-          <div className="splash-btn-wrap">
-            <button className="splash-btn" onClick={handleBtn}>Get Started →</button>
-          </div>
-        ) : (
-          <div style={{ height: 44 }} />
-        )}
+    <div className={`sp-root ${exiting ? 'sp-exit' : ''}`}>
+
+      {/* Phase 1 — dark + logo */}
+      <div className={`sp-p1 ${p1Out ? 'sp-p1-out' : ''}`}>
+        <div className="sp-logo-glow" />
+        <img src="./assets/Logo%20resized.png" alt="VibeLift" className="sp-logo" />
+        <div className="sp-wordmark">VibeLift</div>
       </div>
+
+      {/* Phase 2 — photo + quote */}
+      <div className={`sp-p2 ${p2In ? 'sp-p2-in' : ''}`}>
+        <div className="sp-img-overlay" />
+        <div className="sp-p2-content">
+          <DailyQuoteCard />
+          {isFirstTime && <button className="splash-btn" onClick={handleBtn}>Get Started →</button>}
+        </div>
+      </div>
+
+      {/* 2 dots */}
+      <div className="sp-dots">
+        <div className={`sp-dot ${phase === 1 ? 'sp-dot-active' : ''}`} />
+        <div className={`sp-dot ${phase === 2 ? 'sp-dot-active' : ''}`} />
+      </div>
+
     </div>
   );
 }
