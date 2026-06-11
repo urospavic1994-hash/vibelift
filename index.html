@@ -2251,9 +2251,10 @@ function HistoryScreen({ onBack, history, weightUnit = 'kg' }) {
 /* ═══════════════════════════════════════
    GROUP SELECT SCREEN
 ═══════════════════════════════════════ */
-function GroupSelectScreen({ onBack, onSelectGroup, onFinish, completedIds, allExercises }) {
+function GroupSelectScreen({ onBack, onSelectGroup, onFinish, completedIds, partialMap = {}, allExercises }) {
   const groups = Object.keys(GROUP_META);
   const exList = allExercises || DB;
+  const totalLogged = completedIds.length + Object.keys(partialMap).length;
   return (
     <div className="screen">
       <div className="hdr">
@@ -2268,6 +2269,7 @@ function GroupSelectScreen({ onBack, onSelectGroup, onFinish, completedIds, allE
           const meta = GROUP_META[grp];
           const exs  = exList.filter(e => e.group === grp);
           const doneCnt = exs.filter(e => completedIds.includes(e.id)).length;
+          const partCnt = exs.filter(e => partialMap[e.id]).length;
           return (
             <div
               key={grp}
@@ -2281,17 +2283,15 @@ function GroupSelectScreen({ onBack, onSelectGroup, onFinish, completedIds, allE
               {doneCnt > 0 && <div className="grp-done-pill">✓ {doneCnt} done</div>}
               <div className="grp-card-overlay">
                 <div className="grp-card-name">{exs[0].gl}</div>
-                <div className="grp-card-count">{exs.length} exercises{doneCnt > 0 ? ` · ${doneCnt} completed` : ''}</div>
+                <div className="grp-card-count">{exs.length} exercises{doneCnt > 0 ? ` · ${doneCnt} completed` : ''}{partCnt > 0 ? ` · ${partCnt} in progress` : ''}</div>
               </div>
             </div>
           );
         })}
       </div>
-      {completedIds.length > 0 && (
+      {totalLogged > 0 && (
         <div className="finish-bar">
-          <button className="btn-pink" onClick={onFinish}>
-            Finish Workout — {completedIds.length} exercise{completedIds.length !== 1 ? 's' : ''} done
-          </button>
+          <button className="btn-pink" onClick={onFinish}>Finish Workout</button>
         </div>
       )}
     </div>
@@ -2301,11 +2301,12 @@ function GroupSelectScreen({ onBack, onSelectGroup, onFinish, completedIds, allE
 /* ═══════════════════════════════════════
    GROUP DETAIL SCREEN
 ═══════════════════════════════════════ */
-function GroupDetailScreen({ group, onBack, onPick, onFinish, completedIds, history, allExercises }) {
+function GroupDetailScreen({ group, onBack, onPick, onFinish, completedIds, partialMap = {}, history, allExercises }) {
   const [showAddCustom, setShowAddCustom] = useState(false);
   const [customName, setCustomName] = useState('');
   const meta = GROUP_META[group];
   const exs  = (allExercises || DB).filter(e => e.group === group);
+  const totalLogged = completedIds.length + Object.keys(partialMap).length;
 
   function addSessionExercise() {
     if (!customName.trim()) return;
@@ -2338,6 +2339,7 @@ function GroupDetailScreen({ group, onBack, onPick, onFinish, completedIds, hist
 
         {exs.map(ex => {
           const done = completedIds.includes(ex.id);
+          const partialSets = partialMap[ex.id] || 0;
           const pb   = getPersonalBest(history, ex.id);
           return (
             <div key={ex.id} className={`ex-row-card ${done ? 'done-row' : ''}`} onClick={() => onPick(ex)}>
@@ -2349,6 +2351,12 @@ function GroupDetailScreen({ group, onBack, onPick, onFinish, completedIds, hist
                 {pb > 0 && <div className="ex-row-pb">Best: {pb}</div>}
               </div>
               {done && <div className="ex-row-check">✓</div>}
+              {!done && partialSets > 0 && (
+                <div style={{ fontFamily:'var(--fb)', fontSize:11, fontWeight:800, color:'#121508', background:'var(--pink)', padding:'4px 9px', borderRadius:20, display:'flex', alignItems:'center', gap:5, whiteSpace:'nowrap', flexShrink:0 }}>
+                  <span style={{ width:6, height:6, borderRadius:'50%', background:'#121508' }} />
+                  {partialSets} {partialSets === 1 ? 'set' : 'sets'} · in progress
+                </div>
+              )}
             </div>
           );
         })}
@@ -2371,11 +2379,9 @@ function GroupDetailScreen({ group, onBack, onPick, onFinish, completedIds, hist
           </div>
         )}
       </div>
-      {completedIds.length > 0 && (
+      {totalLogged > 0 && (
         <div className="finish-bar">
-          <button className="btn-pink" onClick={onFinish}>
-            Finish Workout — {completedIds.length} done
-          </button>
+          <button className="btn-pink" onClick={onFinish}>Finish Workout</button>
         </div>
       )}
     </div>
@@ -2405,7 +2411,7 @@ const PLATE_DATA_LB = [
 /* ═══════════════════════════════════════
    LOG SCREEN — Tinder / hotel-card hero
 ═══════════════════════════════════════ */
-function LogScreen({ exercise, onBack, onComplete, history, weightUnit = 'kg' }) {
+function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, history, weightUnit = 'kg' }) {
   const [totalSets, setTotalSets] = useState(3);
   const [warmup, setWarmup] = useState('pending'); // 'pending' | 'done' | 'skipped'
   const [currentSet, setCurrentSet] = useState(1);
@@ -2440,33 +2446,21 @@ function LogScreen({ exercise, onBack, onComplete, history, weightUnit = 'kg' })
     }
   }, []);
 
-  // Restore in-progress log session if user left the app mid-exercise
+  // Resume an in-progress (or previously logged) exercise so the user picks up where they left off
   useEffect(() => {
-    try {
-      const saved = JSON.parse(localStorage.getItem('fittrack_log_state') || 'null');
-      if (saved && saved.exerciseId === exercise.id) {
-        setTotalSets(saved.totalSets);
-        setWarmup(saved.warmup);
-        setCurrentSet(saved.currentSet);
-        setDoneSets(saved.doneSets);
-        setWeight(saved.weight);
-        setReps(saved.reps);
-        setWeightType(saved.weightType);
-        setPlatesPerSide(saved.platesPerSide);
-        setAddBothSides(saved.addBothSides);
-        setBarType(saved.barType || 'straight');
-        setAllDone(saved.allDone || false);
-      }
-    } catch {}
+    if (savedEntry && savedEntry.sets && savedEntry.sets.length > 0) {
+      const planned = savedEntry.totalSets || Math.max(savedEntry.sets.length, 3);
+      setDoneSets(savedEntry.sets);
+      setCurrentSet(savedEntry.sets.length + 1);
+      setTotalSets(planned);
+      setWarmup(savedEntry.warmup || 'done');
+      setWeightType(savedEntry.weightType || null);
+      const last = savedEntry.sets[savedEntry.sets.length - 1];
+      if (last && !last.bw) setWeight(String(last.weight));
+      if (last) setReps(String(last.reps));
+      if (savedEntry.sets.length >= planned) setAllDone(true);
+    }
   }, []);
-
-  // Save log state to localStorage on every state change so we can resume if app is suspended
-  useEffect(() => {
-    localStorage.setItem('fittrack_log_state', JSON.stringify({
-      exerciseId: exercise.id, totalSets, warmup, currentSet, doneSets,
-      weight, reps, weightType, platesPerSide, addBothSides, barType, allDone
-    }));
-  }, [totalSets, warmup, currentSet, doneSets, weight, reps, weightType, platesPerSide, addBothSides, barType, allDone]);
 
   const maxLogged   = doneSets.length ? Math.max(...doneSets.map(s => s.weight)) : 0;
   const isNewPR     = maxLogged > pb && pb > 0;
@@ -2476,32 +2470,26 @@ function LogScreen({ exercise, onBack, onComplete, history, weightUnit = 'kg' })
   const suggestBW   = exercise.eq === 'bodyweight';
 
   function completeSet() {
+    let s;
     if (weightType === 'bodyweight') {
       if (!reps || parseInt(reps) < 1) return;
-      const s = { setNum: currentSet, weight: 0, reps: parseInt(reps), bw: true };
-      const next = [...doneSets, s];
-      setDoneSets(next);
-      if (currentSet >= totalSets) setAllDone(true);
-      else setCurrentSet(currentSet + 1);
+      s = { setNum: currentSet, weight: 0, reps: parseInt(reps), bw: true };
     } else if (weightType === 'barbell') {
       if (!reps) return;
-      const s = { setNum: currentSet, weight: totalBarbellWeight, reps: parseInt(reps) };
-      const next = [...doneSets, s];
-      setDoneSets(next);
-      if (currentSet >= totalSets) setAllDone(true);
-      else setCurrentSet(currentSet + 1);
+      s = { setNum: currentSet, weight: totalBarbellWeight, reps: parseInt(reps) };
     } else {
       if (!weight || !reps) return;
-      const s = { setNum: currentSet, weight: parseFloat(weight), reps: parseInt(reps) };
-      const next = [...doneSets, s];
-      setDoneSets(next);
-      if (currentSet >= totalSets) setAllDone(true);
-      else setCurrentSet(currentSet + 1);
+      s = { setNum: currentSet, weight: parseFloat(weight), reps: parseInt(reps) };
     }
+    const next = [...doneSets, s];
+    setDoneSets(next);
+    if (currentSet >= totalSets) setAllDone(true);
+    else setCurrentSet(currentSet + 1);
+    onSetLogged({ ...exercise, sets: next, totalSets, weightType, warmup });
   }
 
-  function finish() { localStorage.removeItem('fittrack_log_state'); onComplete({ ...exercise, sets: doneSets }); }
-  function handleBack() { localStorage.removeItem('fittrack_log_state'); onBack(); }
+  function finish() { onComplete({ ...exercise, sets: doneSets, totalSets, weightType, warmup }); }
+  function handleBack() { onBack(); }
 
   return (
     <div className="screen">
@@ -2826,7 +2814,10 @@ function LogScreen({ exercise, onBack, onComplete, history, weightUnit = 'kg' })
           ? <button className="btn-pink" onClick={completeSet} disabled={weightType === 'bodyweight' ? (!reps || parseInt(reps) < 1) : (weightType === 'barbell' ? !reps : (!weight || !reps))}>Complete Set {currentSet} →</button>
           : <button className="btn-pink" onClick={finish}>✓ Mark Exercise Complete</button>)}
         {!inWarmup && !allDone && doneSets.length > 0 && (
-          <button className="btn-outline" onClick={finish}>Stop Early &amp; Save</button>
+          <div style={{ display:'flex', gap:8 }}>
+            <button className="btn-outline" style={{ flex:1 }} onClick={onBack}>Pause</button>
+            <button className="btn-outline" style={{ flex:1 }} onClick={finish}>Finish Exercise</button>
+          </div>
         )}
       </div>
     </div>
@@ -3119,10 +3110,17 @@ function App() {
   function pickExercise(ex) { setActiveEx(ex); setScreen('log'); }
 
   function completeExercise(ex) {
-    setCurrent(prev => ({ ...prev, exercises: [...prev.exercises.filter(e => e.id !== ex.id), ex] }));
+    setCurrent(prev => ({ ...prev, exercises: [...prev.exercises.filter(e => e.id !== ex.id), { ...ex, status: 'done' }] }));
     setActiveEx(null);
     setScreen('group-detail');
     setExerciseDoneSheet({ exerciseName: ex.name, group: ex.group });
+  }
+
+  function savePartial(ex) {
+    setCurrent(prev => {
+      const base = prev || { date: todayISO(), exercises: [] };
+      return { ...base, exercises: [...base.exercises.filter(e => e.id !== ex.id), { ...ex, status: 'partial' }] };
+    });
   }
 
   function finishWorkout() {
@@ -3147,7 +3145,10 @@ function App() {
   }
 
   const isFirstTime = !profile || !profile.setupDone;
-  const completedIds = ((current && current.exercises) ? current.exercises : []).map(e => e.id);
+  const exEntries = (current && current.exercises) ? current.exercises : [];
+  const doneIds = exEntries.filter(e => e.status !== 'partial').map(e => e.id);
+  const partialMap = {};
+  exEntries.forEach(e => { if (e.status === 'partial') partialMap[e.id] = e.sets.length; });
 
   // Always render splash on top when active
   return (
@@ -3190,15 +3191,23 @@ function App() {
       {showTour && <OnboardingScreen onDone={() => setShowTour(false)} />}
 
       {!splash && screen === 'group-select' && (
-        <GroupSelectScreen onBack={backFromGroupSelect} onSelectGroup={selectGroup} onFinish={finishWorkout} completedIds={completedIds} allExercises={allExercises} />
+        <GroupSelectScreen onBack={backFromGroupSelect} onSelectGroup={selectGroup} onFinish={finishWorkout} completedIds={doneIds} partialMap={partialMap} allExercises={allExercises} />
       )}
 
       {!splash && screen === 'group-detail' && activeGroup && (
-        <GroupDetailScreen group={activeGroup} onBack={backFromGroupDetail} onPick={pickExercise} onFinish={finishWorkout} completedIds={completedIds} history={history} allExercises={allExercises} />
+        <GroupDetailScreen group={activeGroup} onBack={backFromGroupDetail} onPick={pickExercise} onFinish={finishWorkout} completedIds={doneIds} partialMap={partialMap} history={history} allExercises={allExercises} />
       )}
 
       {!splash && screen === 'log' && activeEx && (
-        <LogScreen exercise={activeEx} onBack={backFromLog} onComplete={completeExercise} history={history} weightUnit={weightUnit} />
+        <LogScreen
+          exercise={activeEx}
+          savedEntry={exEntries.find(e => e.id === activeEx.id) || null}
+          onBack={backFromLog}
+          onComplete={completeExercise}
+          onSetLogged={savePartial}
+          history={history}
+          weightUnit={weightUnit}
+        />
       )}
 
       {!splash && screen === 'summary' && summary && (
