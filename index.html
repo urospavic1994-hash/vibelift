@@ -463,13 +463,30 @@
     .ex-row-name { font-size: 15px; font-weight: 600; color: var(--text); }
     .ex-row-pb   { font-size: 12px; color: var(--text2); margin-top: 2px; }
     .ex-row-check { width: 24px; height: 24px; border-radius: 50%; background: var(--success); display: flex; align-items: center; justify-content: center; font-size: 12px; color: white; font-weight: 800; flex-shrink: 0; }
+    .ex-info-btn {
+      width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
+      border: 1.5px solid var(--border); background: transparent;
+      color: var(--text2); font-size: 14px; font-weight: 700; font-style: italic;
+      font-family: Georgia, serif; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: color .15s, border-color .15s;
+    }
+    .ex-info-btn:active { color: var(--pink); border-color: var(--pink); }
+    .log-hero-wiki {
+      position: absolute; top: 14px; right: 14px; z-index: 2;
+      width: 38px; height: 38px; border-radius: 50%;
+      border: 1px solid rgba(255,255,255,.25); background: rgba(0,0,0,.35);
+      color: white; font-size: 16px; font-weight: 700; font-style: italic;
+      font-family: Georgia, serif; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+    }
 
     /* ══════════════════════════════════
        LOG SCREEN — Tinder hero style
     ══════════════════════════════════ */
     .log-hero {
       position: relative; overflow: hidden;
-      min-height: 210px;
+      min-height: 150px;
       display: flex; flex-direction: column; justify-content: flex-end;
     }
     .log-hero-bg-icon {
@@ -485,7 +502,7 @@
       letter-spacing: 2px; color: rgba(255,255,255,.55); margin-bottom: 4px;
     }
     .log-hero-name {
-      font-family: var(--fd); font-size: 56px; font-weight: 900;
+      font-family: var(--fd); font-size: clamp(34px, 11vw, 44px); font-weight: 900;
       color: white; line-height: .95; letter-spacing: .5px; text-transform: uppercase;
     }
     .log-hero-pb {
@@ -502,12 +519,14 @@
     .pr-glow { color: #ffd700; font-size: 13px; font-weight: 700; }
 
     .log-body {
-      flex: 1; overflow-y: auto; padding: 16px 18px calc(200px + env(safe-area-inset-bottom, 0px));
+      flex: 1; padding: 16px 18px calc(200px + env(safe-area-inset-bottom, 0px));
       display: flex; flex-direction: column; gap: 14px;
-      -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain;
     }
 
-    .set-prog { background: var(--card); border-radius: var(--r); padding: 16px 18px; box-shadow: var(--sh2); }
+    .set-prog {
+      background: var(--card); border-radius: var(--r); padding: 12px 16px; box-shadow: var(--sh2);
+      position: sticky; top: 8px; z-index: 20;
+    }
     .set-dots { display: flex; align-items: flex-start; gap: 0; justify-content: center; }
     .set-dot-wrap { display: flex; flex-direction: column; align-items: center; gap: 5px; flex: 1; max-width: 64px; }
     .set-dot-connector { flex: 1; height: 2px; margin-top: 19px; background: var(--border); max-width: 28px; transition: background .3s; }
@@ -520,6 +539,71 @@
       transition: all .25s cubic-bezier(.2,.8,.4,1);
     }
     .set-dot.completed { background: var(--navy2); border-color: var(--navy2); color: var(--text); }
+    .set-dot.just-done { animation: dot-pop .45s ease; }
+    @keyframes dot-pop {
+      0%   { transform: scale(1); box-shadow: 0 0 0 0 rgba(13,170,116,.55); }
+      40%  { transform: scale(1.35); }
+      100% { transform: scale(1); box-shadow: 0 0 0 14px rgba(13,170,116,0); }
+    }
+    .spark-host { position: fixed; z-index: 999; pointer-events: none; width: 0; height: 0; }
+    .spark {
+      position: absolute; width: 6px; height: 6px; border-radius: 50%;
+      animation: spark-fly .55s cubic-bezier(.1,.8,.3,1) forwards;
+    }
+    @keyframes spark-fly {
+      from { transform: translate(0,0) scale(1); opacity: 1; }
+      to   { transform: translate(var(--dx), var(--dy)) scale(.2); opacity: 0; }
+    }
+
+    /* ─── WORKOUT-DONE CELEBRATION ─── */
+    .celebrate-overlay {
+      position: fixed; inset: 0; z-index: 9500;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 20px; padding: 24px;
+      background: rgba(10,13,4,.95);
+      backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+      cursor: pointer; overflow: hidden;
+      animation: fadeIn .3s ease;
+    }
+    .celebrate-title {
+      font-family: var(--fd); font-size: clamp(44px, 13vw, 64px); font-weight: 900;
+      text-transform: uppercase; letter-spacing: 1px; line-height: .95;
+      color: var(--pink); text-align: center;
+      animation: celeb-pop .5s cubic-bezier(.16,1,.3,1) both;
+    }
+    @keyframes celeb-pop {
+      from { opacity: 0; transform: scale(.6); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+    .celebrate-stats { display: flex; gap: 12px; }
+    .celebrate-stat {
+      background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+      padding: 14px 16px; text-align: center; min-width: 86px;
+    }
+    .celebrate-stat-v {
+      font-family: var(--fd); font-size: 30px; font-weight: 900; color: var(--text);
+      font-variant-numeric: tabular-nums;
+    }
+    .celebrate-stat-l {
+      font-size: 10px; font-weight: 800; letter-spacing: 1.6px; text-transform: uppercase;
+      color: var(--text2);
+    }
+    .celebrate-streak {
+      background: rgba(200,242,53,.10); border: 1px solid rgba(200,242,53,.45);
+      color: var(--pink); border-radius: 24px; padding: 9px 24px;
+      font-weight: 900; font-size: 13px; letter-spacing: 2.4px; text-transform: uppercase;
+      font-variant-numeric: tabular-nums;
+    }
+    .celebrate-hint { font-size: 12px; color: var(--text2); }
+    .confetti-piece {
+      position: absolute; top: -14px; width: 8px; height: 13px; border-radius: 2px;
+      opacity: .9; pointer-events: none;
+      animation: confetti-fall var(--dur, 1.8s) linear var(--delay, 0s) forwards;
+    }
+    @keyframes confetti-fall {
+      from { transform: translateY(-6vh) rotate(0); }
+      to   { transform: translateY(110vh) rotate(720deg); }
+    }
     .set-dot.active { background: var(--pink); border-color: var(--pink); color: #121508; box-shadow: 0 0 0 6px rgba(200,242,53,.18); transform: scale(1.1); }
     .set-dot.warmup-skipped { background: var(--sfx); border-color: var(--border); color: var(--text2); }
     .set-dot-lbl { font-size: 9px; color: var(--text2); font-weight: 700; text-transform: uppercase; letter-spacing: .5px; }
@@ -686,7 +770,7 @@
     /* ─── PHASE 2: photo + quote ─── */
     .sp-p2 {
       position: absolute; inset: 0;
-      background: url('./assets/welcome.jpg') center/cover no-repeat #0a0d04;
+      background: linear-gradient(160deg, #0a0d04 0%, #1a220c 55%, #0a0d04 100%);
       display: flex; flex-direction: column;
       z-index: 1;
       opacity: 0;
@@ -694,9 +778,13 @@
     }
     .sp-p2.sp-p2-in { opacity: 1; }
 
-    .sp-img-overlay {
-      position: absolute; inset: 0;
-      background: linear-gradient(to bottom, rgba(0,0,0,.22) 0%, rgba(0,0,0,.08) 45%, rgba(0,0,0,.60) 100%);
+    .sp-p2-glow {
+      position: absolute;
+      top: 22%; left: 50%; transform: translateX(-50%);
+      width: 300px; height: 300px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(200,242,53,.13) 0%, transparent 68%);
+      animation: sp-glow-pulse 2.4s ease-in-out infinite alternate;
+      pointer-events: none;
     }
 
     .sp-p2-content {
@@ -1100,7 +1188,8 @@ function DailyQuoteCard() {
    EXERCISE ICONS
 ═══════════════════════════════════════ */
 function ExIcon({ id, size = 28, color = '#242d16', img = null }) {
-  if (img) {
+  const [imgFailed, setImgFailed] = React.useState(false);
+  if (img && !imgFailed) {
     return (
       <img
         src={`./assets/exercises/${encodeURIComponent(img)}`}
@@ -1108,6 +1197,7 @@ function ExIcon({ id, size = 28, color = '#242d16', img = null }) {
         height={size}
         style={{ display:'block', flexShrink:0, objectFit:'contain' }}
         alt=""
+        onError={() => setImgFailed(true)}
       />
     );
   }
@@ -1449,6 +1539,33 @@ function ExIcon({ id, size = 28, color = '#242d16', img = null }) {
 }
 
 /* ═══════════════════════════════════════
+   FEEDBACK EFFECTS (haptic + sparks)
+═══════════════════════════════════════ */
+function vibe(pattern) {
+  try { if (navigator.vibrate) navigator.vibrate(pattern); } catch (e) {}
+}
+
+function sparkBurst(x, y, count = 12) {
+  const host = document.createElement('div');
+  host.className = 'spark-host';
+  const colors = ['#c8f235', '#0daa74', '#ffd700'];
+  for (let i = 0; i < count; i++) {
+    const p = document.createElement('div');
+    p.className = 'spark';
+    const ang = (Math.PI * 2 * i) / count + Math.random() * 0.5;
+    const dist = 28 + Math.random() * 34;
+    p.style.setProperty('--dx', `${Math.cos(ang) * dist}px`);
+    p.style.setProperty('--dy', `${Math.sin(ang) * dist - 12}px`);
+    p.style.background = colors[i % 3];
+    host.appendChild(p);
+  }
+  host.style.left = x + 'px';
+  host.style.top = y + 'px';
+  document.body.appendChild(host);
+  setTimeout(() => host.remove(), 650);
+}
+
+/* ═══════════════════════════════════════
    DATA
 ═══════════════════════════════════════ */
 const DB = [
@@ -1538,7 +1655,110 @@ const DB = [
   { group:'core', gl:'Core', eq:'bodyweight', id:'leg_raise',    name:'Leg Raise' },
   { group:'core', gl:'Core', eq:'bodyweight', id:'russian_twist',name:'Russian Twist' },
   { group:'core', gl:'Core', eq:'bodyweight', id:'ab_wheel',     name:'Ab Wheel' },
+  // ── NEW EXERCISES 2026-07 (no illustrations yet) ───────────────────
+  { group:'chest', gl:'Chest', eq:'dumbbell', id:'incline_db_fly',          name:'Incline Dumbbell Fly' },
+  { group:'chest', gl:'Chest', eq:'cable',    id:'low_cable_fly',           name:'Low-to-High Cable Fly' },
+  { group:'chest', gl:'Chest', eq:'machine',  id:'incline_machine_press',   name:'Incline Machine Chest Press' },
+  { group:'back', gl:'Back', eq:'barbell',    id:'pendlay_row',             name:'Pendlay Row' },
+  { group:'back', gl:'Back', eq:'machine',    id:'chest_supported_row',     name:'Chest-Supported Row' },
+  { group:'back', gl:'Back', eq:'cable',      id:'close_grip_pulldown',     name:'Close-Grip Lat Pulldown' },
+  { group:'back', gl:'Back', eq:'dumbbell',   id:'db_deadlift',             name:'Dumbbell Deadlift' },
+  { group:'shoulders', gl:'Shoulders', eq:'dumbbell', id:'db_shrug',              name:'Dumbbell Shrug' },
+  { group:'shoulders', gl:'Shoulders', eq:'machine',  id:'machine_lateral_raise', name:'Machine Lateral Raise' },
+  { group:'shoulders', gl:'Shoulders', eq:'cable',    id:'cable_rear_delt_fly',   name:'Cable Rear Delt Fly' },
+  { group:'arms', gl:'Arms', eq:'barbell',  id:'close_grip_bench',   name:'Close-Grip Bench Press' },
+  { group:'arms', gl:'Arms', eq:'dumbbell', id:'spider_curl',        name:'Spider Curl' },
+  { group:'arms', gl:'Arms', eq:'cable',    id:'cable_bicep_curl',   name:'Cable Bicep Curl' },
+  { group:'arms', gl:'Arms', eq:'barbell',  id:'reverse_curl',       name:'Reverse Barbell Curl' },
+  { group:'legs', gl:'Legs', eq:'barbell',  id:'sumo_deadlift',        name:'Sumo Deadlift' },
+  { group:'legs', gl:'Legs', eq:'dumbbell', id:'walking_lunge',        name:'Walking Lunge' },
+  { group:'legs', gl:'Legs', eq:'machine',  id:'hip_abduction',        name:'Hip Abduction Machine' },
+  { group:'legs', gl:'Legs', eq:'cable',    id:'cable_glute_kickback', name:'Cable Glute Kickback' },
+  { group:'core', gl:'Core', eq:'bodyweight', id:'hanging_leg_raise', name:'Hanging Leg Raise' },
+  { group:'core', gl:'Core', eq:'cable',      id:'cable_crunch',      name:'Cable Crunch' },
+  { group:'core', gl:'Core', eq:'bodyweight', id:'dead_bug',          name:'Dead Bug' },
+  { group:'core', gl:'Core', eq:'bodyweight', id:'side_plank',        name:'Side Plank' },
 ];
+
+/* Curated MuscleWiki how-to links — key = exercise id.
+   Only verified URLs go here (each checked live 2026-07-17);
+   exercises without an entry show no info button. */
+const MW = 'https://musclewiki.com/exercise/';
+const WIKI = {
+  // chest
+  barbell_bench_press:   MW + 'barbell-bench-press',
+  incline_barbell_press: MW + 'barbell-incline-bench-press',
+  db_bench_press:        MW + 'dumbbell-bench-press',
+  incline_db_press:      MW + 'dumbbell-incline-bench-press',
+  pushup:                MW + 'push-up',
+  diamond_pushup:        MW + 'diamond-push-ups',
+  machine_chest_press:   MW + 'machine-chest-press',
+  db_chest_fly:          MW + 'dumbbell-chest-fly',
+  // back
+  deadlift:              MW + 'barbell-deadlift',
+  romanian_deadlift:     MW + 'barbell-romanian-deadlift',
+  barbell_row:           MW + 'barbell-bent-over-row',
+  lat_pulldown:          MW + 'machine-pulldown',
+  pullup:                MW + 'pull-ups',
+  chin_up:               MW + 'chin-ups',
+  seated_cable_row:      MW + 'machine-seated-cable-row',
+  tbar_row:              MW + 'machine-plate-loaded-t-bar-row',
+  db_single_arm_row:     MW + 'dumbbell-row-unilateral',
+  face_pull:             MW + 'machine-face-pulls',
+  face_pull_back:        MW + 'machine-face-pulls',
+  rack_pull:             MW + 'barbell-rack-pull',
+  inverted_row:          MW + 'inverted-row',
+  pendlay_row:           MW + 'barbell-pronated-pendlay-row',
+  // shoulders
+  barbell_ohp:           MW + 'barbell-overhead-press',
+  arnold_press:          MW + 'dumbbell-arnold-press',
+  db_lateral_raise:      MW + 'dumbbell-lateral-raise',
+  db_front_raise:        MW + 'dumbbell-front-raise',
+  db_rear_delt_fly:      MW + 'dumbbell-seated-rear-delt-fly',
+  cable_lateral_raise:   MW + 'cable-low-single-arm-lateral-raise',
+  upright_row:           MW + 'barbell-upright-row',
+  barbell_shrug:         MW + 'barbell-shrug',
+  db_shrug:              MW + 'dumbbell-shrug',
+  // arms
+  barbell_bicep_curl:    MW + 'barbell-curl',
+  ez_bar_curl:           MW + 'ez-bar-curl',
+  preacher_curl:         MW + 'ez-bar-preacher-curl',
+  db_hammer_curl:        MW + 'dumbbell-hammer-curl',
+  concentration_curl:    MW + 'dumbbell-concentration-curl',
+  incline_db_curl:       MW + 'dumbbell-incline-curl',
+  machine_bicep_curl:    MW + 'machine-bicep-curl',
+  cable_rope_hammer_curl:MW + 'cable-rope-hammer-curl',
+  skull_crusher:         MW + 'barbell-skullcrusher',
+  overhead_tricep_ext:   MW + 'barbell-overhead-tricep-extension',
+  cable_tricep_pushdown: MW + 'cable-rope-pushdown',
+  tricep_rope_pushdown:  MW + 'cable-rope-pushdown',
+  tricep_dip:            MW + 'box-dips',
+  close_grip_bench:      MW + 'barbell-close-grip-bench-press',
+  spider_curl:           MW + 'dumbbell-spider-curl',
+  // legs
+  barbell_back_squat:    MW + 'barbell-squat',
+  front_squat:           MW + 'front-squat',
+  goblet_squat:          MW + 'dumbbell-goblet-squat',
+  leg_press:             MW + 'machine-leg-press',
+  leg_extension:         MW + 'machine-leg-extension',
+  lying_leg_curl:        MW + 'machine-hamstring-curl',
+  seated_leg_curl:       MW + 'machine-seated-hamstring-curl',
+  bulgarian_split_squat: MW + 'bulgarian-split-squat',
+  hip_thrust:            MW + 'barbell-hip-thrust',
+  hack_squat:            MW + 'machine-hack-squat',
+  standing_calf_raise:   MW + 'machine-standing-calf-raises',
+  seated_calf_raise:     MW + 'machine-seated-calf-raises',
+  step_up:               MW + 'barbell-step-up',
+  rdl_legs:              MW + 'barbell-romanian-deadlift',
+  sumo_deadlift:         MW + 'barbell-sumo-deadlift',
+  // core
+  plank:                 MW + 'plank',
+  crunches:              MW + 'crunches',
+  russian_twist:         MW + 'russian-twist',
+  leg_raise:             MW + 'laying-leg-raises',
+  cable_crunch:          MW + 'cable-standing-crunch',
+  dead_bug:              MW + 'dead-bug',
+};
 
 const GROUP_META = {
   chest:     { grad: 'linear-gradient(140deg,#2d0b1f 0%,#8c1a40 55%,#e91e5e 100%)', icon: 'bench_press',  color: '#e91e5e', img: 'Chest.jpg' },
@@ -1821,12 +2041,24 @@ function HomeScreen({ onStart, onViewHistory, onOpenSettings, history, hasActive
       {/* ── Stat cards ── */}
       <div className="home-stats-row">
         <div className="home-stat-card">
-          <div className="home-stat-icon">🔥</div>
+          <div className="home-stat-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <path d="M13 2 L5 14 H11 L10 22 L19 9 H12.5 Z" fill="var(--pink)"/>
+            </svg>
+          </div>
           <div className={`home-stat-val${streak > 0 ? ' accent' : ''}`}>{streak}</div>
           <div className="home-stat-lbl">Day Streak</div>
         </div>
         <div className="home-stat-card">
-          <div className="home-stat-icon">🏋</div>
+          <div className="home-stat-icon">
+            <svg width="24" height="14" viewBox="0 0 38 20" fill="none">
+              <rect x="1" y="2" width="9" height="16" rx="4" fill="var(--pink)"/>
+              <rect x="10" y="7" width="3" height="6" rx="1" fill="var(--pink)"/>
+              <rect x="13" y="8.5" width="12" height="3" rx="1.5" fill="var(--pink)"/>
+              <rect x="25" y="7" width="3" height="6" rx="1" fill="var(--pink)"/>
+              <rect x="28" y="2" width="9" height="16" rx="4" fill="var(--pink)"/>
+            </svg>
+          </div>
           <div className="home-stat-val accent">{history.length}</div>
           <div className="home-stat-lbl">Total Workouts</div>
         </div>
@@ -1922,7 +2154,7 @@ function SplashScreen({ isFirstTime, onContinue }) {
 
       {/* Phase 2 — photo + quote */}
       <div className={`sp-p2 ${p2In ? 'sp-p2-in' : ''}`}>
-        <div className="sp-img-overlay" />
+        <div className="sp-p2-glow" />
         <div className="sp-p2-content">
           <DailyQuoteCard />
           {isFirstTime && <button className="splash-btn" onClick={handleBtn}>Get Started →</button>}
@@ -2350,6 +2582,10 @@ function GroupDetailScreen({ group, onBack, onPick, onFinish, completedIds, part
                 <div className="ex-row-name">{ex.name}</div>
                 {pb > 0 && <div className="ex-row-pb">Best: {pb}</div>}
               </div>
+              {WIKI[ex.id] && (
+                <button className="ex-info-btn" aria-label={`How to do ${ex.name}`}
+                  onClick={e => { e.stopPropagation(); window.open(WIKI[ex.id], '_blank', 'noopener'); }}>i</button>
+              )}
               {done && <div className="ex-row-check">✓</div>}
               {!done && partialSets > 0 && (
                 <div style={{ fontFamily:'var(--fb)', fontSize:11, fontWeight:800, color:'#121508', background:'var(--pink)', padding:'4px 9px', borderRadius:20, display:'flex', alignItems:'center', gap:5, whiteSpace:'nowrap', flexShrink:0 }}>
@@ -2469,7 +2705,9 @@ function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, hist
   const suggestBar  = exercise.eq === 'barbell';
   const suggestBW   = exercise.eq === 'bodyweight';
 
-  function completeSet() {
+  const [justDone, setJustDone] = useState(null);
+
+  function completeSet(e) {
     let s;
     if (weightType === 'bodyweight') {
       if (!reps || parseInt(reps) < 1) return;
@@ -2481,6 +2719,15 @@ function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, hist
       if (!weight || !reps) return;
       s = { setNum: currentSet, weight: parseFloat(weight), reps: parseInt(reps) };
     }
+    if (e && e.currentTarget) {
+      const r = e.currentTarget.getBoundingClientRect();
+      const x = e.clientX || (r.left + r.width / 2);
+      const y = e.clientY || (r.top + r.height / 2);
+      sparkBurst(x, y);
+    }
+    vibe(currentSet >= totalSets ? [30, 40, 30] : 30);
+    setJustDone(currentSet);
+    setTimeout(() => setJustDone(null), 500);
     const next = [...doneSets, s];
     setDoneSets(next);
     if (currentSet >= totalSets) setAllDone(true);
@@ -2498,6 +2745,10 @@ function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, hist
         : { background: meta.grad }}>
         {meta.img && <div style={{ position:'absolute', inset:0, background:'rgba(0,0,0,0.42)', zIndex:0 }} />}
         <button className="log-hero-back" onClick={handleBack}>←</button>
+        {WIKI[exercise.id] && (
+          <button className="log-hero-wiki" aria-label={`How to do ${exercise.name}`}
+            onClick={() => window.open(WIKI[exercise.id], '_blank', 'noopener')}>i</button>
+        )}
         {!exercise.img && (
           <div className="log-hero-bg-icon">
             <ExIcon id={exercise.id} size={160} color="white" />
@@ -2512,12 +2763,6 @@ function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, hist
           </div>
         </div>
       </div>
-
-      {exercise.img && (
-        <div style={{ display:'flex', justifyContent:'center', alignItems:'center', padding:'12px 0 4px', background:'var(--bg)' }}>
-          <ExIcon id={exercise.id} size={120} color="white" img={exercise.img} />
-        </div>
-      )}
 
       <div className="log-body">
         {/* Set progress dots — Warmup dot + working set dots */}
@@ -2538,7 +2783,7 @@ function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, hist
               return (
                 <React.Fragment key={n}>
                   <div className="set-dot-wrap">
-                    <div className={`set-dot ${completed ? 'completed' : ''} ${active ? 'active' : ''}`}>
+                    <div className={`set-dot ${completed ? 'completed' : ''} ${active ? 'active' : ''} ${justDone === n ? 'just-done' : ''}`}>
                       {completed ? '✓' : n}
                     </div>
                     <div className="set-dot-lbl">Set {n}</div>
@@ -2827,6 +3072,62 @@ function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, hist
 /* ═══════════════════════════════════════
    SUMMARY SCREEN
 ═══════════════════════════════════════ */
+function useCountUp(target, dur = 1200, delay = 250) {
+  const [val, setVal] = useState(0);
+  useEffect(() => {
+    let raf, t0 = null;
+    const start = setTimeout(() => {
+      const step = ts => {
+        if (t0 === null) t0 = ts;
+        const p = Math.min((ts - t0) / dur, 1);
+        setVal(target * (1 - Math.pow(1 - p, 3)));
+        if (p < 1) raf = requestAnimationFrame(step);
+      };
+      raf = requestAnimationFrame(step);
+    }, delay);
+    return () => { clearTimeout(start); if (raf) cancelAnimationFrame(raf); };
+  }, [target, dur, delay]);
+  return val;
+}
+
+function CelebrationOverlay({ workout, streak, onDone, weightUnit = 'kg' }) {
+  const totalSets = workout.exercises.reduce((s,e)=>s+e.sets.length,0);
+  const totalVol  = workout.exercises.reduce((s,e)=>e.sets.reduce((a,t)=>a+t.weight*t.reps,s),0);
+  const exCount = Math.round(useCountUp(workout.exercises.length, 900));
+  const setCount = Math.round(useCountUp(totalSets, 1200));
+  const volCount = Math.round(useCountUp(totalVol, 1500));
+  const confetti = useMemo(() => {
+    const colors = ['#c8f235', '#0daa74', '#ffd700', '#ff8c42', '#f0f5d8'];
+    return Array.from({ length: 40 }, (_, i) => ({
+      left: Math.random() * 100,
+      dur: 1.4 + Math.random(),
+      delay: Math.random() * 0.5,
+      color: colors[i % 5],
+    }));
+  }, []);
+  useEffect(() => {
+    vibe([40, 60, 40, 60, 80]);
+    const t = setTimeout(onDone, 3200);
+    return () => clearTimeout(t);
+  }, []);
+  return (
+    <div className="celebrate-overlay" onClick={onDone}>
+      {confetti.map((c, i) => (
+        <div key={i} className="confetti-piece"
+          style={{ left: c.left + '%', background: c.color, '--dur': c.dur + 's', '--delay': c.delay + 's' }} />
+      ))}
+      <div className="celebrate-title">Workout<br/>Complete!</div>
+      <div className="celebrate-stats">
+        <div className="celebrate-stat"><div className="celebrate-stat-v">{exCount}</div><div className="celebrate-stat-l">Exercises</div></div>
+        <div className="celebrate-stat"><div className="celebrate-stat-v">{setCount}</div><div className="celebrate-stat-l">Sets</div></div>
+        <div className="celebrate-stat"><div className="celebrate-stat-v">{totalVol >= 1000 ? (volCount/1000).toFixed(1)+'t' : volCount+weightUnit}</div><div className="celebrate-stat-l">Volume</div></div>
+      </div>
+      {streak > 0 && <div className="celebrate-streak">Day {streak} Streak</div>}
+      <div className="celebrate-hint">tap anywhere to continue</div>
+    </div>
+  );
+}
+
 function SummaryScreen({ workout, baseHistory, onDone, weightUnit = 'kg' }) {
   const totalSets = workout.exercises.reduce((s,e)=>s+e.sets.length,0);
   const totalVol  = workout.exercises.reduce((s,e)=>e.sets.reduce((a,t)=>a+t.weight*t.reps,s),0);
@@ -3062,6 +3363,7 @@ function App() {
   const [activeGroup, setActiveGroup] = useState(null);
   const [activeEx, setActiveEx]     = useState(null);
   const [summary, setSummary]       = useState(null);
+  const [celebrate, setCelebrate]   = useState(false);
   const [theme, setTheme]           = useState(() => loadTheme());
   const [profile, setProfile]       = useState(() => loadProfile());
   const [customEx, setCustomEx]     = useState(() => loadCustomEx());
@@ -3128,10 +3430,11 @@ function App() {
     const base = [...history];
     const next = [...history, current];
     setHistory(next); saveHistory(next);
-    setSummary({ workout: current, baseHistory: base });
+    setSummary({ workout: current, baseHistory: base, streak: getStreak(next) });
     setCurrent(null);
     setBreakModal(false);
     setExerciseDoneSheet(null);
+    setCelebrate(true);
     setScreen('summary');
   }
 
@@ -3212,6 +3515,9 @@ function App() {
 
       {!splash && screen === 'summary' && summary && (
         <SummaryScreen workout={summary.workout} baseHistory={summary.baseHistory} onDone={() => { setSummary(null); setScreen('home'); }} weightUnit={weightUnit} />
+      )}
+      {!splash && celebrate && summary && (
+        <CelebrationOverlay workout={summary.workout} streak={summary.streak || 0} onDone={() => setCelebrate(false)} weightUnit={weightUnit} />
       )}
 
       {/* ── Persistent bottom nav (hidden on splash + profile-setup) ── */}
