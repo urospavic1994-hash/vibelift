@@ -472,6 +472,51 @@
       transition: color .15s, border-color .15s;
     }
     .ex-info-btn:active { color: var(--pink); border-color: var(--pink); }
+
+    /* ─── EXERCISE BUILDER ─── */
+    .builder-card {
+      background: var(--card); border-radius: 14px; padding: 14px 16px;
+      box-shadow: var(--sh1); display: flex; flex-direction: column; gap: 12px;
+    }
+    .builder-steps { display: flex; gap: 6px; }
+    .builder-step { height: 5px; flex: 1; border-radius: 3px; background: var(--border); transition: background .25s; }
+    .builder-step.on { background: var(--pink); }
+    .builder-title { font-family: var(--fd); font-size: 20px; font-weight: 900; text-transform: uppercase; letter-spacing: .5px; }
+    .builder-sub { font-size: 12px; color: var(--text2); margin-top: -8px; }
+    .builder-stage { background: var(--bg); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+    .builder-stage svg { display: block; width: 100%; height: auto; }
+    .builder-stage svg * { animation: figIn .35s ease; }
+    @keyframes figIn { from { opacity: .25; } }
+    .builder-name-preview {
+      background: var(--bg); border: 1.5px dashed rgba(200,242,53,.35);
+      border-radius: 12px; padding: 9px 13px;
+    }
+    .builder-name-preview label {
+      font-size: 9px; font-weight: 800; letter-spacing: 1.8px;
+      text-transform: uppercase; color: var(--text2); display: block;
+    }
+    .builder-name-line {
+      font-family: var(--fd); font-size: 18px; font-weight: 900;
+      text-transform: uppercase; line-height: 1.1; margin-top: 2px; min-height: 20px;
+    }
+    .builder-name-line .b-slot { color: var(--pink); }
+    .builder-name-line .b-ghost { color: var(--text2); opacity: .5; }
+    .builder-chips { display: flex; flex-wrap: wrap; gap: 7px; }
+    .builder-chip {
+      border: 1.5px solid var(--border); background: var(--bg); color: var(--text);
+      border-radius: 20px; padding: 7px 13px; font-size: 13px; font-weight: 600;
+      cursor: pointer; transition: all .15s; user-select: none;
+    }
+    .builder-chip.sel { background: var(--pink); color: #121508; border-color: var(--pink); font-weight: 800; }
+    .builder-chips-label {
+      width: 100%; font-size: 9px; font-weight: 800; letter-spacing: 1.6px;
+      text-transform: uppercase; color: var(--text2); margin-top: 4px;
+    }
+    .ex-custom-tag {
+      font-size: 9px; font-weight: 900; letter-spacing: 1.2px; text-transform: uppercase;
+      color: var(--pink); border: 1px solid rgba(200,242,53,.4); border-radius: 8px;
+      padding: 1px 7px; display: inline-block; margin-top: 3px;
+    }
     .log-hero-wiki {
       position: absolute; top: 14px; right: 14px; z-index: 2;
       width: 38px; height: 38px; border-radius: 50%;
@@ -2531,19 +2576,161 @@ function GroupSelectScreen({ onBack, onSelectGroup, onFinish, completedIds, part
 }
 
 /* ═══════════════════════════════════════
+   EXERCISE BUILDER (custom exercise wizard)
+═══════════════════════════════════════ */
+const BUILDER_EQ_MAP = {
+  'Barbell':'barbell', 'Dumbbell':'dumbbell', 'Cable':'cable', 'Machine':'machine',
+  'Bodyweight':'bodyweight', 'Kettlebell':'dumbbell', 'Plate':'plate', 'Band':'bodyweight',
+  'Smith Machine':'machine',
+};
+const BUILDER_POSES = {
+  'Standing':  { head:[105,36], sh:[105,58], hip:[105,98], knee:[105,124], foot:[105,150], fwd:[1,0], up:[0,-1], bench:'' },
+  'Seated':    { head:[100,44], sh:[100,64], hip:[100,106], knee:[128,106], foot:[128,150], fwd:[1,0], up:[0,-1],
+                 bench:'<rect x="88" y="112" width="52" height="7" rx="3" fill="#59614a"/><rect x="94" y="119" width="6" height="31" fill="#59614a"/><rect x="126" y="119" width="6" height="31" fill="#59614a"/>' },
+  'Lying Flat':{ head:[70,92], sh:[86,96], hip:[122,96], knee:[138,84], foot:[150,100], fwd:[0,-1], up:[-0.1,-1],
+                 bench:'<rect x="58" y="104" width="100" height="8" rx="4" fill="#59614a"/><rect x="70" y="112" width="6" height="38" fill="#59614a"/><rect x="140" y="112" width="6" height="38" fill="#59614a"/>',
+                 pressUp:true },
+  'Incline':   { head:[132,76], sh:[120,86], hip:[92,116], knee:[76,128], foot:[76,150], fwd:[0.7,-0.7], up:[-0.2,-0.98],
+                 bench:'<line x1="86" y1="130" x2="144" y2="76" stroke="#59614a" stroke-width="9" stroke-linecap="round"/><rect x="106" y="132" width="6" height="18" fill="#59614a"/>' },
+  'Decline':   { head:[134,114], sh:[122,104], hip:[92,86], knee:[78,76], foot:[64,90], fwd:[0.7,0.7], up:[-0.2,-0.98],
+                 bench:'<line x1="86" y1="80" x2="146" y2="120" stroke="#59614a" stroke-width="9" stroke-linecap="round"/><rect x="106" y="116" width="6" height="34" fill="#59614a"/>' },
+  'Bent-Over': { head:[68,66], sh:[80,76], hip:[112,96], knee:[114,124], foot:[114,150], fwd:[-0.2,1], up:[-0.85,-0.5], bench:'' },
+  'Kneeling':  { head:[103,56], sh:[103,76], hip:[103,114], knee:[103,144], foot:[128,146], fwd:[1,0], up:[0,-1], bench:'' },
+  'Hanging':   { head:[105,58], sh:[105,76], hip:[105,112], knee:[103,134], foot:[99,148], fwd:[1,0], up:[0,-1],
+                 bench:'<line x1="70" y1="30" x2="150" y2="30" stroke="#59614a" stroke-width="6" stroke-linecap="round"/>', hang:true },
+};
+const BUILDER_ARMS = {
+  'Press':     { e:[10,12],  h:[15,36] },
+  'Row':       { e:[8,-12],  h:[18,-4] },
+  'Curl':      { e:[3,-16],  h:[17,-6] },
+  'Raise':     { e:[15,1],   h:[29,3] },
+  'Extension': { e:[7,16],   h:[19,28] },
+  'Squat':     { e:[4,-14],  h:[7,-23] },
+  'Lunge':     { e:[4,-14],  h:[7,-23] },
+  'Fly':       { e:[16,0],   h:[27,13] },
+  'Pull':      { e:[7,14],   h:[9,30] },
+  'Hold':      { e:[2,-13],  h:[4,-23] },
+  '_idle':     { e:[3,-13],  h:[5,-23] },
+};
+function builderFigureSVG(eq, pos, move) {
+  const FIG = '#f0f5d8', EQC = '#c8f235', BEN = '#59614a';
+  const pose = BUILDER_POSES[pos || 'Standing'];
+  let arm = BUILDER_ARMS[move || '_idle'];
+  if (pose.hang) arm = BUILDER_ARMS['Pull'];
+  if (pose.pressUp && move === 'Press') arm = { e:[2,14], h:[2,30] };
+  const Pt = (base, off) => [base[0]+pose.fwd[0]*off[0]+pose.up[0]*off[1], base[1]+pose.fwd[1]*off[0]+pose.up[1]*off[1]];
+  const Ln = (a,b,w,c,o) => `<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="${c||FIG}" stroke-width="${w||5}" stroke-linecap="round"${o?` opacity="${o}"`:''}/>`;
+  const Ci = (p,r,c,o) => `<circle cx="${p[0]}" cy="${p[1]}" r="${r}" fill="${c||FIG}"${o?` opacity="${o}"`:''}/>`;
+  const sh = pose.sh;
+  let elbow = Pt(sh, arm.e), hand = Pt(sh, arm.h);
+  if (pose.hang) { elbow = [sh[0]+6, 52]; hand = [sh[0]+8, 32]; }
+  let s = `<line x1="20" y1="150" x2="200" y2="150" stroke="rgba(127,127,127,.25)" stroke-width="2"/>` + pose.bench;
+  if (eq === 'Cable') { const py = hand[1] < sh[1] ? 32 : 144; s += `<rect x="186" y="24" width="8" height="126" rx="3" fill="${BEN}"/>` + Ci([190,py],4,EQC) + Ln(hand,[190,py],2.5,EQC); }
+  if (eq === 'Machine') { s += `<rect x="48" y="26" width="7" height="124" rx="3" fill="${BEN}"/><rect x="48" y="26" width="60" height="7" rx="3" fill="${BEN}"/>` + Ln([104,32],hand,3,BEN); }
+  if (eq === 'Smith Machine') { s += `<rect x="60" y="22" width="5" height="128" fill="${BEN}"/><rect x="158" y="22" width="5" height="128" fill="${BEN}"/>` + Ln([62,hand[1]],[161,hand[1]],4,EQC) + Ci([70,hand[1]],7,EQC) + Ci([152,hand[1]],7,EQC); }
+  const e2 = [elbow[0]-7, elbow[1]+3], h2 = [hand[0]-7, hand[1]+3];
+  s += Ln(sh,e2,5,FIG,.3) + Ln(e2,h2,5,FIG,.3) + Ci(h2,3,FIG,.3);
+  s += Ln(pose.sh,pose.hip,7) + Ln(pose.hip,pose.knee,5.5) + Ln(pose.knee,pose.foot,5.5) + Ci(pose.foot,3.5) + Ln(pose.sh,pose.head,4) + Ci(pose.head,8);
+  s += Ln(sh,elbow,5) + Ln(elbow,hand,5) + Ci(hand,3.5);
+  if (eq === 'Barbell') {
+    if (move === 'Squat' || move === 'Lunge') s += Ci([sh[0],sh[1]-4],8,EQC,.9) + Ln([sh[0]-16,sh[1]-4],[sh[0]+16,sh[1]-4],4,EQC);
+    else s += Ci(hand,9,EQC,.92) + Ci(hand,5,'#121508') + Ci(hand,3,EQC);
+  }
+  if (eq === 'Dumbbell') s += Ln([hand[0]-7,hand[1]],[hand[0]+7,hand[1]],4,EQC) + Ci([hand[0]-7,hand[1]],5,EQC) + Ci([hand[0]+7,hand[1]],5,EQC);
+  if (eq === 'Kettlebell') s += Ci([hand[0],hand[1]+9],7,EQC) + `<path d="M ${hand[0]-5} ${hand[1]+4} Q ${hand[0]} ${hand[1]-4} ${hand[0]+5} ${hand[1]+4}" stroke="${EQC}" stroke-width="3" fill="none"/>`;
+  if (eq === 'Plate') s += Ci(hand,10,EQC,.92) + Ci(hand,4,'#121508');
+  if (eq === 'Band') { const a = [pose.foot[0],148]; s += `<path d="M ${hand[0]} ${hand[1]} Q ${(hand[0]+a[0])/2+9} ${(hand[1]+a[1])/2} ${a[0]} ${a[1]}" stroke="${EQC}" stroke-width="3" fill="none" stroke-dasharray="5 4"/>`; }
+  return s;
+}
+
+function ExerciseBuilder({ group, gl, onSave, onCancel }) {
+  const [step, setStep] = useState(1);
+  const [eq, setEq]     = useState(null);
+  const [pos, setPos]   = useState(null);
+  const [move, setMove] = useState(null);
+  const [grip, setGrip] = useState(null);
+  const [name, setName] = useState('');
+  const STEPS = {
+    1: { title:'Equipment', sub:'What are you lifting with?', chips:['Barbell','Dumbbell','Cable','Machine','Bodyweight','Kettlebell','Plate','Band','Smith Machine'], val:eq, set:setEq, btn:'Next: Position' },
+    2: { title:'Position', sub:'How is your body set up?', chips:['Standing','Seated','Lying Flat','Incline','Decline','Bent-Over','Kneeling','Hanging'], val:pos, set:setPos, btn:'Next: Movement' },
+    3: { title:'Movement', sub:'What does the movement look like?', chips:['Press','Row','Curl','Raise','Extension','Squat','Lunge','Fly','Pull','Hold'], val:move, set:setMove, btn:'Next: Name' },
+    4: { title:'Name & Save', sub:'Auto-named. Edit it if you like.', btn:'Save to ' + gl },
+  };
+  const s = STEPS[step];
+  const autoName = [pos, eq, grip, move].filter(Boolean).join(' ');
+  function next() {
+    if (step < 4) {
+      if (step === 3) setName(autoName);
+      setStep(step + 1);
+      return;
+    }
+    const finalName = (name || autoName || '').trim();
+    if (!finalName) return;
+    onSave({
+      id: 'custom_' + Date.now(),
+      name: finalName, group, gl,
+      eq: BUILDER_EQ_MAP[eq] || 'dumbbell',
+      custom: true,
+      builder: { eq, pos, move, grip },
+    });
+  }
+  const chipRow = (chips, val, set) => chips.map(c => (
+    <div key={c} className={`builder-chip ${val === c ? 'sel' : ''}`} onClick={() => set(val === c ? null : c)}>{c}</div>
+  ));
+  return (
+    <div className="builder-card">
+      <div className="builder-steps">{[1,2,3,4].map(i => <div key={i} className={`builder-step ${i <= step ? 'on' : ''}`} />)}</div>
+      <div>
+        <div className="builder-title">{s.title}</div>
+        <div className="builder-sub">{s.sub}</div>
+      </div>
+      <div className="builder-stage">
+        <svg viewBox="0 0 220 170" dangerouslySetInnerHTML={{ __html: builderFigureSVG(eq, pos, move) }} />
+      </div>
+      <div className="builder-name-preview">
+        <label>Your exercise · {gl}</label>
+        <div className="builder-name-line">
+          {step === 4
+            ? <span className="b-slot">{name || autoName || '—'}</span>
+            : autoName
+              ? <span className="b-slot">{autoName}</span>
+              : <span className="b-ghost">Tap chips to build the name…</span>}
+        </div>
+      </div>
+      {step < 4 ? (
+        <div className="builder-chips">
+          {chipRow(s.chips, s.val, s.set)}
+          {step === 3 && <>
+            <div className="builder-chips-label">Grip (optional)</div>
+            {chipRow(['Overhand','Underhand','Neutral','Wide Grip','Close Grip'], grip, setGrip)}
+          </>}
+        </div>
+      ) : (
+        <div>
+          <div className="setup-label">Name — edit if you want (e.g. "Power Clean")</div>
+          <input className="setup-input" type="text" value={name} placeholder={autoName || 'e.g. Power Clean'} onChange={e => setName(e.target.value)} />
+        </div>
+      )}
+      <button className="btn-pink" onClick={next} disabled={step < 4 ? !s.val : !(name || autoName).trim()}>{s.btn}</button>
+      {step < 4 && <button className="btn-outline" onClick={() => setStep(step + 1)}>Skip this step →</button>}
+      {step > 1 && <button className="btn-outline" onClick={() => setStep(step - 1)}>← Back</button>}
+      <button className="btn-outline" onClick={onCancel}>Cancel</button>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════
    GROUP DETAIL SCREEN
 ═══════════════════════════════════════ */
-function GroupDetailScreen({ group, onBack, onPick, onFinish, completedIds, partialMap = {}, history, allExercises }) {
+function GroupDetailScreen({ group, onBack, onPick, onFinish, completedIds, partialMap = {}, history, allExercises, onSaveCustom }) {
   const [showAddCustom, setShowAddCustom] = useState(false);
-  const [customName, setCustomName] = useState('');
   const meta = GROUP_META[group];
   const exs  = (allExercises || DB).filter(e => e.group === group);
   const totalLogged = completedIds.length + Object.keys(partialMap).length;
 
-  function addSessionExercise() {
-    if (!customName.trim()) return;
-    const ex = { id: 'session_' + Date.now(), name: customName.trim(), group, gl: exs[0].gl, custom: true, sessionAdded: true };
-    setCustomName(''); setShowAddCustom(false);
+  function handleBuilderSave(ex) {
+    setShowAddCustom(false);
+    onSaveCustom(ex);
     onPick(ex);
   }
 
@@ -2581,6 +2768,7 @@ function GroupDetailScreen({ group, onBack, onPick, onFinish, completedIds, part
               <div className="ex-row-info">
                 <div className="ex-row-name">{ex.name}</div>
                 {pb > 0 && <div className="ex-row-pb">Best: {pb}</div>}
+                {ex.custom && <span className="ex-custom-tag">Custom</span>}
               </div>
               {WIKI[ex.id] && (
                 <button className="ex-info-btn" aria-label={`How to do ${ex.name}`}
@@ -2597,20 +2785,15 @@ function GroupDetailScreen({ group, onBack, onPick, onFinish, completedIds, part
           );
         })}
 
-        {/* Add a different exercise on the fly */}
+        {/* Build your own exercise */}
         {showAddCustom ? (
-          <div style={{ background:'var(--card)', borderRadius:14, padding:'14px 16px', boxShadow:'var(--sh1)', display:'flex', flexDirection:'column', gap:10 }}>
-            <div className="setup-label">Exercise Name</div>
-            <input className="setup-input" type="text" placeholder="e.g. Incline Cable Fly" value={customName} onChange={e => setCustomName(e.target.value)} autoFocus />
-            <button className="btn-pink" onClick={addSessionExercise} disabled={!customName.trim()}>Start This Exercise →</button>
-            <button className="btn-outline" onClick={() => { setShowAddCustom(false); setCustomName(''); }}>Cancel</button>
-          </div>
+          <ExerciseBuilder group={group} gl={exs[0] ? exs[0].gl : group.charAt(0).toUpperCase() + group.slice(1)} onSave={handleBuilderSave} onCancel={() => setShowAddCustom(false)} />
         ) : (
           <div className="ex-row-card" style={{ borderStyle:'dashed', borderColor:'var(--text2)', opacity:.65 }} onClick={() => setShowAddCustom(true)}>
             <div className="ex-row-icon" style={{ fontSize:20, color:'var(--text2)' }}>+</div>
             <div className="ex-row-info">
-              <div className="ex-row-name" style={{ color:'var(--text2)' }}>Add a different exercise</div>
-              <div className="ex-row-pb">Not in the list? Log it here on the fly</div>
+              <div className="ex-row-name" style={{ color:'var(--text2)' }}>Build your own exercise</div>
+              <div className="ex-row-pb">Pick equipment, position, movement — it stays in this group</div>
             </div>
           </div>
         )}
@@ -3498,7 +3681,7 @@ function App() {
       )}
 
       {!splash && screen === 'group-detail' && activeGroup && (
-        <GroupDetailScreen group={activeGroup} onBack={backFromGroupDetail} onPick={pickExercise} onFinish={finishWorkout} completedIds={doneIds} partialMap={partialMap} history={history} allExercises={allExercises} />
+        <GroupDetailScreen group={activeGroup} onBack={backFromGroupDetail} onPick={pickExercise} onFinish={finishWorkout} completedIds={doneIds} partialMap={partialMap} history={history} allExercises={allExercises} onSaveCustom={ex => onSaveCustomEx([...customEx, ex])} />
       )}
 
       {!splash && screen === 'log' && activeEx && (
