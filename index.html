@@ -154,17 +154,32 @@
       box-shadow: 0 4px 20px rgba(200,242,53,.35), 0 1px 4px rgba(176,217,41,.22);
       transition: transform .12s, box-shadow .12s;
     }
-    .btn-pink:active { transform: scale(.97); box-shadow: 0 2px 8px rgba(200,242,53,.25); }
+    .btn-pink:active {
+      transform: scale(.93);
+      filter: brightness(1.3);
+      box-shadow: 0 0 0 6px rgba(200,242,53,.28), 0 2px 8px rgba(200,242,53,.25);
+      transition: transform .05s, box-shadow .05s, filter .05s;
+    }
     .btn-pink:disabled { opacity: .38; }
+    .btn-pink.btn-pop { animation: btn-pop .35s cubic-bezier(.2,.8,.4,1); }
+    @keyframes btn-pop {
+      0%   { transform: scale(.93); box-shadow: 0 0 0 0 rgba(200,242,53,.5); }
+      55%  { transform: scale(1.03); }
+      100% { transform: scale(1); box-shadow: 0 0 0 18px rgba(200,242,53,0); }
+    }
 
     .btn-outline {
       width: 100%; padding: 14px; border-radius: var(--r-sm);
       border: 2px solid var(--border); background: transparent;
       color: var(--text); font-family: var(--fd);
       font-size: 17px; font-weight: 700; letter-spacing: .4px;
-      cursor: pointer; transition: background .14s;
+      cursor: pointer; transition: background .14s, transform .12s, border-color .14s;
     }
-    .btn-outline:active { background: rgba(127,127,127,.08); }
+    .btn-outline:active {
+      background: rgba(200,242,53,.10); transform: scale(.95);
+      border-color: rgba(200,242,53,.45);
+      transition: background .05s, transform .05s, border-color .05s;
+    }
 
     /* ── Card ── */
     .card { background: var(--card); border-radius: var(--r); padding: 18px; box-shadow: var(--sh2); }
@@ -479,6 +494,41 @@
       transition: color .15s, border-color .15s;
     }
     .ex-info-btn:active { color: var(--pink); border-color: var(--pink); }
+
+    /* ─── REST TIMER ─── */
+    .rest-card {
+      background: var(--card); border: 1.5px solid rgba(200,242,53,.35);
+      border-radius: var(--r); padding: 14px 18px; box-shadow: var(--sh2);
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      animation: slideDown .25s ease;
+    }
+    .rest-card.rest-done { border-color: var(--success); }
+    .rest-label {
+      font-size: 10px; font-weight: 800; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--text2);
+    }
+    .rest-time {
+      font-family: var(--fd); font-size: 44px; font-weight: 900; line-height: 1;
+      color: var(--pink); font-variant-numeric: tabular-nums;
+    }
+    .rest-done .rest-time { color: var(--success); animation: dot-pop .45s ease; }
+    .rest-bar {
+      width: 100%; height: 6px; border-radius: 3px;
+      background: var(--border); overflow: hidden;
+    }
+    .rest-bar-fill {
+      height: 100%; border-radius: 3px;
+      background: linear-gradient(90deg, var(--pink2), var(--pink));
+      transition: width 1s linear;
+    }
+    .rest-actions { display: flex; gap: 10px; width: 100%; }
+    .rest-btn {
+      flex: 1; padding: 9px; border-radius: 10px;
+      border: 1.5px solid var(--border); background: transparent;
+      color: var(--text); font-size: 13px; font-weight: 700;
+      font-family: var(--fb); cursor: pointer; transition: all .12s;
+    }
+    .rest-btn:active { background: rgba(200,242,53,.12); border-color: rgba(200,242,53,.45); transform: scale(.95); }
 
     /* ─── EXERCISE BUILDER ─── */
     .builder-card {
@@ -2896,6 +2946,27 @@ function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, hist
   const suggestBW   = exercise.eq === 'bodyweight';
 
   const [justDone, setJustDone] = useState(null);
+  const [rest, setRest] = useState(null); // {left, total} seconds, or null
+
+  useEffect(() => {
+    if (!rest || rest.left <= 0) return;
+    const t = setTimeout(() => {
+      setRest(r => {
+        if (!r) return null;
+        const left = r.left - 1;
+        if (left <= 0) { vibe([60, 60, 60]); return { ...r, left: 0 }; }
+        return { ...r, left };
+      });
+    }, 1000);
+    return () => clearTimeout(t);
+  }, [rest]);
+
+  useEffect(() => {
+    if (rest && rest.left === 0) {
+      const t = setTimeout(() => setRest(null), 2500);
+      return () => clearTimeout(t);
+    }
+  }, [rest]);
 
   function completeSet(e) {
     let s;
@@ -2921,7 +2992,7 @@ function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, hist
     const next = [...doneSets, s];
     setDoneSets(next);
     if (currentSet >= totalSets) setAllDone(true);
-    else setCurrentSet(currentSet + 1);
+    else { setCurrentSet(currentSet + 1); setRest({ left: 90, total: 90 }); }
     onSetLogged({ ...exercise, sets: next, totalSets, weightType, warmup });
   }
 
@@ -2984,6 +3055,21 @@ function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, hist
             })}
           </div>
         </div>
+
+        {/* Rest timer between sets */}
+        {rest && !allDone && (
+          <div className={`rest-card ${rest.left === 0 ? 'rest-done' : ''}`}>
+            <div className="rest-label">{rest.left === 0 ? 'Rest over' : 'Rest'}</div>
+            <div className="rest-time">{rest.left === 0 ? 'GO' : `${Math.floor(rest.left / 60)}:${String(rest.left % 60).padStart(2, '0')}`}</div>
+            <div className="rest-bar"><div className="rest-bar-fill" style={{ width: `${(rest.left / rest.total) * 100}%` }} /></div>
+            {rest.left > 0 && (
+              <div className="rest-actions">
+                <button className="rest-btn" onClick={() => setRest(r => r ? { left: r.left + 30, total: r.total + 30 } : r)}>+30s</button>
+                <button className="rest-btn" onClick={() => setRest(null)}>Skip</button>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Warmup phase UI */}
         {inWarmup && (
@@ -3719,6 +3805,22 @@ function App() {
 ReactDOM.createRoot(document.getElementById('root')).render(<App />);
 </script>
 <script>
+  /* Tactile press feedback on every button: tiny vibration on touch,
+     pop animation on primary buttons. Delegated so React re-renders
+     never detach it. */
+  document.addEventListener('pointerdown', function (e) {
+    var btn = e.target.closest('button');
+    if (!btn || btn.disabled) return;
+    try { if (navigator.vibrate) navigator.vibrate(12); } catch (err) {}
+  }, { passive: true });
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest('button.btn-pink');
+    if (!btn || btn.disabled) return;
+    btn.classList.remove('btn-pop');
+    void btn.offsetWidth; /* restart animation */
+    btn.classList.add('btn-pop');
+  }, { passive: true });
+
   /* Register the service worker for offline + installability.
      Only on a secure context (https or localhost); file:// is skipped so
      local testing is unaffected. */
