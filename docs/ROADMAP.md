@@ -44,10 +44,12 @@ VibeLift's reason to exist: **adapt to the real gym on the spot** — bench take
 
 Goal: the app lives at a URL, users have accounts, data survives device loss. Order matters; each milestone independently verifiable.
 
-**2A. Deploy static app to Vercel** (smallest possible first step)
-- Repo already git. Deploy `index.html` + `assets/` as static site (vercel plugin available in the toolkit).
-- Verify on Uroš's phone over the real URL. PWA manifest + service worker for installability/offline — the app is offline-first by nature, keep it that way.
-- Exit test: he installs it on his phone home screen, logs a workout offline, nothing lost.
+**2A. Deploy static app to Vercel** — ✅ DEPLOYED 2026-07-17 (commit 873d9a1)
+- Live: **https://vibelift.vercel.app** (Vercel project `vibelift` / prj_VgOgsrw9RsEC9gvZl4V7euIotElz, team_jo24l71rM6Vt6EpGBO1efwEg). Git-linked to GitHub `urospavic1994-hash/vibelift` main → **push to main = auto production deploy** (no CLI/manual step).
+- Shipped: `manifest.json` (installable/standalone), `sw.js` (offline-first: precache shell + CDN React/Babel/fonts, runtime-cache assets), square app icons (neon-arrow mark) 192/512/maskable/apple-touch, head meta + SW registration (https-only guard). `.vercelignore` ships app only; `.gitignore` excludes .gstack/backups/design-source.
+- Verified live: public (no auth wall), app boots, manifest+sw served 200, SW registered & controlling, core cache = 10 items incl Babel (offline boot deps present).
+- ⏳ Exit test PENDING Uroš: install on phone home screen, airplane-mode, log a workout, confirm nothing lost. (CDP offline sim blocked in tooling; phone is the real test.)
+- Known follow-up: assets are 78MB (group hero PNGs/JPGs oversized); optimize before it matters for load speed. Not blocking.
 
 **2B. Backend: recommended Supabase** (auth + Postgres + RLS, generous free tier, plain JS SDK via CDN — no build step needed, fits the single-file architecture). Alternatives (Firebase, custom) only if a real blocker appears — justify any deviation in writing.
 - Auth: email magic-link first (no passwords to forget, no reset flows to build). Google sign-in second.
