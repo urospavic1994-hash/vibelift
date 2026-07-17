@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><title>Test</title></head>
+<body style="font-family:sans-serif;padding:40px;background:#edf1fd;">
+<div id="root"></div>
+<script src="https://unpkg.com/react@18.2.0/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.23.5/babel.min.js"></script>
+<script type="text/babel">
+function App() {
+  return (
+    <div style={{textAlign:'center',marginTop:60}}>
+      <h1 style={{color:'#0f2557',fontSize:48,fontWeight:900}}>✅ React is working!</h1>
+      <p style={{color:'#666',marginTop:16}}>CDN loaded fine. The issue is in the main file.</p>
+    </div>
+  );
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

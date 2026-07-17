@@ -1,0 +1,9 @@
+# Keep the public deploy to the app itself.
+New lustrations/
+Untitled design/
+brand/
+docs/
+scripts/
+website/
+index.backup.html
+*.md

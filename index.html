@@ -5,6 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>VibeLift</title>
   <link rel="icon" type="image/png" href="./assets/logo.png">
+  <link rel="manifest" href="./manifest.json">
+  <meta name="theme-color" content="#121508">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="VibeLift">
+  <link rel="apple-touch-icon" href="./assets/icons/apple-touch-icon.png">
   <meta property="og:title" content="VibeLift">
   <meta property="og:description" content="Track your workouts, lift your vibe.">
   <meta property="og:image" content="https://vibelift.vercel.app/assets/logo.png">
@@ -3710,6 +3717,19 @@ function App() {
 }
 
 ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+<script>
+  /* Register the service worker for offline + installability.
+     Only on a secure context (https or localhost); file:// is skipped so
+     local testing is unaffected. */
+  if ('serviceWorker' in navigator &&
+      (location.protocol === 'https:' || location.hostname === 'localhost')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('./sw.js').catch(function (e) {
+        console.warn('[VibeLift] SW registration failed:', e);
+      });
+    });
+  }
 </script>
 </body>
 </html>

@@ -1,0 +1,12 @@
+# gstack browse tool state (local only)
+.gstack/
+
+# Vercel link state
+.vercel/
+
+# Local backup copies
+index.backup.html
+
+# Working design-source folders (not part of the app)
+New lustrations/
+Untitled design/
