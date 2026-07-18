@@ -23,6 +23,7 @@
   <script src="https://unpkg.com/react@18.2.0/umd/react.development.js"></script>
   <script src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/@babel/standalone@7.23.5/babel.min.js"></script>
+  <script src="https://unpkg.com/@supabase/supabase-js@2.49.4/dist/umd/supabase.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -1145,6 +1146,54 @@
     .add-ex-form .setup-input { background: var(--card); border-color: var(--border); color: var(--text); }
     .add-ex-form .setup-input:focus { border-color: var(--pink); box-shadow: 0 0 0 4px rgba(200,242,53,.12); }
     .add-ex-form .setup-select { background: var(--card); border-color: var(--border); color: var(--text); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' viewBox='0 0 12 7'%3E%3Cpath fill='%23888' d='M6 7L0 0h12z'/%3E%3C/svg%3E"); }
+    /* ── Account section (Phase 2B) ── */
+    .acct-wrap {
+      padding: 14px 22px 6px;
+      display: flex; flex-direction: column; gap: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .acct-big { font-family: var(--fd); font-size: 24px; font-weight: 900; text-transform: uppercase; line-height: 1.05; color: var(--text); }
+    .acct-lede { font-size: 13px; color: var(--text2); margin-top: -6px; }
+    .acct-wrap .setup-input { background: var(--card); border-color: var(--border); color: var(--text); }
+    .acct-wrap .setup-input:focus { border-color: var(--pink); box-shadow: 0 0 0 4px rgba(200,242,53,.12); }
+    .acct-ghost {
+      width: 100%; padding: 12px; border-radius: 12px;
+      border: 1.5px solid var(--border); background: transparent;
+      color: var(--text2); font-size: 14px; font-weight: 600; cursor: pointer;
+      font-family: var(--fb);
+    }
+    .acct-ghost:active { transform: scale(.98); }
+    .acct-ghost.danger { color: #ff7a7a; border-color: rgba(255,122,122,.3); }
+    .acct-fine { font-size: 11.5px; color: var(--text2); text-align: center; }
+    .acct-err { font-size: 12.5px; color: #ff7a7a; text-align: center; font-weight: 600; }
+    .acct-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+      padding: 14px 16px; display: flex; flex-direction: column; gap: 10px;
+    }
+    .acct-row { display: flex; align-items: center; gap: 12px; }
+    .acct-avatar {
+      width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0;
+      background: rgba(200,242,53,.14); border: 1.5px solid rgba(200,242,53,.4);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--fd); font-weight: 900; font-size: 18px; color: var(--pink);
+    }
+    .acct-email { font-size: 14px; font-weight: 600; color: var(--text); overflow-wrap: anywhere; }
+    .acct-meta { font-size: 11px; color: var(--text2); }
+    .sync-pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 10px; font-weight: 900; letter-spacing: 1.4px; text-transform: uppercase;
+      color: #0daa74; border: 1px solid rgba(13,170,116,.45); border-radius: 12px;
+      padding: 3px 10px; width: max-content;
+    }
+    .sync-dot { width: 7px; height: 7px; border-radius: 50%; background: #0daa74; }
+    .mail-hero { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 14px 0 4px; text-align: center; }
+    .mail-ic {
+      width: 64px; height: 64px; border-radius: 20px;
+      background: rgba(200,242,53,.10); border: 1px solid rgba(200,242,53,.3);
+      display: flex; align-items: center; justify-content: center;
+      animation: mail-pulse 1.8s ease-in-out infinite;
+    }
+    @keyframes mail-pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.07); } }
     .custom-ex-item {
       background: transparent; border-radius: 0; padding: 14px 22px;
       display: flex; align-items: center; justify-content: space-between;
@@ -1912,6 +1961,16 @@ function loadCustomEx() {
 }
 function saveCustomEx(ex) { localStorage.setItem('fittrack_custom_ex', JSON.stringify(ex)); }
 
+/* ── Cloud account (Supabase, Phase 2B) ──
+   The publishable key is safe to ship in the page — it only grants what
+   Row Level Security allows. Client is null if the CDN script failed
+   (e.g. first-ever load while offline); the app must keep working without it. */
+const SUPA_URL = 'https://gidxxufmlqdapmekvcpm.supabase.co';
+const SUPA_KEY = 'sb_publishable_duMFn571k66MyZ0XU-NDCg_mGTJoKfk';
+const supa = (typeof supabase !== 'undefined' && supabase.createClient)
+  ? supabase.createClient(SUPA_URL, SUPA_KEY)
+  : null;
+
 function getStreak(history) {
   if (!history.length) return 0;
   const dates = [...new Set(history.map(w => w.date))].sort().reverse();
@@ -2328,6 +2387,101 @@ function ProfileSetupScreen({ onSave }) {
 }
 
 /* ═══════════════════════════════════════
+   ACCOUNT SECTION (Phase 2B — magic-link login)
+═══════════════════════════════════════ */
+function AccountSection() {
+  const [session, setSession] = useState(null);
+  const [mode, setMode] = useState('idle');   // idle | sending | sent
+  const [email, setEmail] = useState('');
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (!supa) return;
+    supa.auth.getSession().then(({ data }) => setSession(data.session));
+    const { data: sub } = supa.auth.onAuthStateChange((_e, s) => setSession(s));
+    return () => sub.subscription.unsubscribe();
+  }, []);
+
+  if (!supa) return (
+    <div className="acct-wrap">
+      <div className="acct-fine">Accounts need an internet connection — reconnect and reopen Settings.</div>
+    </div>
+  );
+
+  async function sendLink() {
+    const em = email.trim().toLowerCase();
+    if (!/^\S+@\S+\.\S+$/.test(em)) { setError("That doesn't look like an email address."); return; }
+    setError(''); setMode('sending');
+    const { error: err } = await supa.auth.signInWithOtp({
+      email: em,
+      options: { emailRedirectTo: window.location.origin + window.location.pathname }
+    });
+    if (err) { setError(err.message); setMode('idle'); }
+    else { setEmail(em); setMode('sent'); }
+  }
+
+  async function signOut() {
+    await supa.auth.signOut();
+    setMode('idle'); setEmail(''); setError('');
+  }
+
+  if (session && session.user) {
+    const em = session.user.email || '';
+    const since = session.user.created_at
+      ? new Date(session.user.created_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
+      : null;
+    return (
+      <div className="acct-wrap">
+        <div className="acct-card">
+          <div className="acct-row">
+            <div className="acct-avatar">{em.charAt(0).toUpperCase() || '?'}</div>
+            <div>
+              <div className="acct-email">{em}</div>
+              {since && <div className="acct-meta">Member since {since}</div>}
+            </div>
+          </div>
+          <div className="sync-pill"><span className="sync-dot" />Signed in</div>
+          <button className="acct-ghost" onClick={signOut}>Sign out (workouts stay on this phone)</button>
+        </div>
+        <div className="acct-fine">Cloud sync of your workouts arrives in the next update — this account is ready for it.</div>
+      </div>
+    );
+  }
+
+  if (mode === 'sent') {
+    return (
+      <div className="acct-wrap">
+        <div className="mail-hero">
+          <div className="mail-ic">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none"><rect x="2" y="5" width="20" height="14" rx="3" stroke="var(--pink)" strokeWidth="2"/><path d="M3 7 L12 13.5 L21 7" stroke="var(--pink)" strokeWidth="2" strokeLinecap="round"/></svg>
+          </div>
+          <div className="acct-big">Check your<br/>email</div>
+          <div className="acct-lede">We sent a sign-in link to<br/><b style={{ color:'var(--text)' }}>{email}</b></div>
+        </div>
+        <div className="acct-fine">Tap the link on THIS device and you're in. Link works for 1 hour.</div>
+        <button className="acct-ghost" onClick={sendLink}>Resend link</button>
+        <button className="acct-ghost" onClick={() => { setMode('idle'); setEmail(''); }}>Use a different email</button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="acct-wrap">
+      <div className="acct-big">Save your<br/>progress</div>
+      <div className="acct-lede">Your workouts, on every device. No password — we email you a magic sign-in link.</div>
+      <input className="setup-input" type="email" inputMode="email" autoComplete="email" placeholder="you@email.com"
+        value={email} onChange={e => setEmail(e.target.value)}
+        onKeyDown={e => { if (e.key === 'Enter') sendLink(); }} />
+      {error && <div className="acct-err">{error}</div>}
+      <button className="btn-pink" onClick={sendLink} disabled={mode === 'sending' || !email.trim()}>
+        {mode === 'sending' ? 'Sending…' : 'Send Magic Link'}
+      </button>
+      <div className="acct-fine">Your existing workouts stay on this phone either way. Nothing is lost.</div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════
    SETTINGS / PROFILE SCREEN
 ═══════════════════════════════════════ */
 function SettingsScreen({ onBack, profile, onSaveProfile, theme, onToggleTheme, customEx, onSaveCustomEx, onShowTour }) {
@@ -2388,6 +2542,9 @@ function SettingsScreen({ onBack, profile, onSaveProfile, theme, onToggleTheme, 
             <button className="btn-outline" style={{ borderColor:'var(--border)', color:'var(--text2)' }} onClick={() => setEditingName(false)}>Cancel</button>
           </div>
         )}
+
+        <div className="settings-sec">Account</div>
+        <AccountSection />
 
         <div className="settings-sec">Appearance</div>
         <div className="settings-row" onClick={onToggleTheme}>

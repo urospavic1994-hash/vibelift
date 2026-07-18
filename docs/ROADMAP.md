@@ -53,6 +53,7 @@ Goal: the app lives at a URL, users have accounts, data survives device loss. Or
 
 **2B. Backend: recommended Supabase** (auth + Postgres + RLS, generous free tier, plain JS SDK via CDN — no build step needed, fits the single-file architecture). Alternatives (Firebase, custom) only if a real blocker appears — justify any deviation in writing.
 - Auth: email magic-link first (no passwords to forget, no reset flows to build). Google sign-in second.
+- 🔨 IN PROGRESS 2026-07-18: Supabase project `vibelift` created (ref gidxxufmlqdapmekvcpm, Frankfurt). Magic-link login shipped per approved mockup — Account section in Settings (login → check-email → signed-in card + sign out), supabase-js v2.49.4 via CDN, publishable key in page (RLS-safe by design). Verified locally: full UI flow, POST reaches project `/auth/v1/otp`, error surfacing works. ⏳ Remaining: Uroš sets Site URL + redirect allowlist in Supabase dashboard, then live magic-link round-trip test on vibelift.vercel.app; then schema+RLS tables.
 - Schema sketch: `profiles` (user settings), `workouts` (jsonb per workout, keyed by user+date), `custom_exercises` (jsonb). Mirror the existing localStorage shapes — do not redesign the data model, migrate it.
 - RLS: user sees only own rows. Non-negotiable.
 

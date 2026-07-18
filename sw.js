@@ -1,6 +1,6 @@
 /* VibeLift service worker — offline-first PWA.
    Bump CACHE_VERSION on any release to invalidate old caches. */
-const CACHE_VERSION = 'vibelift-v1';
+const CACHE_VERSION = 'vibelift-v2';
 const CORE_CACHE = CACHE_VERSION + '-core';
 const RUNTIME_CACHE = CACHE_VERSION + '-runtime';
 
@@ -19,6 +19,7 @@ const CORE_CDN = [
   'https://unpkg.com/react@18.2.0/umd/react.development.js',
   'https://unpkg.com/react-dom@18.2.0/umd/react-dom.development.js',
   'https://unpkg.com/@babel/standalone@7.23.5/babel.min.js',
+  'https://unpkg.com/@supabase/supabase-js@2.49.4/dist/umd/supabase.js',
   'https://fonts.googleapis.com/css2?family=Passion+One:wght@400;700;900&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap'
 ];
 
