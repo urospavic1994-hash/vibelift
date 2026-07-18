@@ -1186,6 +1186,10 @@
       padding: 3px 10px; width: max-content;
     }
     .sync-dot { width: 7px; height: 7px; border-radius: 50%; background: #0daa74; }
+    .sync-pill.gray  { color: var(--text2); border-color: var(--border); }
+    .sync-pill.gray .sync-dot { background: var(--text2); }
+    .sync-pill.amber { color: #ffb03a; border-color: rgba(255,176,58,.45); }
+    .sync-pill.amber .sync-dot { background: #ffb03a; animation: mail-pulse 1.2s ease-in-out infinite; }
     .mail-hero { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 14px 0 4px; text-align: center; }
     .mail-ic {
       width: 64px; height: 64px; border-radius: 20px;
@@ -1971,6 +1975,100 @@ const supa = (typeof supabase !== 'undefined' && supabase.createClient)
   ? supabase.createClient(SUPA_URL, SUPA_KEY)
   : null;
 
+/* ── Cloud sync engine (Phase 2C) ──
+   localStorage stays the source of truth; the cloud is a mirror.
+   Merge rule (documented in docs/ROADMAP.md): per workout-date. Dates that
+   exist only in the cloud are adopted locally; on a per-date conflict the
+   device you are holding wins and re-pushes. Sync never blocks the UI —
+   every failure just waits for the next trigger (app open, login, back
+   online, workout finished). */
+const cloudState = { status: 'idle', count: null, listeners: new Set() };
+function cloudSet(status, count) {
+  cloudState.status = status;
+  if (count != null) cloudState.count = count;
+  cloudState.listeners.forEach(f => { try { f(); } catch {} });
+}
+function groupByDate(hist) {
+  const m = {};
+  (hist || []).forEach(w => { if (w && w.date) (m[w.date] = m[w.date] || []).push(w); });
+  return m;
+}
+async function cloudUser() {
+  if (!supa) return null;
+  try { const { data } = await supa.auth.getSession(); return data.session ? data.session.user : null; }
+  catch { return null; }
+}
+async function cloudPushDates(uid, hist, dates) {
+  const byDate = groupByDate(hist);
+  const rows = dates.map(d => ({ user_id: uid, date: d, data: byDate[d] || [], updated_at: new Date().toISOString() }));
+  if (!rows.length) return;
+  const { error } = await supa.from('workouts').upsert(rows);
+  if (error) throw error;
+}
+async function cloudPushBlob(uid, table, value) {
+  const { error } = await supa.from(table).upsert({ user_id: uid, data: value, updated_at: new Date().toISOString() });
+  if (error) throw error;
+}
+function cloudSaveMeta(count) {
+  try { localStorage.setItem('fittrack_cloud_meta', JSON.stringify({ lastSync: Date.now(), count })); } catch {}
+}
+async function cloudFullSync(app) {
+  const user = await cloudUser();
+  if (!user) return;
+  if (!navigator.onLine) { cloudSet('offline'); return; }
+  cloudSet('syncing');
+  try {
+    const { data: rows, error } = await supa.from('workouts').select('date,data');
+    if (error) throw error;
+    const local = app.getHistory();
+    const localByDate = groupByDate(local);
+    const adopted = [];
+    (rows || []).forEach(r => {
+      if (!localByDate[r.date] && Array.isArray(r.data) && r.data.length) adopted.push(...r.data);
+    });
+    let merged = local;
+    if (adopted.length) {
+      merged = [...local, ...adopted].sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0));
+      app.applyHistory(merged);
+    }
+    await cloudPushDates(user.id, merged, Object.keys(groupByDate(merged)));
+
+    const { data: ceRow } = await supa.from('custom_exercises').select('data').maybeSingle();
+    const localCe = app.getCustomEx() || [];
+    const remoteCe = (ceRow && Array.isArray(ceRow.data)) ? ceRow.data : [];
+    const seen = new Set(localCe.map(e => e.id));
+    const mergedCe = [...localCe, ...remoteCe.filter(e => e && e.id && !seen.has(e.id))];
+    if (mergedCe.length !== localCe.length) app.applyCustomEx(mergedCe);
+    await cloudPushBlob(user.id, 'custom_exercises', mergedCe);
+
+    const { data: pRow } = await supa.from('profiles').select('data').maybeSingle();
+    const localP = app.getProfile();
+    if (!localP && pRow && pRow.data) app.applyProfile(pRow.data);
+    if (localP) await cloudPushBlob(user.id, 'profiles', localP);
+
+    cloudSet('synced', merged.length);
+    cloudSaveMeta(merged.length);
+  } catch (e) {
+    cloudSet(navigator.onLine ? 'error' : 'offline');
+  }
+}
+async function cloudPushQuick(hist, dates) {
+  const user = await cloudUser();
+  if (!user) return;
+  if (!navigator.onLine) { cloudSet('offline'); return; }
+  cloudSet('syncing');
+  try {
+    await cloudPushDates(user.id, hist, dates);
+    cloudSet('synced', hist.length);
+    cloudSaveMeta(hist.length);
+  } catch (e) { cloudSet('error'); }
+}
+async function cloudPushBlobQuick(table, value) {
+  const user = await cloudUser();
+  if (!user || !navigator.onLine) return;
+  try { await cloudPushBlob(user.id, table, value); } catch {}
+}
+
 function getStreak(history) {
   if (!history.length) return 0;
   const dates = [...new Set(history.map(w => w.date))].sort().reverse();
@@ -2394,12 +2492,15 @@ function AccountSection() {
   const [mode, setMode] = useState('idle');   // idle | sending | sent
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
+  const [, bump] = useState(0);               // re-render on cloud status change
 
   useEffect(() => {
     if (!supa) return;
     supa.auth.getSession().then(({ data }) => setSession(data.session));
     const { data: sub } = supa.auth.onAuthStateChange((_e, s) => setSession(s));
-    return () => sub.subscription.unsubscribe();
+    const onCloud = () => bump(x => x + 1);
+    cloudState.listeners.add(onCloud);
+    return () => { sub.subscription.unsubscribe(); cloudState.listeners.delete(onCloud); };
   }, []);
 
   if (!supa) return (
@@ -2440,10 +2541,20 @@ function AccountSection() {
               {since && <div className="acct-meta">Member since {since}</div>}
             </div>
           </div>
-          <div className="sync-pill"><span className="sync-dot" />Signed in</div>
+          {(() => {
+            const s = cloudState.status;
+            let meta = null;
+            try { meta = JSON.parse(localStorage.getItem('fittrack_cloud_meta') || 'null'); } catch {}
+            if (s === 'syncing') return <div className="sync-pill amber"><span className="sync-dot" />Syncing…</div>;
+            if (s === 'offline') return <div className="sync-pill gray"><span className="sync-dot" />Offline · will sync later</div>;
+            if (s === 'error')   return <div className="sync-pill gray"><span className="sync-dot" />Sync paused · will retry</div>;
+            if (s === 'synced')  return <div className="sync-pill"><span className="sync-dot" />Synced · {cloudState.count} workouts in cloud</div>;
+            if (meta && meta.count != null) return <div className="sync-pill"><span className="sync-dot" />Synced · {meta.count} workouts in cloud</div>;
+            return <div className="sync-pill gray"><span className="sync-dot" />Waiting to sync</div>;
+          })()}
           <button className="acct-ghost" onClick={signOut}>Sign out (workouts stay on this phone)</button>
         </div>
-        <div className="acct-fine">Cloud sync of your workouts arrives in the next update — this account is ready for it.</div>
+        <div className="acct-fine">Sync happens automatically after every workout. Offline? It syncs when you're back.</div>
       </div>
     );
   }
@@ -2476,7 +2587,7 @@ function AccountSection() {
       <button className="btn-pink" onClick={sendLink} disabled={mode === 'sending' || !email.trim()}>
         {mode === 'sending' ? 'Sending…' : 'Send Magic Link'}
       </button>
-      <div className="acct-fine">Your existing workouts stay on this phone either way. Nothing is lost.</div>
+      <div className="acct-fine">Your existing workouts upload automatically on first login. Nothing is lost.</div>
     </div>
   );
 }
@@ -3814,6 +3925,30 @@ function App() {
 
   useEffect(() => { saveCurrent(current); }, [current]);
 
+  // Cloud sync (Phase 2C): refs so the sync engine always reads fresh state
+  const historyRef = React.useRef(history);   historyRef.current = history;
+  const customExRef = React.useRef(customEx); customExRef.current = customEx;
+  const profileRef = React.useRef(profile);   profileRef.current = profile;
+  useEffect(() => {
+    if (!supa) return;
+    const accessors = {
+      getHistory:   () => historyRef.current,
+      applyHistory: h  => { setHistory(h); saveHistory(h); },
+      getCustomEx:  () => customExRef.current,
+      applyCustomEx: ex => { setCustomEx(ex); saveCustomEx(ex); },
+      getProfile:   () => profileRef.current,
+      applyProfile: p  => { setProfile(p); saveProfile(p); },
+    };
+    cloudFullSync(accessors);
+    const { data: sub } = supa.auth.onAuthStateChange(ev => {
+      if (ev === 'SIGNED_IN') cloudFullSync(accessors);
+      if (ev === 'SIGNED_OUT') cloudSet('idle');
+    });
+    const onOnline = () => cloudFullSync(accessors);
+    window.addEventListener('online', onOnline);
+    return () => { sub.subscription.unsubscribe(); window.removeEventListener('online', onOnline); };
+  }, []);
+
   function toggleTheme() { setTheme(t => t === 'light' ? 'dark' : 'light'); }
 
   // Merge built-in + custom exercises — passed to group screens
@@ -3833,8 +3968,8 @@ function App() {
     if (!localStorage.getItem('fittrack_toured')) setShowTour(true);
   }
 
-  function onSaveProfile(p) { saveProfile(p); setProfile(p); }
-  function onSaveCustomEx(ex) { saveCustomEx(ex); setCustomEx(ex); }
+  function onSaveProfile(p) { saveProfile(p); setProfile(p); cloudPushBlobQuick('profiles', p); }
+  function onSaveCustomEx(ex) { saveCustomEx(ex); setCustomEx(ex); cloudPushBlobQuick('custom_exercises', ex); }
 
   function startWorkout() {
     if (!current) setCurrent({ date: todayISO(), exercises: [] });
@@ -3863,6 +3998,7 @@ function App() {
     const base = [...history];
     const next = [...history, current];
     setHistory(next); saveHistory(next);
+    cloudPushQuick(next, [current.date]);
     setSummary({ workout: current, baseHistory: base, streak: getStreak(next) });
     setCurrent(null);
     setBreakModal(false);
