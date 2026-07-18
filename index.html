@@ -2493,6 +2493,8 @@ function AccountSection() {
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [, bump] = useState(0);               // re-render on cloud status change
+  const [delArmed, setDelArmed] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     if (!supa) return;
@@ -2523,7 +2525,18 @@ function AccountSection() {
 
   async function signOut() {
     await supa.auth.signOut();
-    setMode('idle'); setEmail(''); setError('');
+    setMode('idle'); setEmail(''); setError(''); setDelArmed(false);
+  }
+
+  async function deleteAccount() {
+    if (!delArmed) { setDelArmed(true); return; }
+    setDeleting(true); setError('');
+    const { error: err } = await supa.rpc('delete_account');
+    if (err) { setError('Delete failed: ' + err.message); setDeleting(false); setDelArmed(false); return; }
+    try { localStorage.removeItem('fittrack_cloud_meta'); } catch {}
+    await supa.auth.signOut();
+    cloudSet('idle');
+    setDeleting(false); setDelArmed(false); setMode('idle'); setEmail('');
   }
 
   if (session && session.user) {
@@ -2553,8 +2566,15 @@ function AccountSection() {
             return <div className="sync-pill gray"><span className="sync-dot" />Waiting to sync</div>;
           })()}
           <button className="acct-ghost" onClick={signOut}>Sign out (workouts stay on this phone)</button>
+          <button className="acct-ghost danger" onClick={deleteAccount} disabled={deleting}>
+            {deleting ? 'Deleting…' : delArmed ? 'Tap again to permanently delete' : 'Delete account & cloud data'}
+          </button>
+          {delArmed && !deleting && (
+            <div className="acct-fine">This erases your account and everything in the cloud. Workouts already on this phone stay here. <span style={{ color:'var(--pink)', cursor:'pointer', fontWeight:700 }} onClick={() => setDelArmed(false)}>Cancel</span></div>
+          )}
+          {error && <div className="acct-err">{error}</div>}
         </div>
-        <div className="acct-fine">Sync happens automatically after every workout. Offline? It syncs when you're back.</div>
+        <div className="acct-fine">Sync happens automatically after every workout. Offline? It syncs when you're back. <a href="./privacy.html" target="_blank" rel="noopener" style={{ color:'var(--text2)' }}>Privacy policy</a></div>
       </div>
     );
   }
@@ -2587,7 +2607,7 @@ function AccountSection() {
       <button className="btn-pink" onClick={sendLink} disabled={mode === 'sending' || !email.trim()}>
         {mode === 'sending' ? 'Sending…' : 'Send Magic Link'}
       </button>
-      <div className="acct-fine">Your existing workouts upload automatically on first login. Nothing is lost.</div>
+      <div className="acct-fine">Your existing workouts upload automatically on first login. Nothing is lost. <a href="./privacy.html" target="_blank" rel="noopener" style={{ color:'var(--text2)' }}>Privacy policy</a></div>
     </div>
   );
 }

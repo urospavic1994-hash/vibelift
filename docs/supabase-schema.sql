@@ -32,3 +32,17 @@ create policy "own rows" on public.custom_exercises
   for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
 create policy "own rows" on public.profiles
   for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+
+-- Phase 2D: self-serve account deletion (GDPR).
+-- security definer lets the signed-in user delete their own auth row;
+-- the on-delete-cascade references above wipe all their table rows with it.
+create or replace function public.delete_account()
+returns void
+language sql
+security definer
+set search_path = ''
+as $$
+  delete from auth.users where id = auth.uid();
+$$;
+revoke execute on function public.delete_account() from anon, public;
+grant execute on function public.delete_account() to authenticated;
