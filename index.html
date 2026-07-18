@@ -497,6 +497,32 @@
     .ex-info-btn:active { color: var(--pink); border-color: var(--pink); }
 
     /* ─── REST TIMER ─── */
+    .rest-float {
+      position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
+      z-index: 600; display: flex; align-items: center; gap: 12px;
+      background: var(--card); border: 1.5px solid var(--pink);
+      border-radius: 40px; padding: 10px 16px 10px 20px;
+      box-shadow: 0 8px 30px rgba(0,0,0,.55);
+      animation: rest-float-in .3s cubic-bezier(.2,.8,.4,1);
+      max-width: calc(100vw - 24px);
+    }
+    @keyframes rest-float-in { from { transform: translate(-50%, 30px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
+    .rest-float.rest-done { border-color: var(--success); }
+    .rest-float-label {
+      font-size: 10px; font-weight: 900; letter-spacing: 1.6px; text-transform: uppercase;
+      color: var(--text2);
+    }
+    .rest-done .rest-float-label { color: var(--success); font-size: 22px; font-family: var(--fd); letter-spacing: 1px; animation: dot-pop .45s ease; }
+    .rest-float-time { font-family: var(--fd); font-size: 30px; font-weight: 900; color: var(--pink); line-height: 1; min-width: 66px; text-align: center; }
+    .wo-clock {
+      position: fixed; top: 64px; right: 12px; z-index: 400;
+      display: flex; align-items: center; gap: 6px;
+      background: rgba(18,21,8,.78); border: 1px solid var(--border);
+      backdrop-filter: blur(6px); border-radius: 20px; padding: 5px 12px;
+      font-family: var(--fd); font-size: 16px; font-weight: 900; color: var(--text);
+      letter-spacing: .5px; pointer-events: none;
+    }
+    .wo-clock-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--pink); animation: mail-pulse 1.6s ease-in-out infinite; }
     .rest-card {
       background: var(--card); border: 1.5px solid rgba(200,242,53,.35);
       border-radius: var(--r); padding: 14px 18px; box-shadow: var(--sh2);
@@ -2072,14 +2098,16 @@ async function cloudPushBlobQuick(table, value) {
 function getStreak(history) {
   if (!history.length) return 0;
   const dates = [...new Set(history.map(w => w.date))].sort().reverse();
+  const prevDay = iso => { const dt = new Date(iso + 'T12:00:00'); dt.setDate(dt.getDate() - 1); return dt.toISOString().split('T')[0]; };
   const today = todayISO();
-  let streak = 0, check = today;
+  // A streak survives until a full day is missed: anchor on today OR yesterday,
+  // so "trained yesterday, opened the app today" still shows the streak.
+  let check = dates[0] === today ? today : (dates[0] === prevDay(today) ? prevDay(today) : null);
+  if (!check) return 0;
+  let streak = 0;
   for (const d of dates) {
-    if (d === check) {
-      streak++;
-      const dt = new Date(check + 'T12:00:00'); dt.setDate(dt.getDate() - 1);
-      check = dt.toISOString().split('T')[0];
-    } else if (d < check) break;
+    if (d === check) { streak++; check = prevDay(check); }
+    else if (d < check) break;
   }
   return streak;
 }
@@ -2706,6 +2734,27 @@ function SettingsScreen({ onBack, profile, onSaveProfile, theme, onToggleTheme, 
           </div>
           <div style={{ fontFamily:'var(--fd)', fontSize:17, fontWeight:800, color:'var(--pink)', marginLeft:'auto' }}>{weightUnit.toUpperCase()}</div>
         </div>
+        {(() => {
+          const opts = [60, 90, 120, 180, 'off'];
+          const cur = (profile && profile.restSecs) || 90;
+          const label = v => v === 'off' ? 'Off' : v < 120 ? v + 's' : (v / 60) + ' min';
+          const next = () => {
+            const i = opts.indexOf(cur);
+            onSaveProfile({ ...profile, restSecs: opts[(i + 1) % opts.length] });
+          };
+          return (
+            <div className="settings-row" onClick={next}>
+              <div className="s-icon">
+                <svg width="17" height="17" viewBox="0 0 17 17" fill="none" stroke="var(--text)" strokeWidth="1.8" strokeLinecap="round"><circle cx="8.5" cy="9.5" r="6"/><line x1="8.5" y1="9.5" x2="8.5" y2="6"/><line x1="6.5" y1="1.5" x2="10.5" y2="1.5"/></svg>
+              </div>
+              <div>
+                <div className="s-label">Rest Timer</div>
+                <div className="s-value">Countdown between sets · tap to change</div>
+              </div>
+              <div style={{ fontFamily:'var(--fd)', fontSize:17, fontWeight:800, color:'var(--pink)', marginLeft:'auto' }}>{label(cur).toUpperCase()}</div>
+            </div>
+          );
+        })()}
 
         <div className="settings-sec">Custom Exercises</div>
         {customEx.map(ex => (
@@ -3175,7 +3224,7 @@ const PLATE_DATA_LB = [
 /* ═══════════════════════════════════════
    LOG SCREEN — Tinder / hotel-card hero
 ═══════════════════════════════════════ */
-function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, history, weightUnit = 'kg' }) {
+function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, history, weightUnit = 'kg', restSecs = 90 }) {
   const [totalSets, setTotalSets] = useState(3);
   const [warmup, setWarmup] = useState('pending'); // 'pending' | 'done' | 'skipped'
   const [currentSet, setCurrentSet] = useState(1);
@@ -3234,20 +3283,34 @@ function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, hist
   const suggestBW   = exercise.eq === 'bodyweight';
 
   const [justDone, setJustDone] = useState(null);
-  const [rest, setRest] = useState(null); // {left, total} seconds, or null
+  // Rest timer: {endAt (epoch ms), total (s), left (s)} — left is derived from
+  // endAt on every tick, so locking the phone or switching apps can't drift it.
+  const [rest, setRest] = useState(null);
+  const restNotified = React.useRef(false);
 
   useEffect(() => {
     if (!rest || rest.left <= 0) return;
-    const t = setTimeout(() => {
+    const tick = () => {
       setRest(r => {
         if (!r) return null;
-        const left = r.left - 1;
-        if (left <= 0) { vibe([60, 60, 60]); return { ...r, left: 0 }; }
-        return { ...r, left };
+        const left = Math.max(0, Math.round((r.endAt - Date.now()) / 1000));
+        if (left <= 0 && r.left > 0) {
+          vibe([60, 60, 60]);
+          if (!restNotified.current && document.hidden && 'Notification' in window && Notification.permission === 'granted' && navigator.serviceWorker) {
+            restNotified.current = true;
+            navigator.serviceWorker.getRegistration().then(reg => {
+              if (reg) reg.showNotification('Rest over — GO 💪', { body: exercise.name + ' · next set', icon: './assets/icons/icon-192.png', vibrate: [60, 60, 60], tag: 'vibelift-rest' });
+            }).catch(() => {});
+          }
+          return { ...r, left: 0 };
+        }
+        return left === r.left ? r : { ...r, left };
       });
-    }, 1000);
-    return () => clearTimeout(t);
-  }, [rest]);
+    };
+    const iv = setInterval(tick, 500);
+    document.addEventListener('visibilitychange', tick);
+    return () => { clearInterval(iv); document.removeEventListener('visibilitychange', tick); };
+  }, [rest && rest.endAt]);
 
   useEffect(() => {
     if (rest && rest.left === 0) {
@@ -3280,7 +3343,16 @@ function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, hist
     const next = [...doneSets, s];
     setDoneSets(next);
     if (currentSet >= totalSets) setAllDone(true);
-    else { setCurrentSet(currentSet + 1); setRest({ left: 90, total: 90 }); }
+    else {
+      setCurrentSet(currentSet + 1);
+      if (restSecs !== 'off') {
+        restNotified.current = false;
+        setRest({ endAt: Date.now() + restSecs * 1000, total: restSecs, left: restSecs });
+        if ('Notification' in window && Notification.permission === 'default') {
+          try { Notification.requestPermission(); } catch {}
+        }
+      }
+    }
     onSetLogged({ ...exercise, sets: next, totalSets, weightType, warmup });
   }
 
@@ -3344,17 +3416,16 @@ function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, hist
           </div>
         </div>
 
-        {/* Rest timer between sets */}
+        {/* Rest timer — floating pill so it's visible no matter where you scrolled */}
         {rest && !allDone && (
-          <div className={`rest-card ${rest.left === 0 ? 'rest-done' : ''}`}>
-            <div className="rest-label">{rest.left === 0 ? 'Rest over' : 'Rest'}</div>
-            <div className="rest-time">{rest.left === 0 ? 'GO' : `${Math.floor(rest.left / 60)}:${String(rest.left % 60).padStart(2, '0')}`}</div>
-            <div className="rest-bar"><div className="rest-bar-fill" style={{ width: `${(rest.left / rest.total) * 100}%` }} /></div>
+          <div className={`rest-float ${rest.left === 0 ? 'rest-done' : ''}`}>
+            <span className="rest-float-label">{rest.left === 0 ? 'GO' : 'Rest'}</span>
+            {rest.left > 0 && <span className="rest-float-time">{Math.floor(rest.left / 60)}:{String(rest.left % 60).padStart(2, '0')}</span>}
             {rest.left > 0 && (
-              <div className="rest-actions">
-                <button className="rest-btn" onClick={() => setRest(r => r ? { left: r.left + 30, total: r.total + 30 } : r)}>+30s</button>
-                <button className="rest-btn" onClick={() => setRest(null)}>Skip</button>
-              </div>
+              <>
+                <button className="rest-btn" onClick={() => setRest(r => r ? { ...r, endAt: r.endAt + 30000, total: r.total + 30, left: r.left + 30 } : r)}>+30s</button>
+                <button className="rest-btn" onClick={() => setRest(null)} aria-label="Dismiss rest timer">✕</button>
+              </>
             )}
           </div>
         )}
@@ -3919,6 +3990,23 @@ function OnboardingScreen({ onDone }) {
 }
 
 /* ═══════════════════════════════════════
+   WORKOUT STOPWATCH (floating chip)
+═══════════════════════════════════════ */
+function WorkoutClock({ startedAt }) {
+  const [, tick] = useState(0);
+  useEffect(() => {
+    const iv = setInterval(() => tick(x => x + 1), 1000);
+    const onVis = () => tick(x => x + 1);
+    document.addEventListener('visibilitychange', onVis);
+    return () => { clearInterval(iv); document.removeEventListener('visibilitychange', onVis); };
+  }, []);
+  const secs = Math.max(0, Math.floor((Date.now() - startedAt) / 1000));
+  const h = Math.floor(secs / 3600), m = Math.floor((secs % 3600) / 60), s = secs % 60;
+  const txt = h > 0 ? `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}` : `${m}:${String(s).padStart(2,'0')}`;
+  return <div className="wo-clock"><span className="wo-clock-dot" />{txt}</div>;
+}
+
+/* ═══════════════════════════════════════
    APP ROOT
 ═══════════════════════════════════════ */
 function App() {
@@ -3992,7 +4080,7 @@ function App() {
   function onSaveCustomEx(ex) { saveCustomEx(ex); setCustomEx(ex); cloudPushBlobQuick('custom_exercises', ex); }
 
   function startWorkout() {
-    if (!current) setCurrent({ date: todayISO(), exercises: [] });
+    if (!current) setCurrent({ date: todayISO(), exercises: [], startedAt: Date.now() });
     setScreen('group-select');
   }
 
@@ -4099,7 +4187,12 @@ function App() {
           onSetLogged={savePartial}
           history={history}
           weightUnit={weightUnit}
+          restSecs={(profile && profile.restSecs) || 90}
         />
+      )}
+
+      {!splash && current && current.startedAt && ['group-select','group-detail','log'].includes(screen) && (
+        <WorkoutClock startedAt={current.startedAt} />
       )}
 
       {!splash && screen === 'summary' && summary && (

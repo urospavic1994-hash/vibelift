@@ -1,6 +1,6 @@
 /* VibeLift service worker — offline-first PWA.
    Bump CACHE_VERSION on any release to invalidate old caches. */
-const CACHE_VERSION = 'vibelift-v2';
+const CACHE_VERSION = 'vibelift-v3';
 const CORE_CACHE = CACHE_VERSION + '-core';
 const RUNTIME_CACHE = CACHE_VERSION + '-runtime';
 
