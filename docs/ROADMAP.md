@@ -53,7 +53,7 @@ Goal: the app lives at a URL, users have accounts, data survives device loss. Or
 
 **2B. Backend: recommended Supabase** (auth + Postgres + RLS, generous free tier, plain JS SDK via CDN — no build step needed, fits the single-file architecture). Alternatives (Firebase, custom) only if a real blocker appears — justify any deviation in writing.
 - Auth: email magic-link first (no passwords to forget, no reset flows to build). Google sign-in second.
-- 🔨 IN PROGRESS 2026-07-18: Supabase project `vibelift` created (ref gidxxufmlqdapmekvcpm, Frankfurt). Magic-link login shipped per approved mockup — Account section in Settings (login → check-email → signed-in card + sign out), supabase-js v2.49.4 via CDN, publishable key in page (RLS-safe by design). Verified locally: full UI flow, POST reaches project `/auth/v1/otp`, error surfacing works. ⏳ Remaining: Uroš sets Site URL + redirect allowlist in Supabase dashboard, then live magic-link round-trip test on vibelift.vercel.app; then schema+RLS tables.
+- ✅ DONE 2026-07-18 (commits 714fd2a, 51d488e). Supabase project `vibelift` (ref gidxxufmlqdapmekvcpm, Frankfurt). Magic-link login per approved mockup — Account section in Settings, supabase-js v2.49.4 via CDN. Uroš configured Site URL + redirect allowlist, completed live magic-link round-trip on his phone. Schema created via SQL Editor (docs/supabase-schema.sql): workouts (pk user+date, jsonb day-array), custom_exercises, profiles — all RLS "own rows". RLS proven live: anon REST query returns [] while 24 user rows exist.
 - Schema sketch: `profiles` (user settings), `workouts` (jsonb per workout, keyed by user+date), `custom_exercises` (jsonb). Mirror the existing localStorage shapes — do not redesign the data model, migrate it.
 - RLS: user sees only own rows. Non-negotiable.
 
@@ -61,6 +61,8 @@ Goal: the app lives at a URL, users have accounts, data survives device loss. Or
 - localStorage stays the source of truth for instant UX; cloud is the mirror. Push on save, pull on login/app-open. Last-write-wins per workout-date is acceptable at this scale — document it.
 - Migration: on first login, upload existing localStorage history. His own data is the first test case.
 - Exit test: log workout on phone → appears on PC browser after login. Delete browser data → login → everything back.
+- 🔨 CORE SHIPPED 2026-07-18 (commit 51d488e): sync engine in index.html (cloudFullSync/cloudPushQuick). Triggers: app open, SIGNED_IN, browser 'online' event, workout finish, custom-ex/profile save. Merge rule as documented: adopt cloud-only dates, per-date conflict = device-in-hand wins and re-pushes. Live sync pill in Account card (Synced·N / Syncing / Offline / Sync paused). MIGRATION VERIFIED: Uroš's 24 phone workouts auto-uploaded on first app-open with existing session.
+- ⏳ Exit test remaining: PC-browser login shows all 24 workouts; wipe-data → login → everything back.
 
 **2D. Account UI** — login screen, profile/account section in Settings, sign-out, delete-account (legally required). Mockup first.
 
