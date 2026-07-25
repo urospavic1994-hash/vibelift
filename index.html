@@ -2751,6 +2751,10 @@ function authSkipped() {
 // Supabase errors are written for developers. Rewrite them for humans.
 function friendlyAuthError(msg) {
   const m = (msg || '').toLowerCase();
+  // Supabase says "Error sending magic link email" whenever its mail server
+  // refuses — bad SMTP credentials, unverified sender, or the hourly cap.
+  if (m.includes('error sending') || m.includes('smtp'))
+    return 'The email server refused to send. If custom SMTP is set up, check the sender address is verified and the SMTP key is right. Otherwise this is usually the hourly email limit — wait an hour, or skip below and sign in later.';
   if (m.includes('rate limit') || m.includes('too many'))
     return 'Too many sign-in emails were requested for this address. Wait about an hour, then try again — or open the newest email we already sent and use the code in it.';
   if (m.includes('expired'))
