@@ -2866,16 +2866,17 @@ function DangerZone() {
     return () => sub.subscription.unsubscribe();
   }, []);
 
-  // Nothing in the cloud to delete when signed out — don't show the section at all
-  if (!supa || !session || !session.user) return null;
-
   // Arming decays. Coming back to a screen you armed ten minutes ago and
-  // tapping the same spot should not delete your account.
+  // tapping the same spot should not delete your account. Declared before the
+  // early return below — hooks must run on every render.
   useEffect(() => {
     if (!armed) return;
     const t = setTimeout(() => setArmed(false), 12000);
     return () => clearTimeout(t);
   }, [armed]);
+
+  // Nothing in the cloud to delete when signed out — don't show the section at all
+  if (!supa || !session || !session.user) return null;
 
   async function deleteAccount() {
     if (!armed) { setArmed(true); return; }
