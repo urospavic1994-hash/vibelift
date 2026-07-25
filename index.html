@@ -2788,7 +2788,7 @@ function LoginScreen({ onSignedIn, onSkip }) {
   }, [cooldown]);
 
   const emailOk = /^\S+@\S+\.\S+$/.test(email.trim());
-  const codeOk  = code.replace(/\D/g, '').length === 6;
+  const codeOk  = code.replace(/\D/g, '').length >= 6;   // Supabase OTP length is project-configurable (6-10)
 
   async function send(resend) {
     if (!emailOk || busy) return;
@@ -2877,7 +2877,7 @@ function LoginScreen({ onSignedIn, onSkip }) {
               onChange={e => { setEmail(e.target.value); setError(''); }}
               onKeyDown={e => { if (e.key === 'Enter') send(false); }}
             />
-            <div className="lg-hint">We email you a 6-digit code. No password.</div>
+            <div className="lg-hint">We email you a sign-in code. No password.</div>
 
             {error && <div className="lg-err">{error}</div>}
 
@@ -2894,17 +2894,17 @@ function LoginScreen({ onSignedIn, onSkip }) {
             <div className="lg-title">Enter code</div>
             <div className="lg-lede">Sent to <b className="lg-em">{email}</b></div>
 
-            <label className="lg-label" htmlFor="lg-code">6-digit code</label>
+            <label className="lg-label" htmlFor="lg-code">Code from the email</label>
             <input
               id="lg-code" className="lg-input lg-code" type="text" inputMode="numeric"
-              pattern="[0-9]*" autoComplete="one-time-code" maxLength={6}
-              placeholder="123456"
+              pattern="[0-9]*" autoComplete="one-time-code" maxLength={10}
+              placeholder="12345678"
               value={code}
               disabled={busy === 'verifying'}
-              onChange={e => { setCode(e.target.value.replace(/\D/g, '').slice(0, 6)); setError(''); }}
+              onChange={e => { setCode(e.target.value.replace(/\D/g, '').slice(0, 10)); setError(''); }}
               onKeyDown={e => { if (e.key === 'Enter') verify(); }}
             />
-            <div className="lg-hint">Check spam if it's not there. Valid 1 hour.</div>
+            <div className="lg-hint">Type every digit shown in the email. Check spam if it's not there. Valid 1 hour.</div>
 
             {error && <div className="lg-err">{error}</div>}
 
