@@ -2364,7 +2364,9 @@ function WorkoutCalendar({ history, current }) {
 function BottomNav({ screen, setScreen }) {
   const homeScreens = ['home','group-select','group-detail','log','summary'];
   const tab = homeScreens.includes(screen) ? 'home' : screen === 'history' ? 'history' : 'settings';
-  const hiddenScreens = ['splash','profile-setup','log','summary'];
+  // 'login' matters: with the nav visible you could tap Home and walk straight
+  // past the sign-in gate without it ever recording that you skipped.
+  const hiddenScreens = ['splash','login','profile-setup','log','summary'];
   if (hiddenScreens.includes(screen)) return null;
 
   return (
