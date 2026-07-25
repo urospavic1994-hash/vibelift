@@ -527,6 +527,7 @@
       backdrop-filter: blur(6px); border-radius: 20px; padding: 5px 12px 5px 10px;
       pointer-events: none;
     }
+    .wo-clock-hero { top: 18px; right: 60px; }
     .wo-clock-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--pink); animation: mail-pulse 1.6s ease-in-out infinite; flex-shrink: 0; }
     .wo-clock-lbl {
       font-family: var(--fb); font-size: 8.5px; font-weight: 800; letter-spacing: 1.3px;
@@ -4520,7 +4521,7 @@ function OnboardingScreen({ onDone }) {
 /* ═══════════════════════════════════════
    WORKOUT STOPWATCH (floating chip)
 ═══════════════════════════════════════ */
-function WorkoutClock({ startedAt }) {
+function WorkoutClock({ startedAt, inHero }) {
   const [, tick] = useState(0);
   useEffect(() => {
     const iv = setInterval(() => tick(x => x + 1), 1000);
@@ -4532,7 +4533,7 @@ function WorkoutClock({ startedAt }) {
   const h = Math.floor(secs / 3600), m = Math.floor((secs % 3600) / 60), s = secs % 60;
   const txt = h > 0 ? `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}` : `${m}:${String(s).padStart(2,'0')}`;
   return (
-    <div className="wo-clock" title="Total time since this workout started">
+    <div className={`wo-clock ${inHero ? 'wo-clock-hero' : ''}`} title="Total time since this workout started">
       <span className="wo-clock-dot" />
       <span className="wo-clock-lbl">Workout<br />time</span>
       <span className="wo-clock-time">{txt}</span>
@@ -4773,7 +4774,7 @@ function App() {
       )}
 
       {!splash && current && current.startedAt && ['group-select','group-detail','log'].includes(screen) && (
-        <WorkoutClock startedAt={current.startedAt} />
+        <WorkoutClock startedAt={current.startedAt} inHero={screen === 'log'} />
       )}
 
       {!splash && screen === 'summary' && summary && (
