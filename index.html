@@ -830,6 +830,31 @@
     .warmup-card-desc { color: var(--text2); font-size: 14px; line-height: 1.5; }
 
     .input-form { background: var(--card); border-radius: var(--r); padding: 20px; box-shadow: var(--sh2); }
+    .mode-switch {
+      display: flex; gap: 6px; justify-content: center;
+      margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border);
+    }
+    .mode-chip {
+      flex: 1; min-height: 40px; padding: 8px 6px; border-radius: 10px;
+      border: 1px solid var(--border); background: transparent;
+      color: var(--text2); font-family: var(--fd); font-size: 12px; font-weight: 700;
+      letter-spacing: .3px; cursor: pointer; transition: all .15s;
+    }
+    .mode-chip.on { background: var(--pink); border-color: var(--pink); color: #121508; }
+    .last-time {
+      display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap;
+      margin: -8px 0 16px;
+    }
+    .last-time-lbl {
+      font-family: var(--fb); font-size: 10px; font-weight: 800;
+      letter-spacing: 1.4px; text-transform: uppercase; color: var(--text2);
+    }
+    .last-time-val { font-family: var(--fd); font-size: 17px; font-weight: 800; color: var(--text); letter-spacing: .3px; }
+    .last-time-up {
+      font-family: var(--fb); font-size: 10px; font-weight: 800; letter-spacing: .6px;
+      color: var(--success); border: 1px solid rgba(126,200,50,.45);
+      border-radius: 20px; padding: 2px 8px;
+    }
     .input-form-title { font-family: var(--fd); font-size: 22px; font-weight: 800; color: var(--text); margin-bottom: 16px; letter-spacing: .3px; }
     .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .inp-group label { display: block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.1px; color: var(--text2); margin-bottom: 7px; }
@@ -2740,12 +2765,13 @@ function AccountSection({ avatar }) {
   async function sendLink() {
     const em = email.trim().toLowerCase();
     if (!/^\S+@\S+\.\S+$/.test(em)) { setError("That doesn't look like an email address."); return; }
+    if (isDisposableEmail(em)) { setError('That looks like a temporary email address. Your account and every workout in it are tied to this inbox — use one you will still have next year.'); return; }
     setError(''); setMode('sending');
     const { error: err } = await supa.auth.signInWithOtp({
       email: em,
       options: { emailRedirectTo: window.location.origin + window.location.pathname }
     });
-    if (err) { setError(err.message); setMode('idle'); }
+    if (err) { setError(friendlyAuthError(err.message)); setMode('idle'); }
     else { setEmail(em); setMode('sent'); }
   }
 
@@ -2798,10 +2824,10 @@ function AccountSection({ avatar }) {
             <svg width="30" height="30" viewBox="0 0 24 24" fill="none"><rect x="2" y="5" width="20" height="14" rx="3" stroke="var(--pink)" strokeWidth="2"/><path d="M3 7 L12 13.5 L21 7" stroke="var(--pink)" strokeWidth="2" strokeLinecap="round"/></svg>
           </div>
           <div className="acct-big">Check your<br/>email</div>
-          <div className="acct-lede">We sent a sign-in link to<br/><b style={{ color:'var(--text)' }}>{email}</b></div>
+          <div className="acct-lede">We sent a sign-in code to<br/><b style={{ color:'var(--text)' }}>{email}</b></div>
         </div>
-        <div className="acct-fine">Tap the link on THIS device and you're in. Link works for 1 hour.</div>
-        <button className="acct-ghost" onClick={sendLink}>Resend link</button>
+        <div className="acct-fine">Open the email and use the code inside. It works for 1 hour.</div>
+        <button className="acct-ghost" onClick={sendLink}>Resend code</button>
         <button className="acct-ghost" onClick={() => { setMode('idle'); setEmail(''); }}>Use a different email</button>
       </div>
     );
@@ -2810,13 +2836,13 @@ function AccountSection({ avatar }) {
   return (
     <div className="acct-wrap">
       <div className="acct-big">Save your<br/>progress</div>
-      <div className="acct-lede">Your workouts, on every device. No password — we email you a magic sign-in link.</div>
+      <div className="acct-lede">Your workouts, on every device. No password — we email you a sign-in code.</div>
       <input className="setup-input" type="email" inputMode="email" autoComplete="email" placeholder="you@email.com"
         value={email} onChange={e => setEmail(e.target.value)}
         onKeyDown={e => { if (e.key === 'Enter') sendLink(); }} />
       {error && <div className="acct-err">{error}</div>}
       <button className="btn-pink" onClick={sendLink} disabled={mode === 'sending' || !email.trim()}>
-        {mode === 'sending' ? 'Sending…' : 'Send Magic Link'}
+        {mode === 'sending' ? 'Sending…' : 'Email Me a Sign-In Code'}
       </button>
       <div className="acct-fine">Your existing workouts upload automatically on first login. Nothing is lost. <a href="./privacy.html" target="_blank" rel="noopener" style={{ color:'var(--text2)' }}>Privacy policy</a></div>
     </div>
@@ -3762,9 +3788,16 @@ function FixedLayer({ children }) {
 
 const REST_POS_KEY = 'vibelift_rest_pos';
 
-function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, history, weightUnit = 'kg', restSecs = 90 }) {
+function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, history, weightUnit = 'kg', restSecs = 90, sessionWarmup = 'pending', onSessionWarmup }) {
   const [totalSets, setTotalSets] = useState(3);
-  const [warmup, setWarmup] = useState('pending'); // 'pending' | 'done' | 'skipped'
+  // Inherit the session's warm-up state: once you've warmed up, every later
+  // exercise in that workout starts straight at set 1.
+  const [warmup, setWarmup] = useState(sessionWarmup); // 'pending' | 'done' | 'skipped'
+
+  function resolveWarmup(v) {
+    setWarmup(v);
+    if (onSessionWarmup) onSessionWarmup(v);
+  }
   const [currentSet, setCurrentSet] = useState(1);
   const [doneSets, setDoneSets] = useState([]);
   const [weight, setWeight] = useState('');
@@ -3780,14 +3813,23 @@ function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, hist
   const barWeight = barType === 'ez' ? (unit === 'lb' ? 22 : 10) : (unit === 'lb' ? 44 : 20);
   const totalBarbellWeight = barWeight + platesPerSide.reduce((a,b)=>a+b,0) * (addBothSides ? 2 : 1);
 
+  // Every set from the most recent session that included this exercise.
+  const lastSets = useMemo(() => {
+    for (let i = history.length - 1; i >= 0; i--) {
+      const ex = history[i].exercises.find(e => e.id === exercise.id);
+      if (ex && ex.sets && ex.sets.length > 0) return ex.sets;
+    }
+    return null;
+  }, [history, exercise.id]);
+
   const pb    = useMemo(() => getPersonalBest(history, exercise.id), [history, exercise.id]);
   const trend = useMemo(() => getTrend(history, exercise.id), [history, exercise.id]);
   const meta  = GROUP_META[exercise.group] || GROUP_META.chest;
 
   useEffect(() => {
-    for (let i = history.length - 1; i >= 0; i--) {
-      const ex = history[i].exercises.find(e => e.id === exercise.id);
-      if (ex && ex.sets.length > 0) { setWeight(String(ex.sets[0].weight)); setReps(String(ex.sets[0].reps)); break; }
+    if (lastSets && lastSets[0]) {
+      if (!lastSets[0].bw) setWeight(String(lastSets[0].weight));
+      setReps(String(lastSets[0].reps));
     }
     if (exercise.name && exercise.name.toLowerCase().includes('ez bar')) setBarType('ez');
     // Auto-select mode so the chooser never interrupts — user can still switch via bottom toggle
@@ -3819,6 +3861,43 @@ function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, hist
   const suggestFree = ['dumbbell','cable','machine','plate'].includes(exercise.eq);
   const suggestBar  = exercise.eq === 'barbell';
   const suggestBW   = exercise.eq === 'bodyweight';
+
+  // Which kind of lift this is. It auto-detects from the exercise and changes
+  // maybe twice a year, so it belongs beside the input it controls — not as
+  // three permanent sub-44px targets in the thumb zone.
+  function ModeSwitch() {
+    const opts = [['free', 'Free Weight'], ['barbell', 'Barbell'], ['bodyweight', 'Bodyweight']];
+    return (
+      <div className="mode-switch">
+        {opts.map(([val, label]) => (
+          <button key={val} className={`mode-chip ${weightType === val ? 'on' : ''}`}
+            onClick={() => {
+              setWeightType(val);
+              if (val !== 'barbell') setPlatesPerSide([]);
+              if (val !== 'free') setWeight('');
+            }}>
+            {label}
+          </button>
+        ))}
+      </div>
+    );
+  }
+
+  // What this exact set looked like last session — the number he is chasing.
+  function LastTime({ setNum }) {
+    const prev = lastSets && lastSets[setNum - 1];
+    if (!prev) return null;
+    const better = !prev.bw && maxLogged > 0 && maxLogged > prev.weight;
+    return (
+      <div className="last-time">
+        <span className="last-time-lbl">Last time</span>
+        <span className="last-time-val">
+          {prev.bw ? 'BW' : `${prev.weight} ${unit}`} × {prev.reps}
+        </span>
+        {better && <span className="last-time-up">up on last week</span>}
+      </div>
+    );
+  }
 
   const [justDone, setJustDone] = useState(null);
   // Rest timer: {endAt (epoch ms), total (s), left (s)} — left is derived from
@@ -3979,7 +4058,13 @@ function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, hist
     setDoneSets(next);
     if (currentSet >= totalSets) setAllDone(true);
     else {
-      setCurrentSet(currentSet + 1);
+      const nextSet = currentSet + 1;
+      setCurrentSet(nextSet);
+      const prev = lastSets && lastSets[nextSet - 1];
+      if (prev) {
+        if (!prev.bw && weightType !== 'barbell') setWeight(String(prev.weight));
+        setReps(String(prev.reps));
+      }
       if (restSecs !== 'off') {
         restNotified.current = false;
         setRest({ endAt: Date.now() + restSecs * 1000, total: restSecs, left: restSecs });
@@ -4111,9 +4196,9 @@ function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, hist
         {inWarmup && (
           <div className="warmup-card">
             <div className="warmup-card-title">Warm-Up Set</div>
-            <div className="warmup-card-desc">Do a light set to get the muscle primed before going heavy. No weight or reps logged.</div>
-            <button className="btn-pink" onClick={() => setWarmup('done')}>✓ Warm-Up Done</button>
-            <button className="btn-outline" onClick={() => setWarmup('skipped')}>Skip Warm-Up</button>
+            <div className="warmup-card-desc">Do a light set to get the muscle primed before going heavy. No weight or reps logged. Asked once per workout, not per exercise.</div>
+            <button className="btn-pink" onClick={() => resolveWarmup('done')}>✓ Warm-Up Done</button>
+            <button className="btn-outline" onClick={() => resolveWarmup('skipped')}>Skip Warm-Up</button>
           </div>
         )}
 
@@ -4168,6 +4253,7 @@ function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, hist
         {!inWarmup && !allDone && weightType === 'free' && (
           <div className="input-form">
             <div className="input-form-title">Set {currentSet} of {totalSets}</div>
+            <LastTime setNum={currentSet} />
             <div className="input-row">
               <div className="inp-group">
                 <label>Weight ({unit})</label>
@@ -4178,6 +4264,7 @@ function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, hist
                 <input type="number" inputMode="numeric" pattern="[0-9]*" value={reps} placeholder="0" min="0" step="1" onChange={e => setReps(e.target.value)} />
               </div>
             </div>
+            <ModeSwitch />
           </div>
         )}
 
@@ -4187,6 +4274,7 @@ function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, hist
 
             {/* Header label */}
             <div style={{ fontSize:11, fontWeight:800, letterSpacing:2, textTransform:'uppercase', color:'var(--text2)' }}>Set {currentSet} of {totalSets}</div>
+            <LastTime setNum={currentSet} />
 
             {/* Total weight display — iOS style */}
             <div style={{ textAlign:'center', padding:'8px 0 4px' }}>
@@ -4305,6 +4393,7 @@ function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, hist
               <label>Reps</label>
               <input type="number" inputMode="numeric" pattern="[0-9]*" value={reps} placeholder="0" min="0" step="1" onChange={e => setReps(e.target.value)} />
             </div>
+            <ModeSwitch />
           </div>
         )}
 
@@ -4312,6 +4401,7 @@ function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, hist
         {!inWarmup && !allDone && weightType === 'bodyweight' && (
           <div className="input-form">
             <div className="input-form-title">Set {currentSet} of {totalSets}</div>
+            <LastTime setNum={currentSet} />
             <div className="bw-mode-badge">BODYWEIGHT</div>
             <div style={{ display:'flex', justifyContent:'center', marginTop:16 }}>
               <div className="inp-group" style={{ width:160 }}>
@@ -4355,22 +4445,6 @@ function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, hist
             <button className="sets-ctrl-btn" onClick={() => setTotalSets(t => Math.max(doneSets.length + 1, t - 1))} aria-label="One set fewer">−</button>
             <span className="sets-ctrl-lbl">{totalSets} sets</span>
             <button className="sets-ctrl-btn" onClick={() => setTotalSets(t => Math.min(12, t + 1))} aria-label="One set more">+</button>
-          </div>
-        )}
-        {!inWarmup && weightType && !allDone && (
-          <div style={{ display:'flex', justifyContent:'center', gap:8, marginBottom:4 }}>
-            <button onClick={() => { setWeightType('free'); setPlatesPerSide([]); }}
-              style={{ padding:'7px 14px', borderRadius:20, border:`1px solid ${weightType==='free'?'var(--pink)':'var(--border)'}`, background:weightType==='free'?'var(--pink)':'transparent', color:weightType==='free'?'#121508':'var(--text2)', fontFamily:'var(--fd)', fontSize:11, fontWeight:700, cursor:'pointer', letterSpacing:'.4px', transition:'all .15s' }}>
-              Free Weight
-            </button>
-            <button onClick={() => { setWeightType('barbell'); setWeight(''); }}
-              style={{ padding:'7px 14px', borderRadius:20, border:`1px solid ${weightType==='barbell'?'var(--pink)':'var(--border)'}`, background:weightType==='barbell'?'var(--pink)':'transparent', color:weightType==='barbell'?'#121508':'var(--text2)', fontFamily:'var(--fd)', fontSize:11, fontWeight:700, cursor:'pointer', letterSpacing:'.4px', transition:'all .15s' }}>
-              Barbell
-            </button>
-            <button onClick={() => { setWeightType('bodyweight'); setPlatesPerSide([]); setWeight(''); }}
-              style={{ padding:'7px 14px', borderRadius:20, border:`1px solid ${weightType==='bodyweight'?'var(--pink)':'var(--border)'}`, background:weightType==='bodyweight'?'var(--pink)':'transparent', color:weightType==='bodyweight'?'#121508':'var(--text2)', fontFamily:'var(--fd)', fontSize:11, fontWeight:700, cursor:'pointer', letterSpacing:'.4px', transition:'all .15s' }}>
-              Bodyweight
-            </button>
           </div>
         )}
         {!inWarmup && weightType && (!allDone
@@ -4817,7 +4891,7 @@ function App() {
   function onSaveCustomEx(ex) { saveCustomEx(ex); setCustomEx(ex); cloudPushBlobQuick('custom_exercises', ex); }
 
   function startWorkout() {
-    if (!current) setCurrent({ date: todayISO(), exercises: [], startedAt: Date.now() });
+    if (!current) setCurrent({ date: todayISO(), exercises: [], startedAt: Date.now(), warmup: 'pending' });
     setScreen('group-select');
   }
 
@@ -4938,6 +5012,8 @@ function App() {
           history={history}
           weightUnit={weightUnit}
           restSecs={(profile && profile.restSecs) || 90}
+          sessionWarmup={(current && current.warmup) || 'pending'}
+          onSessionWarmup={v => setCurrent(prev => ({ ...(prev || { date: todayISO(), exercises: [] }), warmup: v }))}
         />
       )}
 

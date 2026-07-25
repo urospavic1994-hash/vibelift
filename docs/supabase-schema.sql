@@ -46,3 +46,48 @@ as $$
 $$;
 revoke execute on function public.delete_account() from anon, public;
 grant execute on function public.delete_account() to authenticated;
+
+-- ─────────────────────────────────────────────────────────────────────────────
+-- Server-side disposable-email block.
+-- The app already refuses throwaway inboxes at sign-up, but that check lives in
+-- the browser and anyone can bypass it by calling the API directly. This trigger
+-- is the real gate: it runs inside the database on every new auth user, so there
+-- is no path around it.
+-- Run once in Supabase → SQL Editor.
+-- ─────────────────────────────────────────────────────────────────────────────
+create or replace function public.block_disposable_email()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  d text;
+begin
+  d := lower(split_part(coalesce(new.email, ''), '@', 2));
+  if d = '' then
+    return new;                       -- phone/oauth signups carry no email
+  end if;
+
+  if d = any (array[
+    'mailinator.com','guerrillamail.com','yopmail.com','10minutemail.com',
+    'tempmail.com','temp-mail.org','throwawaymail.com','trashmail.com',
+    'sharklasers.com','getnada.com','maildrop.cc','mohmal.com','dispostable.com',
+    'fakeinbox.com','spamgourmet.com','mailsac.com','moakt.com','minuteinbox.com',
+    'emailondeck.com','tempmailo.com','mailnesia.com','inboxkitten.com',
+    'mail7.io','burnermail.io','anonaddy.me'
+  ])
+  or d ~ '(^|\.)(10minutemail|20minutemail|33mail|anonaddy|burnermail|dispostable|dropmail|emailondeck|fakeinbox|fakemail|getairmail|getnada|guerrillamail|harakirimail|inboxbear|jetable|mailcatch|maildrop|mailinator|mailnesia|mailsac|mailtemp|minuteinbox|mintemail|mohmal|moakt|nada|sharklasers|spam4|spamgourmet|temp-mail|tempail|tempinbox|tempmail|tempmailo|throwawaymail|trashmail|yopmail|zetmail)\.'
+  then
+    raise exception 'Temporary email addresses are not accepted'
+      using errcode = 'check_violation';
+  end if;
+
+  return new;
+end;
+$$;
+
+drop trigger if exists block_disposable_email_trg on auth.users;
+create trigger block_disposable_email_trg
+  before insert on auth.users
+  for each row execute function public.block_disposable_email();
