@@ -1293,6 +1293,42 @@
       background: var(--card); border: 1px solid var(--border); border-radius: 16px;
       padding: 14px 16px; display: flex; flex-direction: column; gap: 10px;
     }
+    .avatar-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; }
+    .settings-avatar-wrap { position: relative; display: inline-flex; cursor: pointer; }
+    .settings-avatar-wrap:active .settings-avatar { transform: scale(.95); }
+    .settings-avatar { transition: transform .12s; overflow: hidden; }
+    .settings-avatar-cam {
+      position: absolute; right: -2px; bottom: 4px;
+      width: 27px; height: 27px; border-radius: 50%;
+      background: var(--pink); border: 2.5px solid var(--card);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .settings-photo-remove {
+      margin-top: 8px; padding: 6px 14px; border-radius: 20px;
+      border: 1px solid var(--border); background: transparent;
+      color: var(--text2); font-family: var(--fb); font-size: 11px; font-weight: 700;
+      letter-spacing: .4px; cursor: pointer;
+    }
+    .home-avatar { overflow: hidden; }
+    .acct-avatar { overflow: hidden; }
+
+    /* Danger zone — visually separated, sits last in Settings */
+    .settings-sec.danger-sec { color: #ff8a8a; margin-top: 26px; }
+    .danger-card {
+      background: rgba(255,90,90,.05); border: 1px solid rgba(255,90,90,.28);
+      border-radius: var(--r); padding: 16px;
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .danger-lede { font-size: 12.5px; line-height: 1.55; color: var(--text2); }
+    .danger-btn {
+      width: 100%; padding: 13px; border-radius: var(--r-sm);
+      border: 1.5px solid rgba(255,90,90,.5); background: transparent;
+      color: #ff8a8a; font-family: var(--fd); font-size: 14px; font-weight: 800;
+      letter-spacing: .3px; cursor: pointer; transition: background .14s;
+    }
+    .danger-btn:active { background: rgba(255,90,90,.14); }
+    .danger-btn:disabled { opacity: .5; }
+
     .acct-row { display: flex; align-items: center; gap: 12px; }
     .acct-avatar {
       width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0;
@@ -2393,7 +2429,9 @@ function HomeScreen({ onStart, onViewHistory, onOpenSettings, history, hasActive
       {/* ── Compact sticky header ── */}
       <div className="home-compact-hdr">
         <div className="home-hdr-left">
-          <div className="home-avatar">{initial}</div>
+          <div className="home-avatar">
+            {(profile && profile.avatar) ? <img src={profile.avatar} alt="" className="avatar-img" /> : initial}
+          </div>
           <div>
             <div className="home-greeting">{firstName ? `Hey, ${firstName}` : 'Hey there'}</div>
             <div className="home-date-sub">{fmtDate(today)}</div>
@@ -2618,14 +2656,12 @@ function ProfileSetupScreen({ onSave }) {
 /* ═══════════════════════════════════════
    ACCOUNT SECTION (Phase 2B — magic-link login)
 ═══════════════════════════════════════ */
-function AccountSection() {
+function AccountSection({ avatar }) {
   const [session, setSession] = useState(null);
   const [mode, setMode] = useState('idle');   // idle | sending | sent
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [, bump] = useState(0);               // re-render on cloud status change
-  const [delArmed, setDelArmed] = useState(false);
-  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     if (!supa) return;
@@ -2656,18 +2692,7 @@ function AccountSection() {
 
   async function signOut() {
     await supa.auth.signOut();
-    setMode('idle'); setEmail(''); setError(''); setDelArmed(false);
-  }
-
-  async function deleteAccount() {
-    if (!delArmed) { setDelArmed(true); return; }
-    setDeleting(true); setError('');
-    const { error: err } = await supa.rpc('delete_account');
-    if (err) { setError('Delete failed: ' + err.message); setDeleting(false); setDelArmed(false); return; }
-    try { localStorage.removeItem('fittrack_cloud_meta'); } catch {}
-    await supa.auth.signOut();
-    cloudSet('idle');
-    setDeleting(false); setDelArmed(false); setMode('idle'); setEmail('');
+    setMode('idle'); setEmail(''); setError('');
   }
 
   if (session && session.user) {
@@ -2679,7 +2704,9 @@ function AccountSection() {
       <div className="acct-wrap">
         <div className="acct-card">
           <div className="acct-row">
-            <div className="acct-avatar">{em.charAt(0).toUpperCase() || '?'}</div>
+            <div className="acct-avatar">
+              {avatar ? <img src={avatar} alt="" className="avatar-img" /> : (em.charAt(0).toUpperCase() || '?')}
+            </div>
             <div>
               <div className="acct-email">{em}</div>
               {since && <div className="acct-meta">Member since {since}</div>}
@@ -2697,12 +2724,6 @@ function AccountSection() {
             return <div className="sync-pill gray"><span className="sync-dot" />Waiting to sync</div>;
           })()}
           <button className="acct-ghost" onClick={signOut}>Sign out (workouts stay on this phone)</button>
-          <button className="acct-ghost danger" onClick={deleteAccount} disabled={deleting}>
-            {deleting ? 'Deleting…' : delArmed ? 'Tap again to permanently delete' : 'Delete account & cloud data'}
-          </button>
-          {delArmed && !deleting && (
-            <div className="acct-fine">This erases your account and everything in the cloud. Workouts already on this phone stay here. <span style={{ color:'var(--pink)', cursor:'pointer', fontWeight:700 }} onClick={() => setDelArmed(false)}>Cancel</span></div>
-          )}
           {error && <div className="acct-err">{error}</div>}
         </div>
         <div className="acct-fine">Sync happens automatically after every workout. Offline? It syncs when you're back. <a href="./privacy.html" target="_blank" rel="noopener" style={{ color:'var(--text2)' }}>Privacy policy</a></div>
@@ -2740,6 +2761,82 @@ function AccountSection() {
       </button>
       <div className="acct-fine">Your existing workouts upload automatically on first login. Nothing is lost. <a href="./privacy.html" target="_blank" rel="noopener" style={{ color:'var(--text2)' }}>Privacy policy</a></div>
     </div>
+  );
+}
+
+/* Squash any phone photo down to a 256px square JPEG data URL (~20 KB), small
+   enough to live in localStorage and ride along with the synced profile blob. */
+function fileToAvatar(file) {
+  return new Promise((resolve, reject) => {
+    if (!file || !/^image\//.test(file.type)) { reject(new Error('That file is not an image.')); return; }
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error("Couldn't read that file."));
+    reader.onload = () => {
+      const img = new Image();
+      img.onerror = () => reject(new Error("Couldn't open that image."));
+      img.onload = () => {
+        const S = 256;
+        const side = Math.min(img.width, img.height);          // centre-crop to a square
+        const sx = (img.width - side) / 2, sy = (img.height - side) / 2;
+        const c = document.createElement('canvas');
+        c.width = S; c.height = S;
+        const ctx = c.getContext('2d');
+        ctx.drawImage(img, sx, sy, side, side, 0, 0, S, S);
+        resolve(c.toDataURL('image/jpeg', 0.82));
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+/* ═══════════════════════════════════════
+   DANGER ZONE — lives at the very bottom of Settings, far away from
+   anything you tap regularly, so delete can't be hit by accident.
+═══════════════════════════════════════ */
+function DangerZone() {
+  const [session, setSession] = useState(null);
+  const [armed, setArmed] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (!supa) return;
+    supa.auth.getSession().then(({ data }) => setSession(data.session));
+    const { data: sub } = supa.auth.onAuthStateChange((_e, s) => setSession(s));
+    return () => sub.subscription.unsubscribe();
+  }, []);
+
+  // Nothing in the cloud to delete when signed out — don't show the section at all
+  if (!supa || !session || !session.user) return null;
+
+  async function deleteAccount() {
+    if (!armed) { setArmed(true); return; }
+    setDeleting(true); setError('');
+    const { error: err } = await supa.rpc('delete_account');
+    if (err) { setError('Delete failed: ' + err.message); setDeleting(false); setArmed(false); return; }
+    try { localStorage.removeItem('fittrack_cloud_meta'); } catch {}
+    await supa.auth.signOut();
+    cloudSet('idle');
+    setDeleting(false); setArmed(false);
+  }
+
+  return (
+    <>
+      <div className="settings-sec danger-sec">Danger Zone</div>
+      <div className="danger-card">
+        <div className="danger-lede">
+          Deletes your account and everything stored in the cloud. Workouts already on this phone stay here.
+        </div>
+        <button className="danger-btn" onClick={deleteAccount} disabled={deleting}>
+          {deleting ? 'Deleting…' : armed ? 'Tap again to permanently delete' : 'Delete account & cloud data'}
+        </button>
+        {armed && !deleting && (
+          <button className="acct-ghost" onClick={() => setArmed(false)}>Cancel — keep my account</button>
+        )}
+        {error && <div className="acct-err">{error}</div>}
+      </div>
+    </>
   );
 }
 
@@ -2931,6 +3028,20 @@ function SettingsScreen({ onBack, profile, onSaveProfile, theme, onToggleTheme, 
   const [editingName, setEditingName] = useState(false);
   const [name, setName] = useState((profile && profile.name) || '');
   const [showAdd, setShowAdd] = useState(false);
+  const [photoErr, setPhotoErr] = useState('');
+  const photoInput = React.useRef(null);
+
+  async function onPhotoPicked(e) {
+    const file = e.target.files && e.target.files[0];
+    e.target.value = '';                       // let the same file be picked again
+    if (!file) return;
+    setPhotoErr('');
+    try {
+      const avatar = await fileToAvatar(file);
+      onSaveProfile({ ...profile, avatar });
+    } catch (err) { setPhotoErr(err.message || "Couldn't use that photo."); }
+  }
+
   const [newName, setNewName] = useState('');
   const [newGroup, setNewGroup] = useState('chest');
   const weightUnit = (profile && profile.weightUnit) || 'kg';
@@ -2953,6 +3064,7 @@ function SettingsScreen({ onBack, profile, onSaveProfile, theme, onToggleTheme, 
 
   const profileName = (profile && profile.name) ? profile.name : null;
   const initial = profileName ? profileName.trim().charAt(0).toUpperCase() : '?';
+  const avatar = (profile && profile.avatar) || null;
   const joinDate = (profile && profile.createdAt)
     ? new Date(profile.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
     : null;
@@ -2969,10 +3081,27 @@ function SettingsScreen({ onBack, profile, onSaveProfile, theme, onToggleTheme, 
 
       {/* ── Athlete profile hero ── */}
       <div className="settings-profile-hero" onClick={() => !editingName && setEditingName(true)}>
-        <div className="settings-avatar">{initial}</div>
+        <div className="settings-avatar-wrap" onClick={e => { e.stopPropagation(); photoInput.current && photoInput.current.click(); }}>
+          <div className="settings-avatar">
+            {avatar ? <img src={avatar} alt="Your profile photo" className="avatar-img" /> : initial}
+          </div>
+          <span className="settings-avatar-cam" aria-hidden="true">
+            <svg width="15" height="15" viewBox="0 0 20 20" fill="none" stroke="#121508" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M2 6.5h3l1.5-2h7L15 6.5h3v10H2z" /><circle cx="10" cy="11" r="3.2" />
+            </svg>
+          </span>
+        </div>
+        <input ref={photoInput} type="file" accept="image/*" style={{ display:'none' }} onChange={onPhotoPicked} />
         <div className="settings-profile-name">{profileName || 'Set your name'}</div>
         {joinDate && <div className="settings-profile-meta">Training since {joinDate}</div>}
-        <div className="settings-edit-hint">Tap to edit</div>
+        <div className="settings-edit-hint">Tap photo to change · tap name to edit</div>
+        {photoErr && <div className="acct-err" style={{ marginTop:8 }}>{photoErr}</div>}
+        {avatar && (
+          <button className="settings-photo-remove"
+            onClick={e => { e.stopPropagation(); onSaveProfile({ ...profile, avatar: null }); }}>
+            Remove photo
+          </button>
+        )}
       </div>
 
       <div className="settings-body">
@@ -2987,7 +3116,7 @@ function SettingsScreen({ onBack, profile, onSaveProfile, theme, onToggleTheme, 
         )}
 
         <div className="settings-sec">Account</div>
-        <AccountSection />
+        <AccountSection avatar={avatar} />
 
         <div className="settings-sec">Appearance</div>
         <div className="settings-row" onClick={onToggleTheme}>
@@ -3103,6 +3232,8 @@ function SettingsScreen({ onBack, profile, onSaveProfile, theme, onToggleTheme, 
             );
           } catch { return null; }
         })()}
+
+        <DangerZone />
 
       </div>
     </div>
