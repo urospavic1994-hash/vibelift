@@ -498,15 +498,21 @@
 
     /* ─── REST TIMER ─── */
     .rest-float {
-      position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
-      z-index: 600; display: flex; align-items: center; gap: 12px;
+      position: fixed; z-index: 600; display: flex; align-items: center; gap: 10px;
       background: var(--card); border: 1.5px solid var(--pink);
-      border-radius: 40px; padding: 10px 16px 10px 20px;
+      border-radius: 40px; padding: 10px 16px 10px 12px;
       box-shadow: 0 8px 30px rgba(0,0,0,.55);
-      animation: rest-float-in .3s cubic-bezier(.2,.8,.4,1);
       max-width: calc(100vw - 24px);
+      touch-action: none; user-select: none; -webkit-user-select: none;
     }
-    @keyframes rest-float-in { from { transform: translate(-50%, 30px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
+    .rest-float.rest-placed { animation: rest-float-in .3s cubic-bezier(.2,.8,.4,1); }
+    .rest-float.rest-dragging { box-shadow: 0 14px 40px rgba(0,0,0,.7); }
+    @keyframes rest-float-in { from { opacity: 0; } to { opacity: 1; } }
+    .rest-grip {
+      width: 22px; height: 34px; flex-shrink: 0; cursor: grab;
+      display: flex; align-items: center; justify-content: center; gap: 3px;
+    }
+    .rest-grip span { width: 3px; height: 3px; border-radius: 50%; background: var(--text2); box-shadow: 0 6px 0 var(--text2), 0 -6px 0 var(--text2); }
     .rest-float.rest-done { border-color: var(--success); }
     .rest-float-label {
       font-size: 10px; font-weight: 900; letter-spacing: 1.6px; text-transform: uppercase;
@@ -515,14 +521,21 @@
     .rest-done .rest-float-label { color: var(--success); font-size: 22px; font-family: var(--fd); letter-spacing: 1px; animation: dot-pop .45s ease; }
     .rest-float-time { font-family: var(--fd); font-size: 30px; font-weight: 900; color: var(--pink); line-height: 1; min-width: 66px; text-align: center; }
     .wo-clock {
-      position: fixed; top: 64px; right: 12px; z-index: 400;
-      display: flex; align-items: center; gap: 6px;
-      background: rgba(18,21,8,.78); border: 1px solid var(--border);
-      backdrop-filter: blur(6px); border-radius: 20px; padding: 5px 12px;
-      font-family: var(--fd); font-size: 16px; font-weight: 900; color: var(--text);
-      letter-spacing: .5px; pointer-events: none;
+      position: fixed; top: 60px; right: 12px; z-index: 400;
+      display: flex; align-items: center; gap: 7px;
+      background: rgba(18,21,8,.82); border: 1px solid var(--border);
+      backdrop-filter: blur(6px); border-radius: 20px; padding: 5px 12px 5px 10px;
+      pointer-events: none;
     }
-    .wo-clock-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--pink); animation: mail-pulse 1.6s ease-in-out infinite; }
+    .wo-clock-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--pink); animation: mail-pulse 1.6s ease-in-out infinite; flex-shrink: 0; }
+    .wo-clock-lbl {
+      font-family: var(--fb); font-size: 8.5px; font-weight: 800; letter-spacing: 1.3px;
+      text-transform: uppercase; color: var(--text2); line-height: 1.15; text-align: right;
+    }
+    .wo-clock-time {
+      font-family: var(--fd); font-size: 16px; font-weight: 900; color: var(--text);
+      letter-spacing: .5px; font-variant-numeric: tabular-nums;
+    }
     .rest-card {
       background: var(--card); border: 1.5px solid rgba(200,242,53,.35);
       border-radius: var(--r); padding: 14px 18px; box-shadow: var(--sh2);
@@ -556,6 +569,72 @@
       font-family: var(--fb); cursor: pointer; transition: all .12s;
     }
     .rest-btn:active { background: rgba(200,242,53,.12); border-color: rgba(200,242,53,.45); transform: scale(.95); }
+
+    /* ─── LOGIN SCREEN ─── */
+    .lg-screen { justify-content: center; }
+    .lg-body {
+      padding: calc(28px + env(safe-area-inset-top)) 22px calc(28px + env(safe-area-inset-bottom));
+      display: flex; flex-direction: column; gap: 12px;
+      max-width: 430px; width: 100%; margin: 0 auto;
+    }
+    .lg-brand {
+      font-family: var(--fd); font-size: 13px; font-weight: 900; letter-spacing: 4px;
+      color: var(--pink); margin-bottom: 6px;
+    }
+    .lg-steps { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .lg-step {
+      font-family: var(--fb); font-size: 10px; font-weight: 800; letter-spacing: 1.2px;
+      text-transform: uppercase; color: var(--text2); opacity: .5; white-space: nowrap;
+    }
+    .lg-step.on { color: var(--pink); opacity: 1; }
+    .lg-step.done { opacity: .8; }
+    .lg-step-line { flex: 1; height: 1px; background: var(--border); }
+    .lg-title {
+      font-family: var(--fd); font-size: 38px; font-weight: 900; line-height: 1.05;
+      color: var(--text); letter-spacing: -.5px;
+    }
+    .lg-lede { font-size: 14.5px; line-height: 1.6; color: var(--text2); margin-bottom: 8px; }
+    .lg-em { color: var(--text); font-weight: 800; }
+    .lg-label {
+      font-family: var(--fb); font-size: 10px; font-weight: 800; letter-spacing: 1.6px;
+      text-transform: uppercase; color: var(--text2); margin-top: 6px;
+    }
+    .lg-input {
+      width: 100%; padding: 16px; border-radius: var(--r-sm);
+      border: 2px solid var(--border); background: var(--sfx); color: var(--text);
+      font-family: var(--fb); font-size: 17px; font-weight: 600;
+      transition: border-color .15s;
+    }
+    .lg-input::placeholder { color: var(--text2); opacity: .55; }
+    .lg-input:focus { outline: none; border-color: var(--pink); }
+    .lg-input:disabled { opacity: .55; }
+    .lg-code {
+      font-family: var(--fd); font-size: 30px; font-weight: 900;
+      letter-spacing: 10px; text-align: center; padding: 16px 8px;
+    }
+    .lg-hint { font-size: 12px; line-height: 1.5; color: var(--text2); opacity: .8; }
+    .lg-err {
+      background: rgba(255,90,90,.10); border: 1px solid rgba(255,90,90,.45);
+      border-radius: 10px; padding: 11px 13px;
+      font-size: 13px; line-height: 1.55; color: #ff8a8a;
+    }
+    .lg-cta { margin-top: 8px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+    .lg-status { font-size: 12.5px; color: var(--text2); text-align: center; }
+    .lg-spin {
+      width: 15px; height: 15px; border-radius: 50%; flex-shrink: 0;
+      border: 2.5px solid rgba(18,21,8,.25); border-top-color: #121508;
+      animation: lg-spin .7s linear infinite;
+    }
+    @keyframes lg-spin { to { transform: rotate(360deg); } }
+    .lg-ghost {
+      width: 100%; padding: 12px; border: none; background: transparent;
+      color: var(--text2); font-family: var(--fb); font-size: 13.5px; font-weight: 700;
+      cursor: pointer; border-radius: 10px;
+    }
+    .lg-ghost:disabled { opacity: .4; }
+    .lg-ghost:active { color: var(--text); background: rgba(255,255,255,.05); }
+    .lg-fine { font-size: 11.5px; line-height: 1.55; color: var(--text2); opacity: .75; text-align: center; }
+    .lg-fine a { color: var(--text2); }
 
     /* ─── EXERCISE BUILDER ─── */
     .builder-card {
@@ -648,7 +727,7 @@
     .pr-glow { color: #ffd700; font-size: 13px; font-weight: 700; }
 
     .log-body {
-      flex: 1; padding: 16px 18px calc(200px + env(safe-area-inset-bottom, 0px));
+      flex: 1; padding: 16px 18px calc(240px + env(safe-area-inset-bottom, 0px));
       display: flex; flex-direction: column; gap: 14px;
     }
 
@@ -788,6 +867,22 @@
       border-top: 1px solid var(--border); z-index: 200;
       display: flex; flex-direction: column; gap: 9px;
     }
+    /* Finish-early button — full width, same weight as the primary action */
+    .btn-finish {
+      width: 100%; padding: 15px; border-radius: var(--r-sm);
+      border: 2px solid var(--success); background: rgba(13,170,116,.10);
+      color: var(--success); font-family: var(--fd);
+      font-size: 17px; font-weight: 800; letter-spacing: .5px;
+      cursor: pointer; transition: background .14s, transform .12s;
+    }
+    .btn-finish:active { background: rgba(13,170,116,.22); transform: scale(.96); }
+    .btn-quiet {
+      width: 100%; padding: 9px; border-radius: var(--r-sm);
+      border: none; background: transparent; color: var(--text2);
+      font-family: var(--fb); font-size: 13px; font-weight: 700; letter-spacing: .3px;
+      cursor: pointer;
+    }
+    .btn-quiet:active { color: var(--text); }
     .sets-ctrl { display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 2px; }
     .sets-ctrl-btn {
       width: 34px; height: 34px; border-radius: 50%;
@@ -2500,14 +2595,16 @@ function ProfileSetupScreen({ onSave }) {
           <div className="setup-hint">You can change this any time in Settings</div>
         </div>
       </div>
-      <div className="log-action-bar">
-        <button className="btn-pink" onClick={() => save(false)}>
-          Start Training →
-        </button>
-        <button className="btn-outline" onClick={() => save(true)}>
-          Skip for now
-        </button>
-      </div>
+      <FixedLayer>
+        <div className="log-action-bar">
+          <button className="btn-pink" onClick={() => save(false)}>
+            Start Training →
+          </button>
+          <button className="btn-outline" onClick={() => save(true)}>
+            Skip for now
+          </button>
+        </div>
+      </FixedLayer>
     </div>
   );
 }
@@ -2636,6 +2733,174 @@ function AccountSection() {
         {mode === 'sending' ? 'Sending…' : 'Send Magic Link'}
       </button>
       <div className="acct-fine">Your existing workouts upload automatically on first login. Nothing is lost. <a href="./privacy.html" target="_blank" rel="noopener" style={{ color:'var(--text2)' }}>Privacy policy</a></div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════
+   LOGIN SCREEN (first launch on a new device)
+   Shown once per device. Skipped forever after you sign in, or after you
+   choose "use this phone only".
+═══════════════════════════════════════ */
+const AUTH_SKIP_KEY = 'vibelift_auth_skipped';
+
+function authSkipped() {
+  try { return localStorage.getItem(AUTH_SKIP_KEY) === '1'; } catch { return false; }
+}
+
+// Supabase errors are written for developers. Rewrite them for humans.
+function friendlyAuthError(msg) {
+  const m = (msg || '').toLowerCase();
+  if (m.includes('rate limit') || m.includes('too many'))
+    return 'Too many sign-in emails were requested for this address. Wait about an hour, then try again — or open the newest email we already sent and use the code in it.';
+  if (m.includes('expired'))
+    return 'That code has expired. Send a fresh one below.';
+  if (m.includes('token') || m.includes('invalid') || m.includes('otp'))
+    return "That code didn't match. Open the newest email and type those 6 digits.";
+  if (m.includes('fetch') || m.includes('network'))
+    return 'No internet connection. Reconnect and try again.';
+  return msg || 'Something went wrong. Try again.';
+}
+
+function LoginScreen({ onSignedIn, onSkip }) {
+  const [step, setStep]   = useState('email');  // email | code
+  const [email, setEmail] = useState('');
+  const [code, setCode]   = useState('');
+  const [busy, setBusy]   = useState('');       // '' | 'sending' | 'verifying'
+  const [error, setError] = useState('');
+  const [cooldown, setCooldown] = useState(0);
+
+  useEffect(() => {
+    if (cooldown <= 0) return;
+    const t = setTimeout(() => setCooldown(c => c - 1), 1000);
+    return () => clearTimeout(t);
+  }, [cooldown]);
+
+  const emailOk = /^\S+@\S+\.\S+$/.test(email.trim());
+  const codeOk  = code.replace(/\D/g, '').length === 6;
+
+  async function send(resend) {
+    if (!emailOk || busy || cooldown > 0) return;
+    setError(''); setBusy('sending');
+    const em = email.trim().toLowerCase();
+    const { error: err } = await supa.auth.signInWithOtp({
+      email: em,
+      options: { emailRedirectTo: window.location.origin + window.location.pathname }
+    });
+    setBusy('');
+    if (err) { setError(friendlyAuthError(err.message)); if (!resend) return; return; }
+    setEmail(em); setStep('code'); setCode(''); setCooldown(60);
+  }
+
+  async function verify() {
+    if (!codeOk || busy) return;
+    setError(''); setBusy('verifying');
+    const { data, error: err } = await supa.auth.verifyOtp({
+      email: email.trim().toLowerCase(),
+      token: code.replace(/\D/g, ''),
+      type: 'email',
+    });
+    setBusy('');
+    if (err) { setError(friendlyAuthError(err.message)); return; }
+    try { localStorage.removeItem(AUTH_SKIP_KEY); } catch {}
+    onSignedIn(data && data.session);
+  }
+
+  function skip() {
+    try { localStorage.setItem(AUTH_SKIP_KEY, '1'); } catch {}
+    onSkip();
+  }
+
+  // No connection / Supabase failed to load — never trap the user behind a wall
+  if (!supa) {
+    return (
+      <div className="screen lg-screen">
+        <div className="lg-body">
+          <div className="lg-brand">VIBELIFT</div>
+          <div className="lg-title">You're offline</div>
+          <div className="lg-lede">Signing in needs internet. You can train right now and sign in later from Settings — nothing is lost.</div>
+          <button className="btn-pink" onClick={skip}>Continue on This Phone</button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="screen lg-screen">
+      <div className="lg-body">
+        <div className="lg-brand">VIBELIFT</div>
+
+        <div className="lg-steps">
+          <span className={`lg-step ${step === 'email' ? 'on' : 'done'}`}>1. Your email</span>
+          <span className="lg-step-line" />
+          <span className={`lg-step ${step === 'code' ? 'on' : ''}`}>2. Your code</span>
+        </div>
+
+        {step === 'email' ? (
+          <>
+            <div className="lg-title">Sign in</div>
+            <div className="lg-lede">No password. We email you a 6-digit code. Your workouts then follow you to any phone or computer.</div>
+
+            <label className="lg-label" htmlFor="lg-email">Email address</label>
+            <input
+              id="lg-email" className="lg-input" type="email" inputMode="email"
+              autoComplete="email" autoCapitalize="off" autoCorrect="off" spellCheck="false"
+              placeholder="you@example.com"
+              value={email}
+              disabled={busy === 'sending'}
+              onChange={e => { setEmail(e.target.value); setError(''); }}
+              onKeyDown={e => { if (e.key === 'Enter') send(false); }}
+            />
+            <div className="lg-hint">Example: uros.pavic1994@gmail.com — the code goes to this inbox.</div>
+
+            {error && <div className="lg-err">{error}</div>}
+
+            <button className="btn-pink lg-cta" onClick={() => send(false)} disabled={!emailOk || busy === 'sending'}>
+              {busy === 'sending' ? <><span className="lg-spin" />Sending your code…</> : 'Email Me a Code →'}
+            </button>
+            {busy === 'sending' && <div className="lg-status">Contacting the server. This takes a few seconds.</div>}
+
+            <button className="lg-ghost" onClick={skip} disabled={!!busy}>Skip — just use this phone</button>
+            <div className="lg-fine">
+              Skipping is fine. Everything saves on this device and you can sign in any time from Settings.{' '}
+              <a href="./privacy.html" target="_blank" rel="noopener">Privacy policy</a>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="lg-title">Check your email</div>
+            <div className="lg-lede">We sent a 6-digit code to<br /><b className="lg-em">{email}</b></div>
+
+            <label className="lg-label" htmlFor="lg-code">6-digit code</label>
+            <input
+              id="lg-code" className="lg-input lg-code" type="text" inputMode="numeric"
+              pattern="[0-9]*" autoComplete="one-time-code" maxLength={6}
+              placeholder="123456"
+              value={code}
+              disabled={busy === 'verifying'}
+              onChange={e => { setCode(e.target.value.replace(/\D/g, '').slice(0, 6)); setError(''); }}
+              onKeyDown={e => { if (e.key === 'Enter') verify(); }}
+            />
+            <div className="lg-hint">Type the 6 digits from the email. Works in any browser — you don't need to tap the link.</div>
+
+            {error && <div className="lg-err">{error}</div>}
+
+            <button className="btn-pink lg-cta" onClick={verify} disabled={!codeOk || busy === 'verifying'}>
+              {busy === 'verifying' ? <><span className="lg-spin" />Checking your code…</> : 'Sign In →'}
+            </button>
+            {busy === 'verifying' && <div className="lg-status">Verifying and loading your workouts.</div>}
+
+            <button className="lg-ghost" onClick={() => send(true)} disabled={cooldown > 0 || !!busy}>
+              {busy === 'sending' ? 'Sending…' : cooldown > 0 ? `Resend code in ${cooldown}s` : 'Resend the code'}
+            </button>
+            <button className="lg-ghost" onClick={() => { setStep('email'); setCode(''); setError(''); }} disabled={!!busy}>
+              Use a different email
+            </button>
+            <button className="lg-ghost" onClick={skip} disabled={!!busy}>Skip — just use this phone</button>
+            <div className="lg-fine">Email not there? Check spam. The code is valid for 1 hour.</div>
+          </>
+        )}
+      </div>
     </div>
   );
 }
@@ -3224,6 +3489,16 @@ const PLATE_DATA_LB = [
 /* ═══════════════════════════════════════
    LOG SCREEN — Tinder / hotel-card hero
 ═══════════════════════════════════════ */
+/* Renders children into <body> so `position: fixed` is measured against the
+   viewport. Screens animate with a transform, and a transformed ancestor makes
+   fixed children stick to the screen box instead of the window — which pushed
+   the action bar and rest pill to the very bottom of a long page. */
+function FixedLayer({ children }) {
+  return ReactDOM.createPortal(children, document.body);
+}
+
+const REST_POS_KEY = 'vibelift_rest_pos';
+
 function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, history, weightUnit = 'kg', restSecs = 90 }) {
   const [totalSets, setTotalSets] = useState(3);
   const [warmup, setWarmup] = useState('pending'); // 'pending' | 'done' | 'skipped'
@@ -3319,6 +3594,72 @@ function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, hist
     }
   }, [rest]);
 
+  /* ── Action bar height → bottom padding, so nothing hides behind the bar ── */
+  const barRef = React.useRef(null);
+  const [barH, setBarH] = useState(220);
+  useEffect(() => {
+    const measure = () => { if (barRef.current) setBarH(barRef.current.offsetHeight); };
+    measure();
+    if (typeof ResizeObserver !== 'undefined' && barRef.current) {
+      const ro = new ResizeObserver(measure);
+      ro.observe(barRef.current);
+      window.addEventListener('resize', measure);
+      return () => { ro.disconnect(); window.removeEventListener('resize', measure); };
+    }
+    window.addEventListener('resize', measure);
+    return () => window.removeEventListener('resize', measure);
+  }, []);
+
+  /* ── Draggable rest pill — drop it anywhere, it stays there ── */
+  const [restPos, setRestPos] = useState(() => {
+    try {
+      const p = JSON.parse(localStorage.getItem(REST_POS_KEY));
+      if (p && typeof p.x === 'number' && typeof p.y === 'number') return p;
+    } catch {}
+    return null;
+  });
+  const [dragging, setDragging] = useState(false);
+  const dragRef = React.useRef(null);
+  const pillRef = React.useRef(null);
+
+  // Keep a saved position on-screen after rotation / keyboard / smaller viewport
+  useEffect(() => {
+    if (!restPos || !pillRef.current) return;
+    const r = pillRef.current.getBoundingClientRect();
+    const x = Math.min(Math.max(6, restPos.x), Math.max(6, window.innerWidth - r.width - 6));
+    const y = Math.min(Math.max(6, restPos.y), Math.max(6, window.innerHeight - r.height - 6));
+    if (x !== restPos.x || y !== restPos.y) setRestPos({ x, y });
+  }, [restPos, !!rest]);
+
+  useEffect(() => {
+    if (restPos) { try { localStorage.setItem(REST_POS_KEY, JSON.stringify(restPos)); } catch {} }
+  }, [restPos]);
+
+  function pillDown(e) {
+    if (e.target.closest && e.target.closest('button')) return; // let +30s / ✕ work
+    const el = pillRef.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    dragRef.current = { dx: e.clientX - r.left, dy: e.clientY - r.top, w: r.width, h: r.height };
+    setDragging(true);
+    try { e.currentTarget.setPointerCapture(e.pointerId); } catch {}
+  }
+  function pillMove(e) {
+    const d = dragRef.current;
+    if (!d) return;
+    e.preventDefault();
+    setRestPos({
+      x: Math.min(Math.max(6, e.clientX - d.dx), Math.max(6, window.innerWidth - d.w - 6)),
+      y: Math.min(Math.max(6, e.clientY - d.dy), Math.max(6, window.innerHeight - d.h - 6)),
+    });
+  }
+  function pillUp(e) {
+    if (!dragRef.current) return;
+    dragRef.current = null;
+    setDragging(false);
+    try { e.currentTarget.releasePointerCapture(e.pointerId); } catch {}
+  }
+
   function completeSet(e) {
     let s;
     if (weightType === 'bodyweight') {
@@ -3356,8 +3697,18 @@ function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, hist
     onSetLogged({ ...exercise, sets: next, totalSets, weightType, warmup });
   }
 
-  function finish() { onComplete({ ...exercise, sets: doneSets, totalSets, weightType, warmup }); }
+  function finish() { onComplete({ ...exercise, sets: doneSets, totalSets: Math.max(totalSets, doneSets.length), weightType, warmup }); }
   function handleBack() { onBack(); }
+
+  // Feeling strong? Tack on another set after the planned ones are done.
+  function addAnotherSet() {
+    const n = doneSets.length + 1;
+    setTotalSets(Math.max(totalSets + 1, n));
+    setCurrentSet(n);
+    setAllDone(false);
+    setRest(null);
+    vibe(25);
+  }
 
   return (
     <div className="screen">
@@ -3385,7 +3736,7 @@ function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, hist
         </div>
       </div>
 
-      <div className="log-body">
+      <div className="log-body" style={{ paddingBottom: barH + 26 }}>
         {/* Set progress dots — Warmup dot + working set dots */}
         <div className="set-prog">
           <div className="sec-label">Set Progress</div>
@@ -3416,18 +3767,31 @@ function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, hist
           </div>
         </div>
 
-        {/* Rest timer — floating pill so it's visible no matter where you scrolled */}
+        {/* Rest timer — floating, always on screen, drag it wherever you like */}
         {rest && !allDone && (
-          <div className={`rest-float ${rest.left === 0 ? 'rest-done' : ''}`}>
-            <span className="rest-float-label">{rest.left === 0 ? 'GO' : 'Rest'}</span>
-            {rest.left > 0 && <span className="rest-float-time">{Math.floor(rest.left / 60)}:{String(rest.left % 60).padStart(2, '0')}</span>}
-            {rest.left > 0 && (
-              <>
-                <button className="rest-btn" onClick={() => setRest(r => r ? { ...r, endAt: r.endAt + 30000, total: r.total + 30, left: r.left + 30 } : r)}>+30s</button>
-                <button className="rest-btn" onClick={() => setRest(null)} aria-label="Dismiss rest timer">✕</button>
-              </>
-            )}
-          </div>
+          <FixedLayer>
+            <div
+              ref={pillRef}
+              className={`rest-float rest-placed ${rest.left === 0 ? 'rest-done' : ''} ${dragging ? 'rest-dragging' : ''}`}
+              style={restPos
+                ? { left: restPos.x, top: restPos.y }
+                : { left: '50%', bottom: barH + 14, transform: 'translateX(-50%)' }}
+              onPointerDown={pillDown}
+              onPointerMove={pillMove}
+              onPointerUp={pillUp}
+              onPointerCancel={pillUp}
+            >
+              <span className="rest-grip" aria-hidden="true"><span /></span>
+              <span className="rest-float-label">{rest.left === 0 ? 'GO' : 'Rest'}</span>
+              {rest.left > 0 && <span className="rest-float-time">{Math.floor(rest.left / 60)}:{String(rest.left % 60).padStart(2, '0')}</span>}
+              {rest.left > 0 && (
+                <>
+                  <button className="rest-btn" onClick={() => setRest(r => r ? { ...r, endAt: r.endAt + 30000, total: r.total + 30, left: r.left + 30 } : r)}>+30s</button>
+                  <button className="rest-btn" onClick={() => setRest(null)} aria-label="Dismiss rest timer">✕</button>
+                </>
+              )}
+            </div>
+          </FixedLayer>
         )}
 
         {/* Warmup phase UI */}
@@ -3665,13 +4029,15 @@ function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, hist
         )}
       </div>
 
-      <div className="log-action-bar">
-        {/* Sets adjuster — visible during warmup or before first working set */}
-        {(inWarmup || (!allDone && doneSets.length === 0)) && (
+      <FixedLayer>
+      <div className="log-action-bar" ref={barRef}>
+        {/* Sets adjuster — stays available all through the exercise, so you can
+            add or drop planned sets after you've already logged some */}
+        {!allDone && (
           <div className="sets-ctrl">
-            <button className="sets-ctrl-btn" onClick={() => setTotalSets(Math.max(1, totalSets - 1))}>−</button>
+            <button className="sets-ctrl-btn" onClick={() => setTotalSets(t => Math.max(doneSets.length + 1, t - 1))} aria-label="One set fewer">−</button>
             <span className="sets-ctrl-lbl">{totalSets} sets</span>
-            <button className="sets-ctrl-btn" onClick={() => setTotalSets(Math.min(8, totalSets + 1))}>+</button>
+            <button className="sets-ctrl-btn" onClick={() => setTotalSets(t => Math.min(12, t + 1))} aria-label="One set more">+</button>
           </div>
         )}
         {!inWarmup && weightType && !allDone && (
@@ -3693,13 +4059,23 @@ function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, hist
         {!inWarmup && weightType && (!allDone
           ? <button className="btn-pink" onClick={completeSet} disabled={weightType === 'bodyweight' ? (!reps || parseInt(reps) < 1) : (weightType === 'barbell' ? !reps : (!weight || !reps))}>Complete Set {currentSet} →</button>
           : <button className="btn-pink" onClick={finish}>✓ Mark Exercise Complete</button>)}
-        {!inWarmup && !allDone && doneSets.length > 0 && (
-          <div style={{ display:'flex', gap:8 }}>
-            <button className="btn-outline" style={{ flex:1 }} onClick={onBack}>Pause</button>
-            <button className="btn-outline" style={{ flex:1 }} onClick={finish}>Finish Exercise</button>
-          </div>
+
+        {/* Feeling strong — bolt an extra set onto a finished exercise */}
+        {allDone && (
+          <button className="btn-outline" onClick={addAnotherSet}>+ Add Another Set</button>
+        )}
+
+        {/* Finish early — full-size, always there once you've logged a set */}
+        {!allDone && doneSets.length > 0 && (
+          <button className="btn-finish" onClick={finish}>✓ Finish Exercise Now ({doneSets.length} {doneSets.length === 1 ? 'set' : 'sets'})</button>
+        )}
+        {!allDone && (
+          <button className="btn-quiet" onClick={onBack}>
+            {doneSets.length > 0 ? 'Pause — save and come back later' : 'Back to exercises'}
+          </button>
         )}
       </div>
+      </FixedLayer>
     </div>
   );
 }
@@ -4003,7 +4379,13 @@ function WorkoutClock({ startedAt }) {
   const secs = Math.max(0, Math.floor((Date.now() - startedAt) / 1000));
   const h = Math.floor(secs / 3600), m = Math.floor((secs % 3600) / 60), s = secs % 60;
   const txt = h > 0 ? `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}` : `${m}:${String(s).padStart(2,'0')}`;
-  return <div className="wo-clock"><span className="wo-clock-dot" />{txt}</div>;
+  return (
+    <div className="wo-clock" title="Total time since this workout started">
+      <span className="wo-clock-dot" />
+      <span className="wo-clock-lbl">Workout<br />time</span>
+      <span className="wo-clock-time">{txt}</span>
+    </div>
+  );
 }
 
 /* ═══════════════════════════════════════
@@ -4063,10 +4445,44 @@ function App() {
   const allExercises = useMemo(() => [...DB, ...customEx], [customEx]);
   const weightUnit = (profile && profile.weightUnit) || 'kg';
 
+  /* ── Auth gate: login shows once on a device that has never signed in ── */
+  const [authReady, setAuthReady]   = useState(!supa);
+  const [hasSession, setHasSession] = useState(false);
+  const [postSplash, setPostSplash] = useState(false);
+
+  useEffect(() => {
+    if (!supa) return;
+    supa.auth.getSession().then(({ data }) => {
+      setHasSession(!!(data && data.session));
+      setAuthReady(true);
+    }).catch(() => setAuthReady(true));
+    const { data: sub } = supa.auth.onAuthStateChange((_e, s) => setHasSession(!!s));
+    return () => sub.subscription.unsubscribe();
+  }, []);
+
+  function routeOnward() {
+    if (!profile || !profile.setupDone) { setScreen('profile-setup'); return; }
+    setScreen('home');
+    if (current && current.exercises.length > 0) setBreakModal(true);
+  }
+
+  // Wait for the session check before deciding — never flash a login wall at
+  // someone who is already signed in.
+  useEffect(() => {
+    if (!postSplash || !authReady) return;
+    setPostSplash(false);
+    if (supa && !hasSession && !authSkipped()) { setScreen('login'); return; }
+    routeOnward();
+  }, [postSplash, authReady]);
+
+  // Magic link opened in this browser → session appears → leave the login screen
+  useEffect(() => {
+    if (hasSession && screen === 'login') routeOnward();
+  }, [hasSession, screen]);
+
   function onSplashDone() {
     setSplash(false);
-    if (!profile || !profile.setupDone) { setScreen('profile-setup'); return; }
-    if (current && current.exercises.length > 0) setBreakModal(true);
+    setPostSplash(true);
   }
 
   function onProfileSave(p) {
@@ -4134,6 +4550,13 @@ function App() {
   return (
     <>
       {splash && <SplashScreen isFirstTime={isFirstTime} onContinue={onSplashDone} />}
+
+      {!splash && screen === 'login' && (
+        <LoginScreen
+          onSignedIn={() => routeOnward()}
+          onSkip={() => routeOnward()}
+        />
+      )}
 
       {!splash && screen === 'profile-setup' && (
         <ProfileSetupScreen onSave={onProfileSave} />
