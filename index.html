@@ -2765,10 +2765,8 @@ function friendlyAuthError(msg) {
     return 'No account with that email yet. Go back and tap Sign Up.';
   if (m.includes('rate limit') || m.includes('too many'))
     return 'Too many emails for this address. Wait about an hour, or use the code in the last email we sent.';
-  if (m.includes('expired'))
-    return 'That code has expired. Send a fresh one below.';
-  if (m.includes('token') || m.includes('invalid') || m.includes('otp'))
-    return "That code didn't match. Open the newest email and type those 6 digits.";
+  if (m.includes('expired') || m.includes('token') || m.includes('invalid') || m.includes('otp'))
+    return "That code didn't work. Open the NEWEST email and type those 6 digits — an older code stops working as soon as you request another. If it still fails, send a fresh code below.";
   if (m.includes('fetch') || m.includes('network'))
     return 'No internet connection. Reconnect and try again.';
   return msg || 'Something went wrong. Try again.';
@@ -2812,11 +2810,18 @@ function LoginScreen({ onSignedIn, onSkip }) {
   async function verify() {
     if (!codeOk || busy) return;
     setError(''); setBusy('verifying');
-    const { data, error: err } = await supa.auth.verifyOtp({
-      email: email.trim().toLowerCase(),
-      token: code.replace(/\D/g, ''),
-      type: 'email',
-    });
+    const em = email.trim().toLowerCase();
+    const token = code.replace(/\D/g, '');
+    // A first-ever signup issues a 'signup' token; a returning user gets 'email'
+    // (magiclink). The wrong type comes back as "expired or invalid", so try each.
+    let data = null, err = null;
+    for (const type of ['email', 'signup', 'magiclink']) {
+      const res = await supa.auth.verifyOtp({ email: em, token, type });
+      if (!res.error) { data = res.data; err = null; break; }
+      err = res.error;
+      // A genuine wrong/expired code fails every type — keep the first message
+      if (!/expired|invalid/i.test(res.error.message || '')) break;
+    }
     setBusy('');
     if (err) { setError(friendlyAuthError(err.message)); return; }
     try { localStorage.removeItem(AUTH_SKIP_KEY); } catch {}
