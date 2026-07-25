@@ -20,9 +20,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Passion+One:wght@400;700;900&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
-  <script src="https://unpkg.com/react@18.2.0/umd/react.development.js"></script>
-  <script src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.development.js"></script>
-  <script src="https://unpkg.com/@babel/standalone@7.23.5/babel.min.js"></script>
+  <link rel="preconnect" href="https://unpkg.com" crossorigin>
+  <script src="https://unpkg.com/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@supabase/supabase-js@2.49.4/dist/umd/supabase.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -521,13 +521,13 @@
     .rest-done .rest-float-label { color: var(--success); font-size: 22px; font-family: var(--fd); letter-spacing: 1px; animation: dot-pop .45s ease; }
     .rest-float-time { font-family: var(--fd); font-size: 30px; font-weight: 900; color: var(--pink); line-height: 1; min-width: 66px; text-align: center; }
     .wo-clock {
-      position: fixed; top: 60px; right: 12px; z-index: 400;
+      position: fixed; top: calc(60px + env(safe-area-inset-top, 0px)); right: 12px; z-index: 400;
       display: flex; align-items: center; gap: 7px;
       background: rgba(18,21,8,.82); border: 1px solid var(--border);
       backdrop-filter: blur(6px); border-radius: 20px; padding: 5px 12px 5px 10px;
       pointer-events: none;
     }
-    .wo-clock-hero { top: 18px; right: 60px; }
+    .wo-clock-hero { top: calc(16px + env(safe-area-inset-top, 0px)); right: 60px; }
     .wo-clock-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--pink); animation: mail-pulse 1.6s ease-in-out infinite; flex-shrink: 0; }
     .wo-clock-lbl {
       font-family: var(--fb); font-size: 8.5px; font-weight: 800; letter-spacing: 1.3px;
@@ -684,7 +684,7 @@
       padding: 1px 7px; display: inline-block; margin-top: 3px;
     }
     .log-hero-wiki {
-      position: absolute; top: 14px; right: 14px; z-index: 2;
+      position: absolute; top: calc(14px + env(safe-area-inset-top, 0px)); right: 14px; z-index: 2;
       width: 38px; height: 38px; border-radius: 50%;
       border: 1px solid rgba(255,255,255,.25); background: rgba(0,0,0,.35);
       color: white; font-size: 16px; font-weight: 700; font-style: italic;
@@ -697,7 +697,8 @@
     ══════════════════════════════════ */
     .log-hero {
       position: relative; overflow: hidden;
-      min-height: 150px;
+      min-height: calc(150px + env(safe-area-inset-top, 0px));
+      padding-top: env(safe-area-inset-top, 0px);
       display: flex; flex-direction: column; justify-content: flex-end;
     }
     .log-hero-bg-icon {
@@ -720,7 +721,7 @@
       font-size: 13px; color: rgba(255,255,255,.65); margin-top: 7px; font-weight: 500;
     }
     .log-hero-back {
-      position: absolute; top: 14px; left: 14px; z-index: 10;
+      position: absolute; top: calc(14px + env(safe-area-inset-top, 0px)); left: 14px; z-index: 10;
       width: 36px; height: 36px; border-radius: 50%;
       background: rgba(0,0,0,.35); border: none; color: white;
       font-size: 17px; cursor: pointer; display: flex; align-items: center; justify-content: center;
@@ -1451,7 +1452,7 @@
 </head>
 <body>
 <div id="root"></div>
-<script type="text/babel">
+<script type="text/vibelift-jsx" id="app-src">
 const { useState, useEffect, useMemo } = React;
 
 const dailyQuotes = [
@@ -1858,6 +1859,44 @@ function ExIcon({ id, size = 28, color = '#242d16', img = null }) {
 ═══════════════════════════════════════ */
 function vibe(pattern) {
   try { if (navigator.vibrate) navigator.vibrate(pattern); } catch (e) {}
+}
+
+/* ── Rest alarm that survives a locked phone ──────────────────────────────
+   A locked iPhone suspends the page, so setTimeout and notifications fired
+   from JS are unreliable — which is why the rest beep worked some sets and
+   not others. Audio is the exception: iOS keeps playing media through the
+   lock screen. So instead of scheduling a beep for later, we build one audio
+   file that IS the rest period — N seconds of silence, then the beep — and
+   press play. Nothing has to wake up; the sound arrives on its own.
+   Mono 4 kHz keeps a 3-minute rest under 750 KB, held in memory only. */
+function buildRestAlarm(seconds) {
+  const RATE = 4000;   // 880 Hz beep needs >1760 Hz; 4 kHz halves the memory
+  const total = Math.max(1, Math.round(seconds * RATE));
+  const beepStart = Math.max(0, total - Math.round(1.6 * RATE));
+  const bytes = 44 + total;
+  const buf = new ArrayBuffer(bytes);
+  const view = new DataView(buf);
+  const str = (off, s) => { for (let i = 0; i < s.length; i++) view.setUint8(off + i, s.charCodeAt(i)); };
+  str(0, 'RIFF'); view.setUint32(4, bytes - 8, true); str(8, 'WAVE');
+  str(12, 'fmt '); view.setUint32(16, 16, true);
+  view.setUint16(20, 1, true); view.setUint16(22, 1, true);
+  view.setUint32(24, RATE, true); view.setUint32(28, RATE, true);
+  view.setUint16(32, 1, true); view.setUint16(34, 8, true);
+  str(36, 'data'); view.setUint32(40, total, true);
+
+  for (let i = 0; i < total; i++) {
+    let sample = 128;                                   // 8-bit PCM silence
+    if (i >= beepStart) {
+      const t = (i - beepStart) / RATE;
+      const pulse = Math.floor(t / 0.25);               // three short pulses
+      if (pulse < 3 && (t % 0.25) < 0.13) {
+        const env = Math.sin(Math.PI * ((t % 0.25) / 0.13));
+        sample = 128 + Math.round(70 * env * Math.sin(2 * Math.PI * 880 * t));
+      }
+    }
+    view.setUint8(44 + i, sample);
+  }
+  return URL.createObjectURL(new Blob([buf], { type: 'audio/wav' }));
 }
 
 function sparkBurst(x, y, count = 12) {
@@ -2578,7 +2617,7 @@ function SplashScreen({ isFirstTime, skipQuote, onContinue }) {
       {/* Phase 1 — dark + logo */}
       <div className={`sp-p1 ${p1Out ? 'sp-p1-out' : ''}`}>
         <div className="sp-logo-glow" />
-        <img src="./assets/Logo%20resized.png" alt="VibeLift" className="sp-logo" />
+        <img src="./assets/logo-mark.png" alt="VibeLift" className="sp-logo" />
       </div>
 
       {/* Phase 2 — photo + quote */}
@@ -2615,7 +2654,7 @@ function ProfileSetupScreen({ onSave }) {
     <div className="screen">
       <div className="setup-body">
         <div className="setup-hero">
-          <img src="./assets/Logo%20resized.png" alt="VibeLift" className="setup-logo" />
+          <img src="./assets/logo-mark.png" alt="VibeLift" className="setup-logo" />
         </div>
         <div>
           <div className="setup-title">What should we call you?</div>
@@ -2850,8 +2889,45 @@ function DangerZone() {
 ═══════════════════════════════════════ */
 const AUTH_SKIP_KEY = 'vibelift_auth_skipped';
 
-function authSkipped() {
+/* The login screen is a first-run event, not a recurring gate. Once you have
+   either signed in or chosen to skip on this device, it never shows again —
+   even if the Supabase session later expires or Safari evicts it. A missing
+   session then means "sync is paused", which belongs in Settings, not a wall
+   in front of your workout. */
+function authOnboarded() {
   try { return localStorage.getItem(AUTH_SKIP_KEY) === '1'; } catch { return false; }
+}
+function markOnboarded() {
+  try { localStorage.setItem(AUTH_SKIP_KEY, '1'); } catch {}
+}
+
+/* Safari evicts script-writable storage after 7 days of not opening a site,
+   which would wipe both the session and the local workout history. Installed
+   home-screen apps are exempt, and a granted persistence request exempts the
+   rest. Ask once, quietly. */
+if (typeof navigator !== 'undefined' && navigator.storage && navigator.storage.persist) {
+  navigator.storage.persisted().then(already => {
+    if (!already) navigator.storage.persist().catch(() => {});
+  }).catch(() => {});
+}
+
+/* Throwaway inboxes (10minutemail and friends) are a bad fit here: the address
+   IS the account. When the inbox dies, so does every workout tied to it, and
+   there is no way back in. Blocked at sign-up only — signing in to an account
+   that already exists is never blocked. */
+const DISPOSABLE_EMAIL_RE = /(^|\.)(10minutemail|20minutemail|33mail|anonaddy|burnermail|dispostable|discard\.email|dropmail|emailondeck|fakeinbox|fakemail|getairmail|getnada|guerrillamail|harakirimail|inboxbear|jetable|mailcatch|maildrop|mailinator|mailnesia|mailsac|mailtemp|minuteinbox|mintemail|mohmal|moakt|nada|sharklasers|spam4|spamgourmet|temp-mail|tempail|tempinbox|tempmail|tempmailo|throwawaymail|trashmail|tuta\.io|yopmail|zetmail)\./i;
+const DISPOSABLE_EXACT = new Set([
+  'mailinator.com','guerrillamail.com','yopmail.com','10minutemail.com','tempmail.com',
+  'temp-mail.org','throwawaymail.com','trashmail.com','sharklasers.com','getnada.com',
+  'maildrop.cc','mohmal.com','dispostable.com','fakeinbox.com','spamgourmet.com',
+  'mailsac.com','moakt.com','minuteinbox.com','emailondeck.com','tempmailo.com',
+  'mailnesia.com','inboxkitten.com','mail7.io','burnermail.io','anonaddy.me'
+]);
+function isDisposableEmail(em) {
+  const domain = String(em).split('@')[1] || '';
+  if (!domain) return false;
+  if (DISPOSABLE_EXACT.has(domain)) return true;
+  return DISPOSABLE_EMAIL_RE.test(domain + '.');
 }
 
 // Supabase errors are written for developers. Rewrite them for humans.
@@ -2893,8 +2969,12 @@ function LoginScreen({ onSignedIn, onSkip }) {
   async function send(resend) {
     if (!emailOk || busy) return;
     if (resend && cooldown > 0) return;   // cooldown guards resends only
-    setError(''); setBusy('sending');
     const em = email.trim().toLowerCase();
+    if (mode === 'signup' && isDisposableEmail(em)) {
+      setError('That looks like a temporary email address. Your account and every workout in it are tied to this inbox — use one you will still have next year.');
+      return;
+    }
+    setError(''); setBusy('sending');
     const { error: err } = await supa.auth.signInWithOtp({
       email: em,
       options: {
@@ -2924,12 +3004,12 @@ function LoginScreen({ onSignedIn, onSkip }) {
     }
     setBusy('');
     if (err) { setError(friendlyAuthError(err.message)); return; }
-    try { localStorage.removeItem(AUTH_SKIP_KEY); } catch {}
+    markOnboarded();
     onSignedIn(data && data.session);
   }
 
   function skip() {
-    try { localStorage.setItem(AUTH_SKIP_KEY, '1'); } catch {}
+    markOnboarded();
     onSkip();
   }
 
@@ -2953,7 +3033,7 @@ function LoginScreen({ onSignedIn, onSkip }) {
 
         {step === 'choose' && (
           <>
-            <img src="./assets/Logo%20resized.png" alt="VibeLift" className="lg-logo" />
+            <img src="./assets/logo-mark.png" alt="VibeLift" className="lg-logo" />
             <DailyQuoteCard />
             <div className="lg-choice">
               <button className="btn-pink" onClick={() => { setMode('signup'); setStep('email'); setError(''); }}>Sign Up</button>
@@ -3715,6 +3795,28 @@ function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, hist
   // endAt on every tick, so locking the phone or switching apps can't drift it.
   const [rest, setRest] = useState(null);
   const restNotified = React.useRef(false);
+  const alarmRef = React.useRef(null);
+
+  function stopRestAlarm() {
+    const a = alarmRef.current;
+    if (!a) return;
+    try { a.pause(); URL.revokeObjectURL(a.src); } catch {}
+    alarmRef.current = null;
+  }
+
+  function startRestAlarm(seconds) {
+    stopRestAlarm();
+    try {
+      const a = new Audio(buildRestAlarm(seconds));
+      a.preload = 'auto';
+      alarmRef.current = a;
+      // Started from the Complete Set tap, so this counts as a user gesture.
+      const p = a.play();
+      if (p && p.catch) p.catch(() => {});
+    } catch {}
+  }
+
+  useEffect(() => stopRestAlarm, []);
 
   useEffect(() => {
     if (!rest || rest.left <= 0) return;
@@ -3740,9 +3842,12 @@ function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, hist
     return () => { clearInterval(iv); document.removeEventListener('visibilitychange', tick); };
   }, [rest && rest.endAt]);
 
+  // "GO" is worth seeing for a moment. Coming back to the app minutes later and
+  // still being told GO is just stale — clear it and let the set stand on its own.
   useEffect(() => {
     if (rest && rest.left === 0) {
-      const t = setTimeout(() => setRest(null), 2500);
+      const overFor = Date.now() - rest.endAt;
+      const t = setTimeout(() => setRest(null), overFor > 15000 ? 0 : 2500);
       return () => clearTimeout(t);
     }
   }, [rest]);
@@ -3832,6 +3937,7 @@ function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, hist
       sparkBurst(x, y);
     }
     vibe(currentSet >= totalSets ? [30, 40, 30] : 30);
+    stopRestAlarm();
     setJustDone(currentSet);
     setTimeout(() => setJustDone(null), 500);
     const next = [...doneSets, s];
@@ -3842,6 +3948,7 @@ function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, hist
       if (restSecs !== 'off') {
         restNotified.current = false;
         setRest({ endAt: Date.now() + restSecs * 1000, total: restSecs, left: restSecs });
+        startRestAlarm(restSecs);
         if ('Notification' in window && Notification.permission === 'default') {
           try { Notification.requestPermission(); } catch {}
         }
@@ -3939,8 +4046,8 @@ function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, hist
               {rest.left > 0 && <span className="rest-float-time">{Math.floor(rest.left / 60)}:{String(rest.left % 60).padStart(2, '0')}</span>}
               {rest.left > 0 && (
                 <>
-                  <button className="rest-btn" onClick={() => setRest(r => r ? { ...r, endAt: r.endAt + 30000, total: r.total + 30, left: r.left + 30 } : r)}>+30s</button>
-                  <button className="rest-btn" onClick={() => setRest(null)} aria-label="Dismiss rest timer">✕</button>
+                  <button className="rest-btn" onClick={() => setRest(r => { if (!r) return r; const left = r.left + 30; startRestAlarm(left); return { ...r, endAt: r.endAt + 30000, total: r.total + 30, left }; })}>+30s</button>
+                  <button className="rest-btn" onClick={() => { stopRestAlarm(); setRest(null); }} aria-label="Dismiss rest timer">✕</button>
                 </>
               )}
             </div>
@@ -4624,13 +4731,15 @@ function App() {
   useEffect(() => {
     if (!postSplash || !authReady) return;
     setPostSplash(false);
-    if (supa && !hasSession && !authSkipped()) { setScreen('login'); return; }
+    if (supa && !hasSession && !authOnboarded()) { setScreen('login'); return; }
     routeOnward();
   }, [postSplash, authReady]);
 
   // Magic link opened in this browser → session appears → leave the login screen
   useEffect(() => {
-    if (hasSession && screen === 'login') routeOnward();
+    if (!hasSession) return;
+    markOnboarded();
+    if (screen === 'login') routeOnward();
   }, [hasSession, screen]);
 
   function onSplashDone() {
@@ -4705,7 +4814,7 @@ function App() {
       {splash && (
         <SplashScreen
           isFirstTime={isFirstTime}
-          skipQuote={authReady && !!supa && !hasSession && !authSkipped()}
+          skipQuote={authReady && !!supa && !hasSession && !authOnboarded()}
           onContinue={onSplashDone}
         />
       )}
@@ -4791,6 +4900,47 @@ function App() {
 }
 
 ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+
+<script>
+/* Boot: compile once, then never again.
+   Babel is 2.8 MB and re-parsing 200 KB of JSX on every launch was the single
+   biggest chunk of startup. The compiled output is cached against a hash of the
+   source, so editing the app above automatically invalidates it — a stale cache
+   is impossible, and Babel is only downloaded when the hash actually changes. */
+(function () {
+  var el = document.getElementById('app-src');
+  var src = el.textContent;
+  var h = 5381;
+  for (var i = 0; i < src.length; i++) h = ((h * 33) ^ src.charCodeAt(i)) >>> 0;
+  var KEY = 'vibelift_compiled_v1';
+
+  function run(code) {
+    var s = document.createElement('script');
+    s.textContent = code;
+    document.body.appendChild(s);
+  }
+
+  try {
+    var raw = localStorage.getItem(KEY);
+    if (raw) {
+      var o = JSON.parse(raw);
+      if (o && o.h === h && o.c) { run(o.c); return; }
+    }
+  } catch (e) { /* corrupt or unavailable cache — fall through and compile */ }
+
+  var s = document.createElement('script');
+  s.src = 'https://unpkg.com/@babel/standalone@7.23.5/babel.min.js';
+  s.onload = function () {
+    var code = Babel.transform(src, { presets: ['react'] }).code;
+    try { localStorage.setItem(KEY, JSON.stringify({ h: h, c: code })); } catch (e) { /* over quota — still runs, just recompiles next time */ }
+    run(code);
+  };
+  s.onerror = function () {
+    document.body.innerHTML = '<div style="padding:40px;font:600 15px system-ui;color:#c8f235;background:#121508;min-height:100vh">VibeLift could not load. Check your connection and reopen.</div>';
+  };
+  document.head.appendChild(s);
+})();
 </script>
 <script>
   /* Tactile press feedback on every button: tiny vibration on touch,
