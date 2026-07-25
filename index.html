@@ -835,7 +835,7 @@
       margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border);
     }
     .mode-chip {
-      flex: 1; min-height: 40px; padding: 8px 6px; border-radius: 10px;
+      flex: 1; min-height: 44px; padding: 10px 6px; border-radius: 10px;
       border: 1px solid var(--border); background: transparent;
       color: var(--text2); font-family: var(--fd); font-size: 12px; font-weight: 700;
       letter-spacing: .3px; cursor: pointer; transition: all .15s;
@@ -4358,14 +4358,14 @@ function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, hist
 
             {/* Bar type toggle — Straight vs EZ */}
             <div style={{ display:'flex', background:'var(--sfx)', border:'1px solid var(--border)', borderRadius:12, padding:4 }}>
-              <button onClick={() => setBarType('straight')} style={{ flex:1, padding:'10px', borderRadius:9, border:'none', background:barType==='straight'?'var(--sfx)':'transparent', fontFamily:'var(--fd)', fontSize:13, fontWeight:700, color:barType==='straight'?'var(--text)':'var(--text2)', cursor:'pointer', transition:'background .15s, color .15s' }}>Straight Bar</button>
-              <button onClick={() => setBarType('ez')} style={{ flex:1, padding:'10px', borderRadius:9, border:'none', background:barType==='ez'?'rgba(200,242,53,.22)':'transparent', fontFamily:'var(--fd)', fontSize:13, fontWeight:700, color:barType==='ez'?'var(--pink)':'var(--text2)', cursor:'pointer', transition:'background .15s, color .15s' }}>EZ Bar</button>
+              <button onClick={() => setBarType('straight')} style={{ flex:1, minHeight:44, padding:'10px', borderRadius:9, border:'none', background:barType==='straight'?'var(--sfx)':'transparent', fontFamily:'var(--fd)', fontSize:13, fontWeight:700, color:barType==='straight'?'var(--text)':'var(--text2)', cursor:'pointer', transition:'background .15s, color .15s' }}>Straight Bar</button>
+              <button onClick={() => setBarType('ez')} style={{ flex:1, minHeight:44, padding:'10px', borderRadius:9, border:'none', background:barType==='ez'?'rgba(200,242,53,.22)':'transparent', fontFamily:'var(--fd)', fontSize:13, fontWeight:700, color:barType==='ez'?'var(--pink)':'var(--text2)', cursor:'pointer', transition:'background .15s, color .15s' }}>EZ Bar</button>
             </div>
 
             {/* Both sides / per side — iOS segmented control */}
             <div style={{ display:'flex', background:'var(--sfx)', border:'1px solid var(--border)', borderRadius:12, padding:4 }}>
-              <button onClick={() => setAddBothSides(true)} style={{ flex:1, padding:'12px', borderRadius:9, border:'none', background:addBothSides?'var(--sfx)':'transparent', fontFamily:'var(--fd)', fontSize:14, fontWeight:700, color:addBothSides?'var(--text)':'var(--text2)', cursor:'pointer', transition:'background .15s, color .15s' }}>Both Sides</button>
-              <button onClick={() => setAddBothSides(false)} style={{ flex:1, padding:'12px', borderRadius:9, border:'none', background:!addBothSides?'var(--sfx)':'transparent', fontFamily:'var(--fd)', fontSize:14, fontWeight:700, color:!addBothSides?'var(--text)':'var(--text2)', cursor:'pointer', transition:'background .15s, color .15s' }}>Per Side</button>
+              <button onClick={() => setAddBothSides(true)} style={{ flex:1, minHeight:44, padding:'12px', borderRadius:9, border:'none', background:addBothSides?'var(--sfx)':'transparent', fontFamily:'var(--fd)', fontSize:14, fontWeight:700, color:addBothSides?'var(--text)':'var(--text2)', cursor:'pointer', transition:'background .15s, color .15s' }}>Both Sides</button>
+              <button onClick={() => setAddBothSides(false)} style={{ flex:1, minHeight:44, padding:'12px', borderRadius:9, border:'none', background:!addBothSides?'var(--sfx)':'transparent', fontFamily:'var(--fd)', fontSize:14, fontWeight:700, color:!addBothSides?'var(--text)':'var(--text2)', cursor:'pointer', transition:'background .15s, color .15s' }}>Per Side</button>
             </div>
 
             {/* Plate buttons — 3-column grid, smallest to largest */}
@@ -4383,8 +4383,8 @@ function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, hist
 
             {platesPerSide.length > 0 && (
               <div style={{ display:'flex', gap:10 }}>
-                <button style={{ flex:1, padding:'13px', borderRadius:12, border:'1px solid var(--border)', background:'transparent', color:'var(--text2)', fontFamily:'var(--fd)', fontSize:13, fontWeight:700, cursor:'pointer' }} onClick={() => setPlatesPerSide(p => p.slice(0,-1))}>− Remove Last</button>
-                <button style={{ flex:1, padding:'13px', borderRadius:12, border:'1px solid var(--border)', background:'transparent', color:'var(--text2)', fontFamily:'var(--fd)', fontSize:13, fontWeight:700, cursor:'pointer' }} onClick={() => setPlatesPerSide([])}>Clear All</button>
+                <button style={{ flex:1, minHeight:44, padding:'13px', borderRadius:12, border:'1px solid var(--border)', background:'transparent', color:'var(--text2)', fontFamily:'var(--fd)', fontSize:13, fontWeight:700, cursor:'pointer' }} onClick={() => setPlatesPerSide(p => p.slice(0,-1))}>− Remove Last</button>
+                <button style={{ flex:1, minHeight:44, padding:'13px', borderRadius:12, border:'1px solid var(--border)', background:'transparent', color:'var(--text2)', fontFamily:'var(--fd)', fontSize:13, fontWeight:700, cursor:'pointer' }} onClick={() => setPlatesPerSide([])}>Clear All</button>
               </div>
             )}
 
