@@ -581,6 +581,8 @@
       font-family: var(--fd); font-size: 13px; font-weight: 900; letter-spacing: 4px;
       color: var(--pink); margin-bottom: 6px;
     }
+    .lg-logo { width: 118px; height: auto; align-self: center; margin-bottom: 4px; }
+    .lg-choice { display: flex; flex-direction: column; gap: 10px; margin-top: 6px; }
     .lg-steps { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
     .lg-step {
       font-family: var(--fb); font-size: 10px; font-weight: 800; letter-spacing: 1.2px;
@@ -2506,7 +2508,7 @@ function HomeScreen({ onStart, onViewHistory, onOpenSettings, history, hasActive
 /* ═══════════════════════════════════════
    SPLASH SCREEN
 ═══════════════════════════════════════ */
-function SplashScreen({ isFirstTime, onContinue }) {
+function SplashScreen({ isFirstTime, skipQuote, onContinue }) {
   const [phase, setPhase]     = useState(1);
   const [p1Out, setP1Out]     = useState(false);
   const [p2In,  setP2In]      = useState(false);
@@ -2516,12 +2518,16 @@ function SplashScreen({ isFirstTime, onContinue }) {
     const t1 = setTimeout(() => setP1Out(true), 1300);
     const t2 = setTimeout(() => { setP2In(true); setPhase(2); }, 1620);
     let t3, t4;
-    if (!isFirstTime) {
+    if (skipQuote) {
+      // Login screen carries the verse — don't show it twice, just flash the logo
+      t3 = setTimeout(() => setExiting(true), 1100);
+      t4 = setTimeout(onContinue, 1450);
+    } else if (!isFirstTime) {
       t3 = setTimeout(() => setExiting(true), 3300);
       t4 = setTimeout(onContinue, 3800);
     }
     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4); };
-  }, []);
+  }, [skipQuote]);
 
   function handleBtn() { setExiting(true); setTimeout(onContinue, 500); }
 
@@ -2755,8 +2761,10 @@ function friendlyAuthError(msg) {
   // refuses — bad SMTP credentials, unverified sender, or the hourly cap.
   if (m.includes('error sending') || m.includes('smtp'))
     return 'The email server refused to send. If custom SMTP is set up, check the sender address is verified and the SMTP key is right. Otherwise this is usually the hourly email limit — wait an hour, or skip below and sign in later.';
+  if (m.includes('signups not allowed') || m.includes('user not found'))
+    return 'No account with that email yet. Go back and tap Sign Up.';
   if (m.includes('rate limit') || m.includes('too many'))
-    return 'Too many sign-in emails were requested for this address. Wait about an hour, then try again — or open the newest email we already sent and use the code in it.';
+    return 'Too many emails for this address. Wait about an hour, or use the code in the last email we sent.';
   if (m.includes('expired'))
     return 'That code has expired. Send a fresh one below.';
   if (m.includes('token') || m.includes('invalid') || m.includes('otp'))
@@ -2767,7 +2775,8 @@ function friendlyAuthError(msg) {
 }
 
 function LoginScreen({ onSignedIn, onSkip }) {
-  const [step, setStep]   = useState('email');  // email | code
+  const [step, setStep]   = useState('choose'); // choose | email | code
+  const [mode, setMode]   = useState('signup'); // signup | login
   const [email, setEmail] = useState('');
   const [code, setCode]   = useState('');
   const [busy, setBusy]   = useState('');       // '' | 'sending' | 'verifying'
@@ -2784,15 +2793,19 @@ function LoginScreen({ onSignedIn, onSkip }) {
   const codeOk  = code.replace(/\D/g, '').length === 6;
 
   async function send(resend) {
-    if (!emailOk || busy || cooldown > 0) return;
+    if (!emailOk || busy) return;
+    if (resend && cooldown > 0) return;   // cooldown guards resends only
     setError(''); setBusy('sending');
     const em = email.trim().toLowerCase();
     const { error: err } = await supa.auth.signInWithOtp({
       email: em,
-      options: { emailRedirectTo: window.location.origin + window.location.pathname }
+      options: {
+        emailRedirectTo: window.location.origin + window.location.pathname,
+        shouldCreateUser: mode === 'signup',
+      }
     });
     setBusy('');
-    if (err) { setError(friendlyAuthError(err.message)); if (!resend) return; return; }
+    if (err) { setError(friendlyAuthError(err.message)); return; }
     setEmail(em); setStep('code'); setCode(''); setCooldown(60);
   }
 
@@ -2832,20 +2845,24 @@ function LoginScreen({ onSignedIn, onSkip }) {
   return (
     <div className="screen lg-screen">
       <div className="lg-body">
-        <div className="lg-brand">VIBELIFT</div>
 
-        <div className="lg-steps">
-          <span className={`lg-step ${step === 'email' ? 'on' : 'done'}`}>1. Your email</span>
-          <span className="lg-step-line" />
-          <span className={`lg-step ${step === 'code' ? 'on' : ''}`}>2. Your code</span>
-        </div>
-
-        {step === 'email' ? (
+        {step === 'choose' && (
           <>
-            <div className="lg-title">Sign in</div>
-            <div className="lg-lede">No password. We email you a 6-digit code. Your workouts then follow you to any phone or computer.</div>
+            <img src="./assets/Logo%20resized.png" alt="VibeLift" className="lg-logo" />
+            <DailyQuoteCard />
+            <div className="lg-choice">
+              <button className="btn-pink" onClick={() => { setMode('signup'); setStep('email'); setError(''); }}>Sign Up</button>
+              <button className="btn-outline" onClick={() => { setMode('login'); setStep('email'); setError(''); }}>Log In</button>
+            </div>
+            <button className="lg-ghost" onClick={skip}>Skip — use this phone only</button>
+          </>
+        )}
 
-            <label className="lg-label" htmlFor="lg-email">Email address</label>
+        {step === 'email' && (
+          <>
+            <div className="lg-title">{mode === 'signup' ? 'Sign up' : 'Log in'}</div>
+
+            <label className="lg-label" htmlFor="lg-email">Email</label>
             <input
               id="lg-email" className="lg-input" type="email" inputMode="email"
               autoComplete="email" autoCapitalize="off" autoCorrect="off" spellCheck="false"
@@ -2855,25 +2872,22 @@ function LoginScreen({ onSignedIn, onSkip }) {
               onChange={e => { setEmail(e.target.value); setError(''); }}
               onKeyDown={e => { if (e.key === 'Enter') send(false); }}
             />
-            <div className="lg-hint">Example: uros.pavic1994@gmail.com — the code goes to this inbox.</div>
+            <div className="lg-hint">We email you a 6-digit code. No password.</div>
 
             {error && <div className="lg-err">{error}</div>}
 
             <button className="btn-pink lg-cta" onClick={() => send(false)} disabled={!emailOk || busy === 'sending'}>
-              {busy === 'sending' ? <><span className="lg-spin" />Sending your code…</> : 'Email Me a Code →'}
+              {busy === 'sending' ? <><span className="lg-spin" />Sending code…</> : 'Send Code →'}
             </button>
-            {busy === 'sending' && <div className="lg-status">Contacting the server. This takes a few seconds.</div>}
 
-            <button className="lg-ghost" onClick={skip} disabled={!!busy}>Skip — just use this phone</button>
-            <div className="lg-fine">
-              Skipping is fine. Everything saves on this device and you can sign in any time from Settings.{' '}
-              <a href="./privacy.html" target="_blank" rel="noopener">Privacy policy</a>
-            </div>
+            <button className="lg-ghost" onClick={() => { setStep('choose'); setError(''); setCooldown(0); }} disabled={!!busy}>← Back</button>
           </>
-        ) : (
+        )}
+
+        {step === 'code' && (
           <>
-            <div className="lg-title">Check your email</div>
-            <div className="lg-lede">We sent a 6-digit code to<br /><b className="lg-em">{email}</b></div>
+            <div className="lg-title">Enter code</div>
+            <div className="lg-lede">Sent to <b className="lg-em">{email}</b></div>
 
             <label className="lg-label" htmlFor="lg-code">6-digit code</label>
             <input
@@ -2885,25 +2899,21 @@ function LoginScreen({ onSignedIn, onSkip }) {
               onChange={e => { setCode(e.target.value.replace(/\D/g, '').slice(0, 6)); setError(''); }}
               onKeyDown={e => { if (e.key === 'Enter') verify(); }}
             />
-            <div className="lg-hint">Type the 6 digits from the email. Works in any browser — you don't need to tap the link.</div>
+            <div className="lg-hint">Check spam if it's not there. Valid 1 hour.</div>
 
             {error && <div className="lg-err">{error}</div>}
 
             <button className="btn-pink lg-cta" onClick={verify} disabled={!codeOk || busy === 'verifying'}>
-              {busy === 'verifying' ? <><span className="lg-spin" />Checking your code…</> : 'Sign In →'}
+              {busy === 'verifying' ? <><span className="lg-spin" />Signing in…</> : 'Sign In →'}
             </button>
-            {busy === 'verifying' && <div className="lg-status">Verifying and loading your workouts.</div>}
 
             <button className="lg-ghost" onClick={() => send(true)} disabled={cooldown > 0 || !!busy}>
-              {busy === 'sending' ? 'Sending…' : cooldown > 0 ? `Resend code in ${cooldown}s` : 'Resend the code'}
+              {busy === 'sending' ? 'Sending…' : cooldown > 0 ? `Resend in ${cooldown}s` : 'Resend code'}
             </button>
-            <button className="lg-ghost" onClick={() => { setStep('email'); setCode(''); setError(''); }} disabled={!!busy}>
-              Use a different email
-            </button>
-            <button className="lg-ghost" onClick={skip} disabled={!!busy}>Skip — just use this phone</button>
-            <div className="lg-fine">Email not there? Check spam. The code is valid for 1 hour.</div>
+            <button className="lg-ghost" onClick={() => { setStep('email'); setCode(''); setError(''); setCooldown(0); }} disabled={!!busy}>← Back</button>
           </>
         )}
+
       </div>
     </div>
   );
@@ -4553,7 +4563,13 @@ function App() {
   // Always render splash on top when active
   return (
     <>
-      {splash && <SplashScreen isFirstTime={isFirstTime} onContinue={onSplashDone} />}
+      {splash && (
+        <SplashScreen
+          isFirstTime={isFirstTime}
+          skipQuote={authReady && !!supa && !hasSession && !authSkipped()}
+          onContinue={onSplashDone}
+        />
+      )}
 
       {!splash && screen === 'login' && (
         <LoginScreen
