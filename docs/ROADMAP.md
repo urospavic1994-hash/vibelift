@@ -70,8 +70,8 @@ Phase 2 has NO paywall. Accounts free while premium set is built (per launch gat
 
 ## 5. Phase 3 — Payment + Premium
 
-**5.1 RESEARCH FIRST (subagent task): merchant of record for a Serbian founder, 2026.**
-Compare Paddle, Lemon Squeezy, Polar, Gumroad on: accepts Serbian individual/business, payout method to Serbia, fee %, subscription + trial-without-card support, webhook quality for entitlement sync, tax handling. Deliver comparison table → Uroš picks. Do not integrate anything before he picks.
+**5.1 RESEARCH DONE 2026-07-20 — decision PARKED by Uroš ("skip for now, I don't have company").**
+Findings: Lemon Squeezy eliminated (Stripe acquired it 2024, migrating users to Stripe Managed Payments — deprecation risk). Gumroad eliminated (10%+$0.50 fees, PayPal-only payout to Serbia, weak dunning). Finalists: **Polar** (Serbia explicitly in supported-country docs, RSD/EUR bank payout, ~5.5%+$0.50, best webhooks/DX, young company) vs **Paddle** (established, 5%+$0.50 all-in, customers can pay via PayPal button at checkout, $100 payout min monthly via SWIFT/Payoneer, Serbia not by-name confirmed). Both accept INDIVIDUALS — no company required, ID-only KYC; the company question is only Serbian income-tax side (accountant, see §6). No provider supports true no-card trial → trial lives in our DB as already planned in 5.2. Uroš considered selling via his own PayPal — ruled out (no MoR = global VAT burden, Serbian PayPal seller restrictions, weak recurring APIs). When resumed: fastest truth = free signup+KYC on the finalist(s). Full research in session 2026-07-20.
 
 **5.2 Entitlement model**
 - `subscriptions` table updated by MoR webhooks (Vercel serverless function endpoint). App checks entitlement on login + caches; graceful 3-day offline grace so a gym session never gets blocked by a network check.
