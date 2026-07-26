@@ -768,6 +768,57 @@
       from { transform: translate(0,0) scale(1); opacity: 1; }
       to   { transform: translate(var(--dx), var(--dy)) scale(.2); opacity: 0; }
     }
+    .spark-ring {
+      position: absolute; left: -8px; top: -8px; width: 16px; height: 16px;
+      border-radius: 50%; border: 3px solid var(--pink); opacity: .9;
+      animation: ring-out .55s cubic-bezier(.1,.8,.3,1) forwards;
+    }
+    @keyframes ring-out {
+      to { transform: scale(6.5); opacity: 0; border-width: 1px; }
+    }
+    .set-stamp {
+      position: fixed; left: 50%; top: 36%; z-index: 998; pointer-events: none;
+      transform: translate(-50%,-50%);
+      font-family: var(--fd); font-size: 52px; font-weight: 900;
+      letter-spacing: 1px; text-transform: uppercase; white-space: nowrap;
+      color: var(--pink); text-shadow: 0 6px 28px var(--pink-glow), 0 2px 8px rgba(0,0,0,.4);
+      animation: stamp-pop .75s cubic-bezier(.2,.9,.3,1) forwards;
+    }
+    @keyframes stamp-pop {
+      0%   { opacity: 0; transform: translate(-50%,-50%) scale(.55) rotate(-5deg); }
+      16%  { opacity: 1; transform: translate(-50%,-50%) scale(1.1)  rotate(1.5deg); }
+      28%  { transform: translate(-50%,-50%) scale(1) rotate(0deg); }
+      72%  { opacity: 1; transform: translate(-50%,-50%) scale(1); }
+      100% { opacity: 0; transform: translate(-50%,-64%) scale(.96); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .set-stamp { animation-duration: .35s; }
+      .spark-ring, .spark { display: none; }
+    }
+
+    /* ─── SKELETON LOADING ─── */
+    .skel {
+      position: relative; overflow: hidden;
+      background: var(--sfx); border-radius: 12px;
+    }
+    .skel::after {
+      content: ''; position: absolute; inset: 0; transform: translateX(-100%);
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.07), transparent);
+      animation: skel-sweep 1.3s ease-in-out infinite;
+    }
+    @keyframes skel-sweep { to { transform: translateX(100%); } }
+    @media (prefers-reduced-motion: reduce) { .skel::after { animation: none; } }
+    .skel-circle { border-radius: 50%; flex-shrink: 0; }
+    .acct-skel { display: flex; flex-direction: column; gap: 12px; padding: 2px 0; }
+    .acct-skel-row { display: flex; align-items: center; gap: 12px; }
+    .hero-loading::before {
+      content: ''; position: absolute; inset: 0; z-index: 0;
+      background: linear-gradient(100deg, var(--navy2) 40%, var(--navy3) 50%, var(--navy2) 60%);
+      background-size: 220% 100%;
+      animation: hero-shimmer 1.3s ease-in-out infinite;
+    }
+    @keyframes hero-shimmer { from { background-position: 130% 0; } to { background-position: -30% 0; } }
+    @media (prefers-reduced-motion: reduce) { .hero-loading::before { animation: none; } }
 
     /* ─── WORKOUT-DONE CELEBRATION ─── */
     .celebrate-overlay {
@@ -1944,6 +1995,9 @@ function buildRestAlarm(seconds) {
 function sparkBurst(x, y, count = 12) {
   const host = document.createElement('div');
   host.className = 'spark-host';
+  const ring = document.createElement('div');
+  ring.className = 'spark-ring';
+  host.appendChild(ring);
   const colors = ['#c8f235', '#0daa74', '#ffd700'];
   for (let i = 0; i < count; i++) {
     const p = document.createElement('div');
@@ -2170,10 +2224,8 @@ const DAYS_SHORT = ['Su','Mo','Tu','We','Th','Fr','Sa'];
 /* ═══════════════════════════════════════
    HELPERS
 ═══════════════════════════════════════ */
-const todayISO = () => {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-};
+const localISO = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+const todayISO = () => localISO(new Date());
 
 function fmtDate(iso) {
   return new Date(iso + 'T12:00:00').toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric' });
@@ -2333,7 +2385,7 @@ function get28Days() {
   const arr = [];
   for (let i = 0; i < 28; i++) {
     const d = new Date(start); d.setDate(start.getDate() + i);
-    arr.push(d.toISOString().split('T')[0]);
+    arr.push(localISO(d));
   }
   return arr;
 }
@@ -2500,7 +2552,7 @@ function HomeScreen({ onStart, onViewHistory, onOpenSettings, history, hasActive
   for (let i = -3; i <= 3; i++) {
     const d = new Date(todayDate);
     d.setDate(todayDate.getDate() + i);
-    const iso = d.toISOString().slice(0,10);
+    const iso = localISO(d);
     const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
     weekDays.push({ iso, num: d.getDate(), name: dayNames[d.getDay()], isToday: iso === today });
   }
@@ -2741,9 +2793,10 @@ function ProfileSetupScreen({ onSave }) {
    ACCOUNT SECTION (Phase 2B — magic-link login)
 ═══════════════════════════════════════ */
 function AccountSection({ avatar }) {
-  const [session, setSession] = useState(null);
-  const [mode, setMode] = useState('idle');   // idle | sending | sent
+  const [session, setSession] = useState(undefined); // undefined = still checking
+  const [mode, setMode] = useState('idle');   // idle | sending | sent | verifying
   const [email, setEmail] = useState('');
+  const [code, setCode]   = useState('');
   const [error, setError] = useState('');
   const [, bump] = useState(0);               // re-render on cloud status change
 
@@ -2762,6 +2815,22 @@ function AccountSection({ avatar }) {
     </div>
   );
 
+  // Session check in flight — skeleton instead of flashing the signed-out form
+  if (session === undefined) return (
+    <div className="acct-wrap">
+      <div className="acct-card acct-skel">
+        <div className="acct-skel-row">
+          <div className="skel skel-circle" style={{ width: 46, height: 46 }} />
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <div className="skel" style={{ height: 14, width: '65%' }} />
+            <div className="skel" style={{ height: 11, width: '40%' }} />
+          </div>
+        </div>
+        <div className="skel" style={{ height: 30, width: '55%', borderRadius: 15 }} />
+      </div>
+    </div>
+  );
+
   async function sendLink() {
     const em = email.trim().toLowerCase();
     if (!/^\S+@\S+\.\S+$/.test(em)) { setError("That doesn't look like an email address."); return; }
@@ -2772,7 +2841,18 @@ function AccountSection({ avatar }) {
       options: { emailRedirectTo: window.location.origin + window.location.pathname }
     });
     if (err) { setError(friendlyAuthError(err.message)); setMode('idle'); }
-    else { setEmail(em); setMode('sent'); }
+    else { setEmail(em); setCode(''); setMode('sent'); }
+  }
+
+  async function verifyCode() {
+    const token = code.replace(/\D/g, '');
+    if (token.length < 6 || mode === 'verifying') return;
+    setError(''); setMode('verifying');
+    const { data, err } = await verifyEmailCode(email, token);
+    if (err) { setError(friendlyAuthError(err.message)); setMode('sent'); return; }
+    markOnboarded();
+    setMode('idle'); setCode('');
+    if (data && data.session) setSession(data.session);  // listener confirms it too
   }
 
   async function signOut() {
@@ -2816,7 +2896,8 @@ function AccountSection({ avatar }) {
     );
   }
 
-  if (mode === 'sent') {
+  if (mode === 'sent' || mode === 'verifying') {
+    const codeOk = code.replace(/\D/g, '').length >= 6;
     return (
       <div className="acct-wrap">
         <div className="mail-hero">
@@ -2826,9 +2907,22 @@ function AccountSection({ avatar }) {
           <div className="acct-big">Check your<br/>email</div>
           <div className="acct-lede">We sent a sign-in code to<br/><b style={{ color:'var(--text)' }}>{email}</b></div>
         </div>
-        <div className="acct-fine">Open the email and use the code inside. It works for 1 hour.</div>
-        <button className="acct-ghost" onClick={sendLink}>Resend code</button>
-        <button className="acct-ghost" onClick={() => { setMode('idle'); setEmail(''); }}>Use a different email</button>
+        <input
+          className="lg-input lg-code" type="text" inputMode="numeric"
+          pattern="[0-9]*" autoComplete="one-time-code" maxLength={10}
+          placeholder="12345678"
+          value={code}
+          disabled={mode === 'verifying'}
+          onChange={e => { setCode(e.target.value.replace(/\D/g, '').slice(0, 10)); setError(''); }}
+          onKeyDown={e => { if (e.key === 'Enter') verifyCode(); }}
+        />
+        {error && <div className="acct-err">{error}</div>}
+        <button className="btn-pink" onClick={verifyCode} disabled={!codeOk || mode === 'verifying'}>
+          {mode === 'verifying' ? 'Signing in…' : 'Sign In →'}
+        </button>
+        <div className="acct-fine">Type every digit from the newest email. Check spam if it's not there. Valid 1 hour.</div>
+        <button className="acct-ghost" onClick={sendLink} disabled={mode === 'verifying'}>Resend code</button>
+        <button className="acct-ghost" onClick={() => { setMode('idle'); setEmail(''); setCode(''); setError(''); }} disabled={mode === 'verifying'}>Use a different email</button>
       </div>
     );
   }
@@ -3000,9 +3094,23 @@ function friendlyAuthError(msg) {
   return msg || 'Something went wrong. Try again.';
 }
 
+/* A first-ever signup issues a 'signup' token; a returning user gets 'email'
+   (magiclink). The wrong type comes back as "expired or invalid", so try each.
+   Shared by the first-run login screen and the Settings account card. */
+async function verifyEmailCode(em, token) {
+  let data = null, err = null;
+  for (const type of ['email', 'signup', 'magiclink']) {
+    const res = await supa.auth.verifyOtp({ email: em, token, type });
+    if (!res.error) { return { data: res.data, err: null }; }
+    err = res.error;
+    // A genuine wrong/expired code fails every type — keep the first message
+    if (!/expired|invalid/i.test(res.error.message || '')) break;
+  }
+  return { data, err };
+}
+
 function LoginScreen({ onSignedIn, onSkip }) {
-  const [step, setStep]   = useState('choose'); // choose | email | code
-  const [mode, setMode]   = useState('signup'); // signup | login
+  const [step, setStep]   = useState('email');  // email | code
   const [email, setEmail] = useState('');
   const [code, setCode]   = useState('');
   const [busy, setBusy]   = useState('');       // '' | 'sending' | 'verifying'
@@ -3018,11 +3126,12 @@ function LoginScreen({ onSignedIn, onSkip }) {
   const emailOk = /^\S+@\S+\.\S+$/.test(email.trim());
   const codeOk  = code.replace(/\D/g, '').length >= 6;   // Supabase OTP length is project-configurable (6-10)
 
+  // One path for everyone: an existing account signs in, a new email signs up.
   async function send(resend) {
     if (!emailOk || busy) return;
     if (resend && cooldown > 0) return;   // cooldown guards resends only
     const em = email.trim().toLowerCase();
-    if (mode === 'signup' && isDisposableEmail(em)) {
+    if (isDisposableEmail(em)) {
       setError('That looks like a temporary email address. Your account and every workout in it are tied to this inbox — use one you will still have next year.');
       return;
     }
@@ -3031,7 +3140,7 @@ function LoginScreen({ onSignedIn, onSkip }) {
       email: em,
       options: {
         emailRedirectTo: window.location.origin + window.location.pathname,
-        shouldCreateUser: mode === 'signup',
+        shouldCreateUser: true,
       }
     });
     setBusy('');
@@ -3044,16 +3153,7 @@ function LoginScreen({ onSignedIn, onSkip }) {
     setError(''); setBusy('verifying');
     const em = email.trim().toLowerCase();
     const token = code.replace(/\D/g, '');
-    // A first-ever signup issues a 'signup' token; a returning user gets 'email'
-    // (magiclink). The wrong type comes back as "expired or invalid", so try each.
-    let data = null, err = null;
-    for (const type of ['email', 'signup', 'magiclink']) {
-      const res = await supa.auth.verifyOtp({ email: em, token, type });
-      if (!res.error) { data = res.data; err = null; break; }
-      err = res.error;
-      // A genuine wrong/expired code fails every type — keep the first message
-      if (!/expired|invalid/i.test(res.error.message || '')) break;
-    }
+    const { data, err } = await verifyEmailCode(em, token);
     setBusy('');
     if (err) { setError(friendlyAuthError(err.message)); return; }
     markOnboarded();
@@ -3083,21 +3183,10 @@ function LoginScreen({ onSignedIn, onSkip }) {
     <div className="screen lg-screen">
       <div className="lg-body">
 
-        {step === 'choose' && (
+        {step === 'email' && (
           <>
             <img src="./assets/logo-mark.png" alt="VibeLift" className="lg-logo" />
             <DailyQuoteCard />
-            <div className="lg-choice">
-              <button className="btn-pink" onClick={() => { setMode('signup'); setStep('email'); setError(''); }}>Sign Up</button>
-              <button className="btn-outline" onClick={() => { setMode('login'); setStep('email'); setError(''); }}>Log In</button>
-            </div>
-            <button className="lg-ghost" onClick={skip}>Skip — use this phone only</button>
-          </>
-        )}
-
-        {step === 'email' && (
-          <>
-            <div className="lg-title">{mode === 'signup' ? 'Sign up' : 'Log in'}</div>
 
             <label className="lg-label" htmlFor="lg-email">Email</label>
             <input
@@ -3109,15 +3198,15 @@ function LoginScreen({ onSignedIn, onSkip }) {
               onChange={e => { setEmail(e.target.value); setError(''); }}
               onKeyDown={e => { if (e.key === 'Enter') send(false); }}
             />
-            <div className="lg-hint">We email you a sign-in code. No password.</div>
+            <div className="lg-hint">New or returning — we email you a sign-in code. No password.</div>
 
             {error && <div className="lg-err">{error}</div>}
 
             <button className="btn-pink lg-cta" onClick={() => send(false)} disabled={!emailOk || busy === 'sending'}>
-              {busy === 'sending' ? <><span className="lg-spin" />Sending code…</> : 'Send Code →'}
+              {busy === 'sending' ? <><span className="lg-spin" />Sending code…</> : 'Continue →'}
             </button>
 
-            <button className="lg-ghost" onClick={() => { setStep('choose'); setError(''); setCooldown(0); }} disabled={!!busy}>← Back</button>
+            <button className="lg-ghost" onClick={skip}>Skip — use this phone only</button>
           </>
         )}
 
@@ -3383,7 +3472,8 @@ function HistoryScreen({ onBack, history, weightUnit = 'kg' }) {
 
   const today = todayISO();
   const weekStart = (() => {
-    const d = new Date(); d.setDate(d.getDate() - d.getDay()); return d.toISOString().slice(0,10);
+    // Week starts Monday (European convention); local time, not UTC
+    const d = new Date(); d.setDate(d.getDate() - ((d.getDay() + 6) % 7)); return localISO(d);
   })();
   const monthStart = today.slice(0,7);
 
@@ -3900,6 +3990,19 @@ function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, hist
   }
 
   const [justDone, setJustDone] = useState(null);
+  const [stamp, setStamp] = useState(null);       // big "SET N ✓" flash on log
+  const stampTimer = React.useRef(null);
+
+  // Hero photo loads over the network the first time — shimmer until it's in
+  const heroUrl = meta.img ? `./assets/${meta.img}` : null;
+  const [heroReady, setHeroReady] = useState(!heroUrl);
+  useEffect(() => {
+    if (!heroUrl) { setHeroReady(true); return; }
+    setHeroReady(false);
+    const im = new Image();
+    im.onload = im.onerror = () => setHeroReady(true);
+    im.src = heroUrl;
+  }, [heroUrl]);
   // Rest timer: {endAt (epoch ms), total (s), left (s)} — left is derived from
   // endAt on every tick, so locking the phone or switching apps can't drift it.
   const [rest, setRest] = useState(null);
@@ -4054,6 +4157,9 @@ function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, hist
     stopRestAlarm();
     setJustDone(currentSet);
     setTimeout(() => setJustDone(null), 500);
+    setStamp(currentSet >= totalSets ? 'All sets done ✓' : `Set ${currentSet} ✓`);
+    clearTimeout(stampTimer.current);
+    stampTimer.current = setTimeout(() => setStamp(null), 800);
     const next = [...doneSets, s];
     setDoneSets(next);
     if (currentSet >= totalSets) setAllDone(true);
@@ -4110,9 +4216,10 @@ function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, hist
 
   return (
     <div className="screen">
-      <div className="log-hero" style={meta.img
+      {stamp && <div className="set-stamp" key={stamp + currentSet}>{stamp}</div>}
+      <div className={`log-hero ${heroUrl && !heroReady ? 'hero-loading' : ''}`} style={meta.img && heroReady
         ? { backgroundImage: `url('./assets/${meta.img}')`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundColor: '#111' }
-        : { background: meta.grad }}>
+        : meta.img ? { backgroundColor: '#111' } : { background: meta.grad }}>
         {meta.img && <div style={{ position:'absolute', inset:0, background:'rgba(0,0,0,0.42)', zIndex:0 }} />}
         <button className="log-hero-back" onClick={handleBack}>←</button>
         {WIKI[exercise.id] && (
