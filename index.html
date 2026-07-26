@@ -1141,6 +1141,11 @@
     .sp-p2-content .quote-text { color: rgba(255,255,255,.88); text-shadow: 0 1px 6px rgba(0,0,0,.5); }
     .sp-p2-content .quote-ref  { color: rgba(255,255,255,.5); }
 
+    .sp-btn-wrap {
+      position: absolute; left: 0; right: 0;
+      bottom: calc(env(safe-area-inset-bottom, 0px) + 40px);
+      padding: 0 24px; z-index: 3;
+    }
     .splash-btn {
       width: 100%; margin-top: 14px;
       padding: 18px; border-radius: 14px; border: none;
@@ -2708,53 +2713,32 @@ function BrandWordmark({ size = 36, className = '' }) {
 /* ═══════════════════════════════════════
    SPLASH SCREEN
 ═══════════════════════════════════════ */
-function SplashScreen({ isFirstTime, skipQuote, onContinue }) {
-  const [phase, setPhase]     = useState(1);
-  const [p1Out, setP1Out]     = useState(false);
-  const [p2In,  setP2In]      = useState(false);
+function SplashScreen({ isFirstTime, onContinue }) {
   const [exiting, setExiting] = useState(false);
 
+  // Single phase: logo only. Returning users pass through automatically;
+  // first-timers get the Get Started button. The daily verse lives on the
+  // login screen and home screen, not here.
   useEffect(() => {
-    const t1 = setTimeout(() => setP1Out(true), 1300);
-    const t2 = setTimeout(() => { setP2In(true); setPhase(2); }, 1620);
-    let t3, t4;
-    if (skipQuote) {
-      // Login screen carries the verse — don't show it twice, just flash the logo
-      t3 = setTimeout(() => setExiting(true), 1100);
-      t4 = setTimeout(onContinue, 1450);
-    } else if (!isFirstTime) {
-      t3 = setTimeout(() => setExiting(true), 3300);
-      t4 = setTimeout(onContinue, 3800);
-    }
-    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4); };
-  }, [skipQuote]);
+    if (isFirstTime) return;
+    const t1 = setTimeout(() => setExiting(true), 1400);
+    const t2 = setTimeout(onContinue, 1750);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
+  }, []);
 
   function handleBtn() { setExiting(true); setTimeout(onContinue, 500); }
 
   return (
     <div className={`sp-root ${exiting ? 'sp-exit' : ''}`}>
-
-      {/* Phase 1 — dark + logo */}
-      <div className={`sp-p1 ${p1Out ? 'sp-p1-out' : ''}`}>
+      <div className="sp-p1">
         <div className="sp-logo-glow" />
         <div className="sp-logo"><BrandWordmark size={46} /></div>
       </div>
-
-      {/* Phase 2 — photo + quote */}
-      <div className={`sp-p2 ${p2In ? 'sp-p2-in' : ''}`}>
-        <div className="sp-p2-glow" />
-        <div className="sp-p2-content">
-          <DailyQuoteCard />
-          {isFirstTime && <button className="splash-btn" onClick={handleBtn}>Get Started →</button>}
+      {isFirstTime && (
+        <div className="sp-btn-wrap">
+          <button className="splash-btn" onClick={handleBtn}>Get Started →</button>
         </div>
-      </div>
-
-      {/* 2 dots */}
-      <div className="sp-dots">
-        <div className={`sp-dot ${phase === 1 ? 'sp-dot-active' : ''}`} />
-        <div className={`sp-dot ${phase === 2 ? 'sp-dot-active' : ''}`} />
-      </div>
-
+      )}
     </div>
   );
 }
@@ -5080,7 +5064,6 @@ function App() {
       {splash && (
         <SplashScreen
           isFirstTime={isFirstTime}
-          skipQuote={authReady && !!supa && !hasSession && !authOnboarded()}
           onContinue={onSplashDone}
         />
       )}
