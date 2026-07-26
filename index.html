@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>VibeLift</title>
-  <link rel="icon" type="image/png" href="./assets/logo.png">
+  <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg">
+  <link rel="icon" type="image/png" sizes="192x192" href="./assets/icons/icon-192.png">
   <link rel="manifest" href="./manifest.json">
   <meta name="theme-color" content="#121508">
   <meta name="mobile-web-app-capable" content="yes">
@@ -583,7 +584,7 @@
       font-family: var(--fd); font-size: 13px; font-weight: 900; letter-spacing: 4px;
       color: var(--pink); margin-bottom: 6px;
     }
-    .lg-logo { width: 118px; height: auto; align-self: center; margin-bottom: 4px; }
+    .lg-logo { align-self: center; margin-bottom: 4px; }
     .lg-choice { display: flex; flex-direction: column; gap: 10px; margin-top: 6px; }
     .lg-steps { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
     .lg-step {
@@ -1078,10 +1079,21 @@
 
     .sp-logo {
       position: relative; z-index: 1;
-      width: 180px; border-radius: 20px;
       animation: sp-logo-in .7s cubic-bezier(.16,1,.3,1) both;
       animation-delay: .12s;
     }
+    /* Typographic wordmark — font-rendered, so it is crisp at every size and DPI
+       (the old PNG was 257px wide and blurred on retina screens) */
+    .brand-wordmark {
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--fd); font-weight: 900; letter-spacing: .5px; line-height: 1;
+      user-select: none; white-space: nowrap;
+    }
+    .brand-wordmark svg { width: .92em; height: .92em; flex-shrink: 0; color: var(--pink); margin-right: .24em; }
+    .bw-vibe { color: var(--pink); }
+    .bw-lift { color: var(--text); }
+    /* Splash background is always near-black, keep "Lift" light even in light theme */
+    .sp-root .bw-lift { color: #f0f5d8; }
     @keyframes sp-logo-in {
       from { opacity: 0; transform: scale(.75) translateY(12px); }
       to   { opacity: 1; transform: scale(1)   translateY(0); }
@@ -1237,7 +1249,7 @@
       -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain;
     }
     .setup-hero { text-align: center; padding-bottom: 4px; }
-    .setup-logo { max-width: 120px; width: 100%; display: block; margin: 0 auto; border-radius: 10px; }
+    .setup-logo { display: flex; margin: 0 auto; }
     .setup-title { font-family: var(--fd); font-size: 32px; font-weight: 900; color: var(--text); margin-top: 20px; line-height: 1.1; }
     .setup-subtitle { font-size: 15px; color: var(--text2); margin-top: 5px; line-height: 1.5; }
     .setup-field { display: flex; flex-direction: column; gap: 7px; }
@@ -2680,6 +2692,20 @@ function HomeScreen({ onStart, onViewHistory, onOpenSettings, history, hasActive
 }
 
 /* ═══════════════════════════════════════
+   BRAND WORDMARK (SVG barbell + type — crisp at any DPI)
+═══════════════════════════════════════ */
+function BrandWordmark({ size = 36, className = '' }) {
+  return (
+    <div className={`brand-wordmark ${className}`} style={{ fontSize: size }}>
+      <svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true">
+        <path d="M200,64V192a16,16,0,0,1-16,16H168a16,16,0,0,1-16-16V136H104v56a16,16,0,0,1-16,16H72a16,16,0,0,1-16-16V64A16,16,0,0,1,72,48H88a16,16,0,0,1,16,16v56h48V64a16,16,0,0,1,16-16h16A16,16,0,0,1,200,64ZM36,72H32A16,16,0,0,0,16,88v32H8.27A8.18,8.18,0,0,0,0,127.47,8,8,0,0,0,8,136h8v32a16,16,0,0,0,16,16h4a4,4,0,0,0,4-4V76A4,4,0,0,0,36,72Zm220,55.47a8.18,8.18,0,0,0-8.25-7.47H240V88a16,16,0,0,0-16-16h-4a4,4,0,0,0-4,4V180a4,4,0,0,0,4,4h4a16,16,0,0,0,16-16V136h8A8,8,0,0,0,256,127.47Z"/>
+      </svg>
+      <span className="bw-vibe">Vibe</span><span className="bw-lift">Lift</span>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════
    SPLASH SCREEN
 ═══════════════════════════════════════ */
 function SplashScreen({ isFirstTime, skipQuote, onContinue }) {
@@ -2711,7 +2737,7 @@ function SplashScreen({ isFirstTime, skipQuote, onContinue }) {
       {/* Phase 1 — dark + logo */}
       <div className={`sp-p1 ${p1Out ? 'sp-p1-out' : ''}`}>
         <div className="sp-logo-glow" />
-        <img src="./assets/logo-mark.png" alt="VibeLift" className="sp-logo" />
+        <div className="sp-logo"><BrandWordmark size={46} /></div>
       </div>
 
       {/* Phase 2 — photo + quote */}
@@ -2748,7 +2774,7 @@ function ProfileSetupScreen({ onSave }) {
     <div className="screen">
       <div className="setup-body">
         <div className="setup-hero">
-          <img src="./assets/logo-mark.png" alt="VibeLift" className="setup-logo" />
+          <BrandWordmark size={26} className="setup-logo" />
         </div>
         <div>
           <div className="setup-title">What should we call you?</div>
@@ -3185,7 +3211,7 @@ function LoginScreen({ onSignedIn, onSkip }) {
 
         {step === 'email' && (
           <>
-            <img src="./assets/logo-mark.png" alt="VibeLift" className="lg-logo" />
+            <BrandWordmark size={34} className="lg-logo" />
             <DailyQuoteCard />
 
             <label className="lg-label" htmlFor="lg-email">Email</label>
