@@ -1,6 +1,6 @@
 /* VibeLift service worker — offline-first PWA.
    Bump CACHE_VERSION on any release to invalidate old caches. */
-const CACHE_VERSION = 'vibelift-v4';
+const CACHE_VERSION = 'vibelift-v5';
 const CORE_CACHE = CACHE_VERSION + '-core';
 const RUNTIME_CACHE = CACHE_VERSION + '-runtime';
 
@@ -48,8 +48,53 @@ self.addEventListener('activate', event => {
   })());
 });
 
+/* ── Rest timer notification ───────────────────────────────────────────────
+   The page schedules the alert here instead of playing a long audio file, so
+   the phone's music is never interrupted. The worker keeps running when the
+   page is backgrounded, so the notification still lands on a locked phone. */
+let restTimer = null;
+
+function clearRestTimer() {
+  if (restTimer) { clearTimeout(restTimer); restTimer = null; }
+}
+
 self.addEventListener('message', event => {
-  if (event.data === 'skipWaiting') self.skipWaiting();
+  const data = event.data;
+  if (data === 'skipWaiting') { self.skipWaiting(); return; }
+  if (!data || !data.type) return;
+
+  if (data.type === 'cancel-rest-alert') { clearRestTimer(); return; }
+
+  if (data.type === 'rest-alert') {
+    clearRestTimer();
+    const delay = Math.max(0, Number(data.delay) || 0);
+    const body = data.body || 'Next set';
+    restTimer = setTimeout(async () => {
+      restTimer = null;
+      // App on screen? The GO pill, the beep and the buzz already said it.
+      try {
+        const open = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+        if (open.some(c => c.visibilityState === 'visible')) return;
+      } catch (e) {}
+      self.registration.showNotification('Rest over — GO', {
+        body: body,
+        icon: './assets/icons/icon-192.png',
+        badge: './assets/icons/icon-192.png',
+        vibrate: [60, 60, 60],
+        tag: 'vibelift-rest',
+        renotify: true
+      }).catch(() => {});
+    }, delay);
+  }
+});
+
+self.addEventListener('notificationclick', event => {
+  event.notification.close();
+  event.waitUntil((async () => {
+    const list = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    if (list.length) { try { await list[0].focus(); } catch (e) {} return; }
+    await self.clients.openWindow('./');
+  })());
 });
 
 self.addEventListener('fetch', event => {

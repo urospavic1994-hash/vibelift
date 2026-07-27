@@ -335,12 +335,16 @@
     }
     .ex-done-btn:active { background: var(--sfx); border-color: var(--pink); }
     .ex-done-btn-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 18px; }
+    /* Ending the workout is a real destination, not a footnote — it gets the
+       same weight as the two "keep going" buttons above it. */
     .ex-done-finish {
-      width: 100%; padding: 11px; border-radius: var(--r-sm); border: none; margin-top: 2px;
-      background: transparent; color: var(--text2);
-      font-size: 14px; font-weight: 600; cursor: pointer; transition: color .14s;
+      width: 100%; min-height: 56px; padding: 16px 18px; margin-top: 12px;
+      border-radius: var(--r-sm); border: 2px solid var(--success);
+      background: rgba(126,200,50,.10); color: var(--success);
+      font-family: var(--fd); font-size: 17px; font-weight: 800; letter-spacing: .4px;
+      cursor: pointer; transition: background .14s, transform .12s;
     }
-    .ex-done-finish:active { color: var(--text); }
+    .ex-done-finish:active { background: rgba(126,200,50,.22); transform: scale(.97); }
 
     /* Home history preview */
     .hist-preview-row {
@@ -966,10 +970,10 @@
       border-top: 1px solid var(--border);
     }
     .btn-finish {
-      flex: 1; min-height: 46px; padding: 12px 10px; border-radius: var(--r-sm);
-      border: 1.5px solid var(--success); background: transparent;
+      flex: 1; min-height: 54px; padding: 14px 10px; border-radius: var(--r-sm);
+      border: 2px solid var(--success); background: rgba(126,200,50,.10);
       color: var(--success); font-family: var(--fd);
-      font-size: 15px; font-weight: 800; letter-spacing: .3px;
+      font-size: 16px; font-weight: 800; letter-spacing: .3px;
       cursor: pointer; transition: background .14s, transform .12s;
     }
     .btn-finish:active { background: rgba(126,200,50,.16); transform: scale(.96); }
@@ -1971,42 +1975,49 @@ function vibe(pattern) {
   try { if (navigator.vibrate) navigator.vibrate(pattern); } catch (e) {}
 }
 
-/* ── Rest alarm that survives a locked phone ──────────────────────────────
-   A locked iPhone suspends the page, so setTimeout and notifications fired
-   from JS are unreliable — which is why the rest beep worked some sets and
-   not others. Audio is the exception: iOS keeps playing media through the
-   lock screen. So instead of scheduling a beep for later, we build one audio
-   file that IS the rest period — N seconds of silence, then the beep — and
-   press play. Nothing has to wake up; the sound arrives on its own.
-   Mono 4 kHz keeps a 3-minute rest under 750 KB, held in memory only. */
-function buildRestAlarm(seconds) {
-  const RATE = 4000;   // 880 Hz beep needs >1760 Hz; 4 kHz halves the memory
-  const total = Math.max(1, Math.round(seconds * RATE));
-  const beepStart = Math.max(0, total - Math.round(1.6 * RATE));
-  const bytes = 44 + total;
-  const buf = new ArrayBuffer(bytes);
-  const view = new DataView(buf);
-  const str = (off, s) => { for (let i = 0; i < s.length; i++) view.setUint8(off + i, s.charCodeAt(i)); };
-  str(0, 'RIFF'); view.setUint32(4, bytes - 8, true); str(8, 'WAVE');
-  str(12, 'fmt '); view.setUint32(16, 16, true);
-  view.setUint16(20, 1, true); view.setUint16(22, 1, true);
-  view.setUint32(24, RATE, true); view.setUint32(28, RATE, true);
-  view.setUint16(32, 1, true); view.setUint16(34, 8, true);
-  str(36, 'data'); view.setUint32(40, total, true);
-
-  for (let i = 0; i < total; i++) {
-    let sample = 128;                                   // 8-bit PCM silence
-    if (i >= beepStart) {
-      const t = (i - beepStart) / RATE;
-      const pulse = Math.floor(t / 0.25);               // three short pulses
-      if (pulse < 3 && (t % 0.25) < 0.13) {
-        const env = Math.sin(Math.PI * ((t % 0.25) / 0.13));
-        sample = 128 + Math.round(70 * env * Math.sin(2 * Math.PI * 880 * t));
-      }
+/* ── Rest alert that leaves your music alone ──────────────────────────────
+   The old alarm was one long WAV — N seconds of silence, then a beep —
+   played through an <audio> element. That claimed the phone's media session:
+   the lock screen player switched to "VibeLift" and whatever was playing got
+   paused. Two changes fix it:
+     1. Sound now comes from Web Audio on an "ambient" audio session, which
+        mixes with other audio instead of taking it over. No media session,
+        no lock-screen player, no paused music.
+     2. The "rest is over" alert when the phone is locked is a notification
+        fired by the service worker, not a sound the page has to stay awake
+        for. See sw.js. */
+let restAudioCtx = null;
+function primeRestAudio() {
+  try {
+    // Safari 17+: tells iOS this app's sound should mix, never interrupt.
+    if (navigator.audioSession) navigator.audioSession.type = 'ambient';
+  } catch (e) {}
+  try {
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    if (!Ctx) return;
+    if (!restAudioCtx) restAudioCtx = new Ctx();
+    if (restAudioCtx.state !== 'running') restAudioCtx.resume().catch(() => {});
+  } catch (e) { restAudioCtx = null; }
+}
+function restBeep() {
+  const ctx = restAudioCtx;
+  if (!ctx) return;
+  try {
+    if (ctx.state !== 'running') { ctx.resume().catch(() => {}); }
+    const now = ctx.currentTime;
+    for (let i = 0; i < 3; i++) {          // three short 880 Hz pulses
+      const t = now + i * 0.25;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = 880;
+      gain.gain.setValueAtTime(0.0001, t);
+      gain.gain.exponentialRampToValueAtTime(0.3, t + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.13);
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.start(t); osc.stop(t + 0.16);
     }
-    view.setUint8(44 + i, sample);
-  }
-  return URL.createObjectURL(new Blob([buf], { type: 'audio/wav' }));
+  } catch (e) {}
 }
 
 function sparkBurst(x, y, count = 12) {
@@ -4017,25 +4028,24 @@ function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, hist
   // endAt on every tick, so locking the phone or switching apps can't drift it.
   const [rest, setRest] = useState(null);
   const restNotified = React.useRef(false);
-  const alarmRef = React.useRef(null);
+
+  // Ask the service worker to drop / schedule the "rest over" notification.
+  function swRest(msg) {
+    try {
+      const sw = navigator.serviceWorker;
+      if (sw && sw.controller) sw.controller.postMessage(msg);
+    } catch {}
+  }
 
   function stopRestAlarm() {
-    const a = alarmRef.current;
-    if (!a) return;
-    try { a.pause(); URL.revokeObjectURL(a.src); } catch {}
-    alarmRef.current = null;
+    swRest({ type: 'cancel-rest-alert' });
   }
 
   function startRestAlarm(seconds) {
-    stopRestAlarm();
-    try {
-      const a = new Audio(buildRestAlarm(seconds));
-      a.preload = 'auto';
-      alarmRef.current = a;
-      // Started from the Complete Set tap, so this counts as a user gesture.
-      const p = a.play();
-      if (p && p.catch) p.catch(() => {});
-    } catch {}
+    // Called from the Complete Set tap, so this counts as a user gesture —
+    // the only moment the browser lets us unlock audio.
+    primeRestAudio();
+    swRest({ type: 'rest-alert', delay: seconds * 1000, body: exercise.name + ' · next set' });
   }
 
   useEffect(() => stopRestAlarm, []);
@@ -4048,6 +4058,9 @@ function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, hist
         const left = Math.max(0, Math.round((r.endAt - Date.now()) / 1000));
         if (left <= 0 && r.left > 0) {
           vibe([60, 60, 60]);
+          restBeep();
+          // Backup for the service worker notification (same tag, so at most
+          // one ever shows). Only when the app is not on screen.
           if (!restNotified.current && document.hidden && 'Notification' in window && Notification.permission === 'granted' && navigator.serviceWorker) {
             restNotified.current = true;
             navigator.serviceWorker.getRegistration().then(reg => {
@@ -4183,11 +4196,13 @@ function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, hist
       }
       if (restSecs !== 'off') {
         restNotified.current = false;
-        setRest({ endAt: Date.now() + restSecs * 1000, total: restSecs, left: restSecs });
-        startRestAlarm(restSecs);
+        // Ask first — the tap that logged the set is the user gesture the
+        // permission prompt needs. Granted or not, the timer still runs.
         if ('Notification' in window && Notification.permission === 'default') {
           try { Notification.requestPermission(); } catch {}
         }
+        setRest({ endAt: Date.now() + restSecs * 1000, total: restSecs, left: restSecs });
+        startRestAlarm(restSecs);
       }
     }
     onSetLogged({ ...exercise, sets: next, totalSets, weightType, warmup });
