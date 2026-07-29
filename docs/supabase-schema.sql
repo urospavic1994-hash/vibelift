@@ -106,3 +106,55 @@ create table if not exists public.push_subscriptions (
 );
 
 alter table public.push_subscriptions enable row level security;
+
+-- ═══════════════════════════════════════════════════════════════
+-- New-signup email to Uros (2026-07-29)
+-- Fires once per created account (auth.users insert), sends via the
+-- Brevo API through pg_net (async - never delays the signup), and
+-- swallows every error so a notification problem can never block a
+-- user from signing up. The Brevo API key lives in Supabase Vault
+-- under the name brevo_api_key (see setup steps in chat/docs).
+-- ═══════════════════════════════════════════════════════════════
+create extension if not exists pg_net;
+
+create or replace function public.notify_new_signup()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  brevo_key text;
+begin
+  begin
+    select decrypted_secret into brevo_key
+      from vault.decrypted_secrets
+     where name = 'brevo_api_key'
+     limit 1;
+    if brevo_key is not null then
+      perform net.http_post(
+        url := 'https://api.brevo.com/v3/smtp/email',
+        headers := jsonb_build_object(
+          'api-key', brevo_key,
+          'Content-Type', 'application/json'
+        ),
+        body := jsonb_build_object(
+          'sender', jsonb_build_object('name', 'VibeLift', 'email', 'uki.pavic1994@gmail.com'),
+          'to', jsonb_build_array(jsonb_build_object('email', 'uros.pavic1994@gmail.com')),
+          'subject', 'New VibeLift signup',
+          'htmlContent', '<p>New user: <b>' || coalesce(new.email, 'unknown')
+            || '</b><br>Signed up: ' || to_char(now(), 'DD Mon YYYY, HH24:MI') || ' UTC</p>'
+        )
+      );
+    end if;
+  exception when others then
+    null;  -- notification failure must never block a signup
+  end;
+  return new;
+end;
+$$;
+
+drop trigger if exists notify_new_signup_trg on auth.users;
+create trigger notify_new_signup_trg
+  after insert on auth.users
+  for each row execute function public.notify_new_signup();

@@ -689,6 +689,17 @@
       color: var(--pink); border: 1px solid rgba(200,242,53,.4); border-radius: 8px;
       padding: 1px 7px; display: inline-block; margin-top: 3px;
     }
+    .ex-plan-tag {
+      font-size: 9px; font-weight: 900; letter-spacing: 1.2px; text-transform: uppercase;
+      color: #121508; background: var(--pink); border-radius: 8px;
+      padding: 2px 8px; display: inline-block; margin-top: 3px;
+    }
+    .plan-card-actions { display: flex; gap: 10px; align-items: center; margin-top: 16px; }
+    .plan-mini-btn {
+      background: none; border: 1px solid var(--text2); border-radius: 12px;
+      color: var(--text2); font-family: var(--fb); font-size: 12px; font-weight: 700;
+      padding: 10px 14px; cursor: pointer;
+    }
     .log-hero-wiki {
       position: absolute; top: calc(14px + env(safe-area-inset-top, 0px)); right: 14px; z-index: 2;
       width: 44px; height: 44px; border-radius: 50%;
@@ -2594,7 +2605,7 @@ function WorkoutCalendar({ history, current }) {
    BOTTOM NAVIGATION BAR
 ═══════════════════════════════════════ */
 function BottomNav({ screen, setScreen }) {
-  const homeScreens = ['home','group-select','group-detail','log','summary'];
+  const homeScreens = ['home','group-select','group-detail','log','summary','plan-groups','plan-detail'];
   const tab = homeScreens.includes(screen) ? 'home' : screen === 'history' ? 'history' : 'settings';
   // 'login' matters: with the nav visible you could tap Home and walk straight
   // past the sign-in gate without it ever recording that you skipped.
@@ -2631,7 +2642,14 @@ function BottomNav({ screen, setScreen }) {
 /* ═══════════════════════════════════════
    HOME SCREEN
 ═══════════════════════════════════════ */
-function HomeScreen({ onStart, onViewHistory, onOpenSettings, history, hasActive, profile, current }) {
+function HomeScreen({ onStart, onViewHistory, onOpenSettings, history, hasActive, profile, current, plan, allExercises, onPlanNew, onPlanStart, onPlanEdit, onPlanDelete }) {
+  // Resolve the saved plan ids against today's exercise list — an exercise
+  // deleted since planning simply drops out.
+  const planExs = plan ? (allExercises || DB).filter(e => plan.ids.includes(e.id)) : [];
+  const planGroupNames = [...new Set(planExs.map(e => e.group))].map(g => {
+    const first = (allExercises || DB).find(x => x.group === g);
+    return first ? first.gl : g;
+  });
   const today = todayISO();
   const streak = getStreak(history);
   const workedToday = history.some(w => w.date === today);
@@ -2729,7 +2747,31 @@ function HomeScreen({ onStart, onViewHistory, onOpenSettings, history, hasActive
           <div style={{ fontFamily:'var(--fd)', fontSize:28, fontWeight:900, color:'var(--text)', lineHeight:1.1, marginBottom:6 }}>{heroTitle}</div>
           <div style={{ fontSize:13, color:'var(--text2)', marginBottom:22, fontWeight:500 }}>{heroSub}</div>
           <button className="btn-pink" onClick={onStart} style={{ fontSize:18, letterSpacing:'.8px' }}>{btnLabel}</button>
+          {!plan && (
+            <button className="view-all-btn" onClick={onPlanNew} style={{ width:'auto', marginTop:14, padding:'7px 16px', fontSize:12 }}>
+              Plan next workout →
+            </button>
+          )}
         </div>
+
+        {/* Planned workout — built at home, started at the gym */}
+        {planExs.length > 0 && (
+          <div className="card">
+            <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between' }}>
+              <div>
+                <div className="sec-label" style={{ marginBottom:6 }}>Planned Workout</div>
+                <div style={{ fontFamily:'var(--fd)', fontSize:20, fontWeight:900, color:'var(--text)', lineHeight:1.15 }}>{planGroupNames.join(' + ')}</div>
+                <div style={{ fontSize:12.5, color:'var(--text2)', fontWeight:500, marginTop:4 }}>{planExs.length} {planExs.length === 1 ? 'exercise' : 'exercises'} picked</div>
+              </div>
+              <button className="plan-mini-btn" onClick={onPlanDelete} aria-label="Delete plan" style={{ padding:'8px 12px' }}>✕</button>
+            </div>
+            <div className="plan-card-actions">
+              {!hasActive && <button className="btn-pink" onClick={onPlanStart} style={{ flex:1, fontSize:15 }}>Start This Plan →</button>}
+              <button className="plan-mini-btn" onClick={onPlanEdit} style={hasActive ? { flex:1 } : {}}>Edit</button>
+            </div>
+            {hasActive && <div style={{ fontSize:11.5, color:'var(--text2)', marginTop:10 }}>Finish your current workout first — then start this plan.</div>}
+          </div>
+        )}
 
         {/* Bible verse */}
         <div className="quote-card">
@@ -3657,7 +3699,7 @@ function HistoryScreen({ onBack, history, weightUnit = 'kg' }) {
 /* ═══════════════════════════════════════
    GROUP SELECT SCREEN
 ═══════════════════════════════════════ */
-function GroupSelectScreen({ onBack, onSelectGroup, onFinish, completedIds, partialMap = {}, allExercises }) {
+function GroupSelectScreen({ onBack, onSelectGroup, onFinish, completedIds, partialMap = {}, allExercises, planMode = false, planIds = [], onSavePlan }) {
   const groups = Object.keys(GROUP_META);
   const exList = allExercises || DB;
   const totalLogged = completedIds.length + Object.keys(partialMap).length;
@@ -3665,8 +3707,10 @@ function GroupSelectScreen({ onBack, onSelectGroup, onFinish, completedIds, part
     <div className="screen">
       <div className="hdr">
         <button className="back-btn" onClick={onBack}>←</button>
-        <span className="hdr-title">Choose Muscle Group</span>
-        {completedIds.length > 0
+        <span className="hdr-title">{planMode ? 'Plan Next Workout' : 'Choose Muscle Group'}</span>
+        {planMode && planIds.length > 0
+          ? <span className="done-count-badge">{planIds.length} picked</span>
+          : completedIds.length > 0
           ? <span className="done-count-badge">{completedIds.length} done</span>
           : <div style={{ width: 38 }} />}
       </div>
@@ -3676,6 +3720,7 @@ function GroupSelectScreen({ onBack, onSelectGroup, onFinish, completedIds, part
           const exs  = exList.filter(e => e.group === grp);
           const doneCnt = exs.filter(e => completedIds.includes(e.id)).length;
           const partCnt = exs.filter(e => partialMap[e.id]).length;
+          const planCnt = planIds.length ? exs.filter(e => planIds.includes(e.id)).length : 0;
           return (
             <div
               key={grp}
@@ -3687,15 +3732,22 @@ function GroupSelectScreen({ onBack, onSelectGroup, onFinish, completedIds, part
             >
               {!meta.img && <div className="grp-card-bg-icon"><ExIcon id={meta.icon} size={130} color="white" /></div>}
               {doneCnt > 0 && <div className="grp-done-pill">✓ {doneCnt} done</div>}
+              {doneCnt === 0 && planCnt > 0 && <div className="grp-done-pill">{planCnt} planned</div>}
               <div className="grp-card-overlay">
                 <div className="grp-card-name">{exs[0].gl}</div>
-                <div className="grp-card-count">{exs.length} exercises{doneCnt > 0 ? ` · ${doneCnt} completed` : ''}{partCnt > 0 ? ` · ${partCnt} in progress` : ''}</div>
+                <div className="grp-card-count">{exs.length} exercises{doneCnt > 0 ? ` · ${doneCnt} completed` : ''}{partCnt > 0 ? ` · ${partCnt} in progress` : ''}{planCnt > 0 ? ` · ${planCnt} planned` : ''}</div>
               </div>
             </div>
           );
         })}
       </div>
-      {totalLogged > 0 && (
+      {planMode ? (
+        planIds.length > 0 && (
+          <div className="finish-bar">
+            <button className="btn-pink" onClick={onSavePlan}>Save Plan ({planIds.length})</button>
+          </div>
+        )
+      ) : totalLogged > 0 && (
         <div className="finish-bar">
           <button className="btn-pink" onClick={onFinish}>Finish Workout</button>
         </div>
@@ -3851,16 +3903,20 @@ function ExerciseBuilder({ group, gl, onSave, onCancel }) {
 /* ═══════════════════════════════════════
    GROUP DETAIL SCREEN
 ═══════════════════════════════════════ */
-function GroupDetailScreen({ group, onBack, onPick, onFinish, completedIds, partialMap = {}, history, allExercises, onSaveCustom }) {
+function GroupDetailScreen({ group, onBack, onPick, onFinish, completedIds, partialMap = {}, history, allExercises, onSaveCustom, planMode = false, planIds = [], onTogglePlan, onSavePlan }) {
   const [showAddCustom, setShowAddCustom] = useState(false);
   const meta = GROUP_META[group];
-  const exs  = (allExercises || DB).filter(e => e.group === group);
+  const exsRaw = (allExercises || DB).filter(e => e.group === group);
+  // A planned workout floats its exercises to the top of the list.
+  const exs = planIds.length && !planMode
+    ? [...exsRaw].sort((a, b) => (planIds.includes(b.id) ? 1 : 0) - (planIds.includes(a.id) ? 1 : 0))
+    : exsRaw;
   const totalLogged = completedIds.length + Object.keys(partialMap).length;
 
   function handleBuilderSave(ex) {
     setShowAddCustom(false);
     onSaveCustom(ex);
-    onPick(ex);
+    if (planMode) onTogglePlan(ex); else onPick(ex);
   }
 
   return (
@@ -3868,7 +3924,9 @@ function GroupDetailScreen({ group, onBack, onPick, onFinish, completedIds, part
       <div className="hdr">
         <button className="back-btn" onClick={onBack}>←</button>
         <span className="hdr-title">{exs[0].gl}</span>
-        {completedIds.length > 0
+        {planMode && planIds.length > 0
+          ? <span className="done-count-badge">{planIds.length} picked</span>
+          : completedIds.length > 0
           ? <span className="done-count-badge">{completedIds.length} done</span>
           : <div style={{ width: 38 }} />}
       </div>
@@ -3886,11 +3944,12 @@ function GroupDetailScreen({ group, onBack, onPick, onFinish, completedIds, part
         </div>
 
         {exs.map(ex => {
-          const done = completedIds.includes(ex.id);
+          const inPlan = planIds.includes(ex.id);
+          const done = planMode ? inPlan : completedIds.includes(ex.id);
           const partialSets = partialMap[ex.id] || 0;
           const pb   = getPersonalBest(history, ex.id);
           return (
-            <div key={ex.id} className={`ex-row-card ${done ? 'done-row' : ''}`} onClick={() => onPick(ex)}>
+            <div key={ex.id} className={`ex-row-card ${done ? 'done-row' : ''}`} onClick={() => planMode ? onTogglePlan(ex) : onPick(ex)}>
               <div className="ex-row-icon">
                 <ExIcon id={ex.id} size={28} color={done ? '#0daa74' : meta.color} img={ex.img || null} />
               </div>
@@ -3898,6 +3957,7 @@ function GroupDetailScreen({ group, onBack, onPick, onFinish, completedIds, part
                 <div className="ex-row-name">{ex.name}</div>
                 {pb > 0 && <div className="ex-row-pb">Best: {pb}</div>}
                 {ex.custom && <span className="ex-custom-tag">Custom</span>}
+                {!planMode && inPlan && !completedIds.includes(ex.id) && <span className="ex-plan-tag">Planned</span>}
               </div>
               {WIKI[ex.id] && (
                 <button className="ex-info-btn" aria-label={`How to do ${ex.name}`}
@@ -3927,7 +3987,13 @@ function GroupDetailScreen({ group, onBack, onPick, onFinish, completedIds, part
           </div>
         )}
       </div>
-      {totalLogged > 0 && (
+      {planMode ? (
+        planIds.length > 0 && (
+          <div className="finish-bar">
+            <button className="btn-pink" onClick={onSavePlan}>Save Plan ({planIds.length})</button>
+          </div>
+        )
+      ) : totalLogged > 0 && (
         <div className="finish-bar">
           <button className="btn-pink" onClick={onFinish}>Finish Workout</button>
         </div>
@@ -5119,6 +5185,30 @@ function App() {
     setScreen('group-select');
   }
 
+  /* ── Plan ahead: build tomorrow's workout at home, start it at the gym ── */
+  const plan = (profile && profile.plannedWorkout && Array.isArray(profile.plannedWorkout.ids) && profile.plannedWorkout.ids.length > 0)
+    ? profile.plannedWorkout : null;
+  const [planDraft, setPlanDraft] = useState(null);
+
+  function savePlannedWorkout(ids) {
+    const p = { ...(profile || {}), plannedWorkout: (ids && ids.length) ? { ids, createdAt: Date.now() } : null };
+    saveProfile(p); setProfile(p); cloudPushBlobQuick('profiles', p);
+  }
+  function startPlanEdit() { setPlanDraft(plan ? [...plan.ids] : []); setScreen('plan-groups'); }
+  function togglePlanEx(ex) {
+    setPlanDraft(d => (d || []).includes(ex.id) ? d.filter(x => x !== ex.id) : [...(d || []), ex.id]);
+  }
+  function savePlan() { savePlannedWorkout(planDraft); setPlanDraft(null); setScreen('home'); }
+  function startPlannedWorkout() {
+    if (!plan || current) return;
+    // The plan rides along on the live workout: its exercises get "Planned"
+    // tags and float to the top, everything else (Smart Swap, custom picks)
+    // works as usual.
+    setCurrent({ date: todayISO(), exercises: [], startedAt: Date.now(), warmup: 'pending', planIds: [...plan.ids] });
+    savePlannedWorkout(null);   // consumed — one pending plan at a time
+    setScreen('group-select');
+  }
+
   function selectGroup(grp) { setActiveGroup(grp); setScreen('group-detail'); }
   function pickExercise(ex) { setActiveEx(ex); setScreen('log'); }
 
@@ -5187,7 +5277,22 @@ function App() {
       )}
 
       {!splash && screen === 'home' && (
-        <HomeScreen onStart={startWorkout} onViewHistory={() => setScreen('history')} onOpenSettings={() => setScreen('settings')} history={history} hasActive={!!current} profile={profile} current={current} />
+        <HomeScreen onStart={startWorkout} onViewHistory={() => setScreen('history')} onOpenSettings={() => setScreen('settings')} history={history} hasActive={!!current} profile={profile} current={current}
+          plan={plan} allExercises={allExercises} onPlanNew={startPlanEdit} onPlanStart={startPlannedWorkout} onPlanEdit={startPlanEdit} onPlanDelete={() => savePlannedWorkout(null)} />
+      )}
+
+      {!splash && screen === 'plan-groups' && (
+        <GroupSelectScreen planMode planIds={planDraft || []} onSavePlan={savePlan}
+          onBack={() => { setPlanDraft(null); setScreen('home'); }}
+          onSelectGroup={grp => { setActiveGroup(grp); setScreen('plan-detail'); }}
+          onFinish={() => {}} completedIds={[]} allExercises={allExercises} />
+      )}
+
+      {!splash && screen === 'plan-detail' && activeGroup && (
+        <GroupDetailScreen planMode group={activeGroup} planIds={planDraft || []} onTogglePlan={togglePlanEx} onSavePlan={savePlan}
+          onBack={() => setScreen('plan-groups')} onPick={() => {}} onFinish={() => {}}
+          completedIds={[]} history={history} allExercises={allExercises}
+          onSaveCustom={ex => onSaveCustomEx([...customEx, ex])} />
       )}
 
       {breakModal && (
@@ -5218,11 +5323,11 @@ function App() {
       {showTour && <OnboardingScreen onDone={() => setShowTour(false)} />}
 
       {!splash && screen === 'group-select' && (
-        <GroupSelectScreen onBack={backFromGroupSelect} onSelectGroup={selectGroup} onFinish={finishWorkout} completedIds={doneIds} partialMap={partialMap} allExercises={allExercises} />
+        <GroupSelectScreen onBack={backFromGroupSelect} onSelectGroup={selectGroup} onFinish={finishWorkout} completedIds={doneIds} partialMap={partialMap} allExercises={allExercises} planIds={(current && current.planIds) || []} />
       )}
 
       {!splash && screen === 'group-detail' && activeGroup && (
-        <GroupDetailScreen group={activeGroup} onBack={backFromGroupDetail} onPick={pickExercise} onFinish={finishWorkout} completedIds={doneIds} partialMap={partialMap} history={history} allExercises={allExercises} onSaveCustom={ex => onSaveCustomEx([...customEx, ex])} />
+        <GroupDetailScreen group={activeGroup} onBack={backFromGroupDetail} onPick={pickExercise} onFinish={finishWorkout} completedIds={doneIds} partialMap={partialMap} history={history} allExercises={allExercises} onSaveCustom={ex => onSaveCustomEx([...customEx, ex])} planIds={(current && current.planIds) || []} />
       )}
 
       {!splash && screen === 'log' && activeEx && (
