@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "api/rest-push.js": {
+      "maxDuration": 300
+    }
+  }
+}

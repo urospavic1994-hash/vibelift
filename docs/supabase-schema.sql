@@ -91,3 +91,18 @@ drop trigger if exists block_disposable_email_trg on auth.users;
 create trigger block_disposable_email_trg
   before insert on auth.users
   for each row execute function public.block_disposable_email();
+
+-- ═══════════════════════════════════════════════════════════════
+-- Rest-alarm push subscriptions (2026-07-29)
+-- Written only by the Vercel function api/rest-push.js using the
+-- service role key. RLS is on with NO policies on purpose: the anon
+-- key used by the app gets no access to this table at all.
+-- ═══════════════════════════════════════════════════════════════
+create table if not exists public.push_subscriptions (
+  device_id text primary key,
+  subscription jsonb not null,
+  alarm_id text,
+  updated_at timestamptz not null default now()
+);
+
+alter table public.push_subscriptions enable row level security;

@@ -1,6 +1,6 @@
 /* VibeLift service worker — offline-first PWA.
    Bump CACHE_VERSION on any release to invalidate old caches. */
-const CACHE_VERSION = 'vibelift-v5';
+const CACHE_VERSION = 'vibelift-v6';
 const CORE_CACHE = CACHE_VERSION + '-core';
 const RUNTIME_CACHE = CACHE_VERSION + '-runtime';
 
@@ -86,6 +86,22 @@ self.addEventListener('message', event => {
       }).catch(() => {});
     }, delay);
   }
+});
+
+/* Server push (see api/rest-push.js) — the alarm that survives a locked
+   phone. Same tag as the local fallback notification, so whichever of the
+   two lands first is simply replaced by the other, never doubled. */
+self.addEventListener('push', event => {
+  let data = {};
+  try { data = event.data ? event.data.json() : {}; } catch (e) {}
+  event.waitUntil(self.registration.showNotification(data.title || 'Rest over — GO', {
+    body: data.body || 'Next set',
+    icon: './assets/icons/icon-192.png',
+    badge: './assets/icons/icon-192.png',
+    vibrate: [120, 60, 120, 60, 200],
+    tag: 'vibelift-rest',
+    renotify: true
+  }));
 });
 
 self.addEventListener('notificationclick', event => {

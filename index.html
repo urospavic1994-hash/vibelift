@@ -1986,6 +1986,74 @@ function vibe(pattern) {
      2. The "rest is over" alert when the phone is locked is a notification
         fired by the service worker, not a sound the page has to stay awake
         for. See sw.js. */
+/* ── Server push: the alarm that survives a locked phone ─────────────────
+   iOS kills the service worker soon after the screen locks, so the local
+   SW timer (below) only fires when the worker happens to survive. The real
+   alarm is held by /api/rest-push, which sleeps server-side until rest ends
+   and sends a Web Push — iOS shows it on the lock screen with sound even
+   when the app is dead. The local timer stays as an offline fallback; both
+   use the same notification tag, so at most one alert ever shows. */
+const PUSH_API = '/api/rest-push';
+const VAPID_PUBLIC_KEY = 'BJ2UisTZ0E2LWYJ3_dPaPnV6eOwsIstU42FW4I_O3NqQKWPp3V8BPSDR8AJJvarqp-K0tBKYc3qXDCECgbozlJc';
+
+function pushDeviceId() {
+  let id = null;
+  try { id = localStorage.getItem('vibelift_device_id'); } catch (e) {}
+  if (!id) {
+    id = 'dev_' + Math.random().toString(36).slice(2) + Date.now().toString(36);
+    try { localStorage.setItem('vibelift_device_id', id); } catch (e) {}
+  }
+  return id;
+}
+
+function pushApi(payload) {
+  try {
+    return fetch(PUSH_API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ device_id: pushDeviceId(), ...payload }),
+      keepalive: true
+    }).catch(() => {});
+  } catch (e) { return Promise.resolve(); }
+}
+
+function vapidKeyBytes(base64) {
+  const pad = '='.repeat((4 - (base64.length % 4)) % 4);
+  const raw = atob((base64 + pad).replace(/-/g, '+').replace(/_/g, '/'));
+  return Uint8Array.from(raw, c => c.charCodeAt(0));
+}
+
+let pushSubPromise = null;
+function ensurePushSubscription() {
+  // One attempt per app run; every caller after that reuses the result.
+  if (pushSubPromise) return pushSubPromise;
+  pushSubPromise = (async () => {
+    try {
+      if (!('serviceWorker' in navigator) || !('PushManager' in window) || !('Notification' in window)) return false;
+      if (Notification.permission === 'default') {
+        try { await Notification.requestPermission(); } catch (e) {}
+      }
+      if (Notification.permission !== 'granted') return false;
+      const reg = await navigator.serviceWorker.ready;
+      let sub = await reg.pushManager.getSubscription();
+      if (!sub) {
+        sub = await reg.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: vapidKeyBytes(VAPID_PUBLIC_KEY)
+        });
+      }
+      // Re-send only when the subscription actually changed.
+      const fingerprint = JSON.stringify(sub);
+      if (localStorage.getItem('vibelift_push_sent') !== fingerprint) {
+        await pushApi({ action: 'subscribe', subscription: sub.toJSON() });
+        try { localStorage.setItem('vibelift_push_sent', fingerprint); } catch (e) {}
+      }
+      return true;
+    } catch (e) { return false; /* declined or unsupported — local fallback covers it */ }
+  })();
+  return pushSubPromise;
+}
+
 let restAudioCtx = null;
 function primeRestAudio() {
   try {
@@ -4039,15 +4107,32 @@ function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, hist
     } catch {}
   }
 
+  const restAlarmId = React.useRef(null);
+
   function stopRestAlarm() {
     swRest({ type: 'cancel-rest-alert' });
+    if (restAlarmId.current) {
+      restAlarmId.current = null;
+      pushApi({ action: 'cancel' });
+    }
   }
 
   function startRestAlarm(seconds) {
     // Called from the Complete Set tap, so this counts as a user gesture —
-    // the only moment the browser lets us unlock audio.
+    // the only moment the browser lets us unlock audio and ask for the
+    // notification permission the server push needs.
     primeRestAudio();
     swRest({ type: 'rest-alert', delay: seconds * 1000, body: exercise.name + ' · next set' });
+    const id = 'a_' + Math.random().toString(36).slice(2) + Date.now().toString(36);
+    restAlarmId.current = id;
+    const fireAt = Date.now() + seconds * 1000;
+    ensurePushSubscription().then(ok => {
+      // A +30s or an early finish may have replaced this alarm while the
+      // (first-time) subscribe round-trip ran — then this one must not fire.
+      if (ok && restAlarmId.current === id) {
+        pushApi({ action: 'schedule', alarm_id: id, fire_at: fireAt, body: exercise.name + ' · next set' });
+      }
+    });
   }
 
   useEffect(() => stopRestAlarm, []);
@@ -4198,11 +4283,8 @@ function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, hist
       }
       if (restSecs !== 'off') {
         restNotified.current = false;
-        // Ask first — the tap that logged the set is the user gesture the
-        // permission prompt needs. Granted or not, the timer still runs.
-        if ('Notification' in window && Notification.permission === 'default') {
-          try { Notification.requestPermission(); } catch {}
-        }
+        // startRestAlarm asks for notification permission itself — the tap
+        // that logged the set is the user gesture the prompt needs.
         setRest({ endAt: Date.now() + restSecs * 1000, total: restSecs, left: restSecs });
         startRestAlarm(restSecs);
       }

@@ -10,3 +10,6 @@ index.backup.html
 # Working design-source folders (not part of the app)
 New lustrations/
 Untitled design/
+
+# Server deps (Vercel installs its own)
+node_modules/
