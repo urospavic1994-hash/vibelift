@@ -2005,17 +2005,19 @@ function restBeep() {
   try {
     if (ctx.state !== 'running') { ctx.resume().catch(() => {}); }
     const now = ctx.currentTime;
-    for (let i = 0; i < 3; i++) {          // three short 880 Hz pulses
-      const t = now + i * 0.25;
+    // Six loud pulses alternating 880/1320 Hz — the higher tone sits above
+    // most music, so the alert cuts through Spotify without pausing it.
+    for (let i = 0; i < 6; i++) {
+      const t = now + i * 0.28;
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.type = 'sine';
-      osc.frequency.value = 880;
+      osc.frequency.value = (i % 2 === 0) ? 880 : 1320;
       gain.gain.setValueAtTime(0.0001, t);
-      gain.gain.exponentialRampToValueAtTime(0.3, t + 0.02);
-      gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.13);
+      gain.gain.exponentialRampToValueAtTime(0.9, t + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.2);
       osc.connect(gain); gain.connect(ctx.destination);
-      osc.start(t); osc.stop(t + 0.16);
+      osc.start(t); osc.stop(t + 0.24);
     }
   } catch (e) {}
 }
@@ -4057,7 +4059,7 @@ function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, hist
         if (!r) return null;
         const left = Math.max(0, Math.round((r.endAt - Date.now()) / 1000));
         if (left <= 0 && r.left > 0) {
-          vibe([60, 60, 60]);
+          vibe([120, 60, 120, 60, 200]);
           restBeep();
           // Backup for the service worker notification (same tag, so at most
           // one ever shows). Only when the app is not on screen.
@@ -4987,8 +4989,16 @@ function App() {
 
   function routeOnward() {
     if (!profile || !profile.setupDone) { setScreen('profile-setup'); return; }
+    const active = current && current.exercises.length > 0;
+    // Mid-workout reopen (e.g. phone locked between sets) drops you straight
+    // back into the workout. After 12 h it's an abandoned session — land on
+    // home and let the break modal ask what to do with it.
+    if (active && current.startedAt && Date.now() - current.startedAt < 12 * 3600 * 1000) {
+      setScreen('group-select');
+      return;
+    }
     setScreen('home');
-    if (current && current.exercises.length > 0) setBreakModal(true);
+    if (active) setBreakModal(true);
   }
 
   // Wait for the session check before deciding — never flash a login wall at
