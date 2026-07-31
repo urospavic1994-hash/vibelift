@@ -216,6 +216,19 @@
       font-family: var(--fd); font-size: 15px; font-weight: 900; color: var(--pink);
     }
     .home-greeting { font-family: var(--fd); font-size: 19px; font-weight: 900; color: var(--text); letter-spacing: .3px; }
+    .wb-toast {
+      position: fixed; top: calc(env(safe-area-inset-top, 0px) + 16px); left: 50%;
+      transform: translateX(-50%);
+      background: var(--card); color: var(--text);
+      border: 1px solid var(--pink);
+      font-family: var(--fd); font-weight: 900; font-size: 15px; letter-spacing: .3px;
+      padding: 10px 20px; border-radius: 999px; white-space: nowrap;
+      box-shadow: 0 8px 24px rgba(0,0,0,.25);
+      z-index: 300;
+      animation: wbIn .35s ease, wbOut .4s ease 2.8s forwards;
+    }
+    @keyframes wbIn  { from { opacity: 0; transform: translate(-50%, -12px); } to { opacity: 1; transform: translate(-50%, 0); } }
+    @keyframes wbOut { to   { opacity: 0; transform: translate(-50%, -8px); } }
     .home-date-sub { font-size: 11px; color: var(--text2); font-weight: 500; margin-top: 1px; }
     .home-hdr-btn {
       width: 36px; height: 36px; border-radius: 50%;
@@ -2414,7 +2427,15 @@ async function cloudPushBlob(uid, table, value) {
 function cloudSaveMeta(count) {
   try { localStorage.setItem('fittrack_cloud_meta', JSON.stringify({ lastSync: Date.now(), count })); } catch {}
 }
+let cloudSyncInflight = null;
 async function cloudFullSync(app) {
+  // Overlapping calls (SIGNED_IN event + login-screen await) share one run so
+  // a second sync can't push a half-restored profile over the cloud copy.
+  if (cloudSyncInflight) return cloudSyncInflight;
+  cloudSyncInflight = cloudFullSyncRun(app).finally(() => { cloudSyncInflight = null; });
+  return cloudSyncInflight;
+}
+async function cloudFullSyncRun(app) {
   const user = await cloudUser();
   if (!user) return;
   if (!navigator.onLine) { cloudSet('offline'); return; }
@@ -2445,8 +2466,22 @@ async function cloudFullSync(app) {
 
     const { data: pRow } = await supa.from('profiles').select('data').maybeSingle();
     const localP = app.getProfile();
-    if (!localP && pRow && pRow.data) app.applyProfile(pRow.data);
-    if (localP) await cloudPushBlob(user.id, 'profiles', localP);
+    const remoteP = (pRow && pRow.data) ? pRow.data : null;
+    if (!localP && remoteP) {
+      app.applyProfile(remoteP);
+    } else if (localP && remoteP) {
+      // Both exist (e.g. reinstall raced setup ahead of this sync): the cloud
+      // copy fills anything the local one lacks, so a fresh install can never
+      // wipe the avatar or name off the account again.
+      const mergedP = { ...localP };
+      if (!mergedP.avatar && remoteP.avatar) mergedP.avatar = remoteP.avatar;
+      if ((!mergedP.name || !String(mergedP.name).trim()) && remoteP.name) mergedP.name = remoteP.name;
+      if (remoteP.toured && !mergedP.toured) mergedP.toured = true;
+      if (JSON.stringify(mergedP) !== JSON.stringify(localP)) app.applyProfile(mergedP);
+      await cloudPushBlob(user.id, 'profiles', mergedP);
+    } else if (localP) {
+      await cloudPushBlob(user.id, 'profiles', localP);
+    }
 
     cloudSet('synced', merged.length);
     cloudSaveMeta(merged.length);
@@ -5094,6 +5129,7 @@ function App() {
   const historyRef = React.useRef(history);   historyRef.current = history;
   const customExRef = React.useRef(customEx); customExRef.current = customEx;
   const profileRef = React.useRef(profile);   profileRef.current = profile;
+  const accessorsRef = React.useRef(null);
   useEffect(() => {
     if (!supa) return;
     const accessors = {
@@ -5104,6 +5140,7 @@ function App() {
       getProfile:   () => profileRef.current,
       applyProfile: p  => { setProfile(p); saveProfile(p); },
     };
+    accessorsRef.current = accessors;
     cloudFullSync(accessors);
     const { data: sub } = supa.auth.onAuthStateChange(ev => {
       if (ev === 'SIGNED_IN') cloudFullSync(accessors);
@@ -5136,7 +5173,10 @@ function App() {
   }, []);
 
   function routeOnward() {
-    if (!profile || !profile.setupDone) { setScreen('profile-setup'); return; }
+    // Read the freshest profile — a cloud restore may have just written it and
+    // React state can lag inside async callbacks.
+    const p = profileRef.current || loadProfile();
+    if (!p || !p.setupDone) { setScreen('profile-setup'); return; }
     const active = current && current.exercises.length > 0;
     // Mid-workout reopen (e.g. phone locked between sets) drops you straight
     // back into the workout. After 12 h it's an abandoned session — land on
@@ -5158,12 +5198,35 @@ function App() {
     routeOnward();
   }, [postSplash, authReady]);
 
-  // Magic link opened in this browser → session appears → leave the login screen
+  // Magic link opened in this browser → session appears → leave the login screen.
+  // Wait for the first cloud sync so a returning user's profile (name, avatar,
+  // setup-done flag) is restored BEFORE routing — otherwise a fresh install
+  // sends them back through setup + tour as if they were new.
   useEffect(() => {
     if (!hasSession) return;
     markOnboarded();
-    if (screen === 'login') routeOnward();
+    if (screen !== 'login') return;
+    let cancelled = false;
+    (async () => {
+      try { if (accessorsRef.current) await cloudFullSync(accessorsRef.current); } catch {}
+      if (cancelled) return;
+      const p = profileRef.current || loadProfile();
+      if (p && p.setupDone) {
+        localStorage.setItem('fittrack_toured', 'true');   // returning user — never re-show the tour
+        setWelcomeBack(p.name ? String(p.name).split(' ')[0] : '');
+      }
+      routeOnward();
+    })();
+    return () => { cancelled = true; };
   }, [hasSession, screen]);
+
+  // "Welcome back" toast after a returning user signs in on a fresh install
+  const [welcomeBack, setWelcomeBack] = useState(null);
+  useEffect(() => {
+    if (welcomeBack === null) return;
+    const t = setTimeout(() => setWelcomeBack(null), 3200);
+    return () => clearTimeout(t);
+  }, [welcomeBack]);
 
   function onSplashDone() {
     setSplash(false);
@@ -5320,7 +5383,15 @@ function App() {
         <SettingsScreen onBack={() => setScreen('home')} profile={profile} onSaveProfile={onSaveProfile} theme={theme} onToggleTheme={toggleTheme} customEx={customEx} onSaveCustomEx={onSaveCustomEx} onShowTour={() => setShowTour(true)} />
       )}
 
-      {showTour && <OnboardingScreen onDone={() => setShowTour(false)} />}
+      {showTour && <OnboardingScreen onDone={() => {
+        setShowTour(false);
+        // Remember "seen the tour" on the account too, so it survives reinstalls
+        const p = profileRef.current || loadProfile();
+        if (p && !p.toured) onSaveProfile({ ...p, toured: true });
+      }} />}
+      {welcomeBack !== null && (
+        <div className="wb-toast">Welcome back{welcomeBack ? `, ${welcomeBack}` : ''}</div>
+      )}
 
       {!splash && screen === 'group-select' && (
         <GroupSelectScreen onBack={backFromGroupSelect} onSelectGroup={selectGroup} onFinish={finishWorkout} completedIds={doneIds} partialMap={partialMap} allExercises={allExercises} planIds={(current && current.planIds) || []} />
