@@ -722,6 +722,14 @@
       display: flex; align-items: center; justify-content: center;
     }
 
+    .log-hero-row { display: flex; align-items: center; gap: 14px; }
+    .log-hero-icon {
+      width: 78px; height: 78px; border-radius: 18px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      border: 1.5px solid rgba(255,255,255,.35);
+      box-shadow: 0 6px 18px rgba(0,0,0,.35); cursor: pointer;
+    }
+
     /* ══════════════════════════════════
        VIBELIFT WIKI — in-app how-to sheet
     ══════════════════════════════════ */
@@ -3990,6 +3998,7 @@ function builderFigureSVG(eq, pos, move, t) {
   if (pose.hang) arm = BUILDER_ARMS['Pull'];
   if (pose.pressUp && move === 'Press') arm = { e:[2,14], h:[2,30] };
   // t == null → static preview (exact old behavior). t in 0..1 → wiki animation.
+  const armPeak = arm;   // pre-lerp pose — scenery (cable pulley) anchors to this
   const bodyMoves = move === 'Squat' || move === 'Lunge';
   let dy = 0;
   if (t != null) {
@@ -4012,7 +4021,7 @@ function builderFigureSVG(eq, pos, move, t) {
   let elbow = Pt(sh, arm.e), hand = Pt(sh, arm.h);
   if (pose.hang) { elbow = [sh[0]+6, (sh[1]+32)/2]; hand = [pose.sh[0]+8, 32]; }
   let s = `<line x1="20" y1="150" x2="200" y2="150" stroke="rgba(127,127,127,.25)" stroke-width="2"/>` + pose.bench;
-  if (eq === 'Cable') { const py = hand[1] < sh[1] ? 32 : 144; s += `<rect x="186" y="24" width="8" height="126" rx="3" fill="${BEN}"/>` + Ci([190,py],4,EQC) + Ln(hand,[190,py],2.5,EQC); }
+  if (eq === 'Cable') { const handPeak = pose.hang ? hand : Pt(sh, armPeak.h); const py = handPeak[1] < sh[1] ? 32 : 144; s += `<rect x="186" y="24" width="8" height="126" rx="3" fill="${BEN}"/>` + Ci([190,py],4,EQC) + Ln(hand,[190,py],2.5,EQC); }
   if (eq === 'Machine') { s += `<rect x="48" y="26" width="7" height="124" rx="3" fill="${BEN}"/><rect x="48" y="26" width="60" height="7" rx="3" fill="${BEN}"/>` + Ln([104,32],hand,3,BEN); }
   if (eq === 'Smith Machine') { s += `<rect x="60" y="22" width="5" height="128" fill="${BEN}"/><rect x="158" y="22" width="5" height="128" fill="${BEN}"/>` + Ln([62,hand[1]],[161,hand[1]],4,EQC) + Ci([70,hand[1]],7,EQC) + Ci([152,hand[1]],7,EQC); }
   const e2 = [elbow[0]-7, elbow[1]+3], h2 = [hand[0]-7, hand[1]+3];
@@ -4661,11 +4670,21 @@ function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, hist
           </div>
         )}
         <div className="log-hero-content">
-          <div className="log-hero-eyebrow">{exercise.gl}</div>
-          <div className="log-hero-name">{exercise.name}</div>
-          <div className="log-hero-pb">
-            {pb > 0 ? <>Personal best: <strong>{kgToDisp(pb, unit)} {unit}</strong>{trend === 'up' && ' ↑'}{trend === 'down' && ' ↓'}</> : 'First time logging this'}
-            {isNewPR && <span className="pr-glow">New PR</span>}
+          <div className="log-hero-row">
+            <div style={{ flex:1, minWidth:0 }}>
+              <div className="log-hero-eyebrow">{exercise.gl}</div>
+              <div className="log-hero-name">{exercise.name}</div>
+              <div className="log-hero-pb">
+                {pb > 0 ? <>Personal best: <strong>{kgToDisp(pb, unit)} {unit}</strong>{trend === 'up' && ' ↑'}{trend === 'down' && ' ↓'}</> : 'First time logging this'}
+                {isNewPR && <span className="pr-glow">New PR</span>}
+              </div>
+            </div>
+            {(exercise.img || exercise.builder) && (
+              <div className="log-hero-icon" style={{ background: exercise.img ? '#fff' : 'rgba(18,21,8,.85)' }}
+                onClick={() => wikiInfo(exercise) && setShowWiki(true)}>
+                <ExIcon id={exercise.id} size={64} img={exercise.img || null} builder={exercise.builder || null} />
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -5512,7 +5531,10 @@ function App() {
   function savePartial(ex) {
     setCurrent(prev => {
       const base = prev || { date: todayISO(), exercises: [] };
-      return { ...base, exercises: [...base.exercises.filter(e => e.id !== ex.id), { ...ex, status: 'partial' }] };
+      // Workout clock starts at the first logged set, not at "Start Workout" —
+      // browsing the exercise list at home shouldn't count as training time.
+      const firstSetAt = base.firstSetAt || (ex.sets && ex.sets.length ? Date.now() : undefined);
+      return { ...base, firstSetAt, exercises: [...base.exercises.filter(e => e.id !== ex.id), { ...ex, status: 'partial' }] };
     });
   }
 
@@ -5643,8 +5665,8 @@ function App() {
         />
       )}
 
-      {!splash && current && current.startedAt && ['group-select','group-detail','log'].includes(screen) && (
-        <WorkoutClock startedAt={current.startedAt} inHero={screen === 'log'} />
+      {!splash && current && current.firstSetAt && ['group-select','group-detail','log'].includes(screen) && (
+        <WorkoutClock startedAt={current.firstSetAt} inHero={screen === 'log'} />
       )}
 
       {!splash && screen === 'summary' && summary && (
