@@ -723,6 +723,48 @@
     }
 
     /* ══════════════════════════════════
+       VIBELIFT WIKI — in-app how-to sheet
+    ══════════════════════════════════ */
+    .wiki-dim {
+      position: fixed; inset: 0; z-index: 900;
+      background: rgba(0,0,0,.55);
+      animation: rest-float-in .2s ease;
+    }
+    .wiki-sheet {
+      position: fixed; left: 0; right: 0; bottom: 0; z-index: 901;
+      background: var(--card); border: 1.5px solid var(--border); border-bottom: none;
+      border-radius: 24px 24px 0 0;
+      padding: 10px 18px calc(16px + env(safe-area-inset-bottom, 0px));
+      max-height: 86vh; overflow-y: auto;
+      animation: wiki-up .28s cubic-bezier(.2,.8,.4,1);
+    }
+    @keyframes wiki-up { from { transform: translateY(40%); opacity: .4; } to { transform: none; opacity: 1; } }
+    .wiki-grab { width: 40px; height: 4px; border-radius: 2px; background: var(--border); margin: 0 auto 12px; }
+    .wiki-title { font-family: var(--fd); font-size: 24px; font-weight: 900; letter-spacing: .4px; color: var(--text); }
+    .wiki-stage {
+      margin: 12px 0 10px; background: var(--bg); border: 1px solid var(--border);
+      border-radius: 16px; overflow: hidden;
+    }
+    .wiki-stage svg { display: block; width: 100%; height: auto; max-height: 200px; }
+    .wiki-target { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin-bottom: 12px; }
+    .wiki-target-lbl {
+      font-size: 10px; font-weight: 800; letter-spacing: 1.6px; color: var(--text2);
+      text-transform: uppercase; margin-right: 2px;
+    }
+    .wiki-chip {
+      font-size: 11px; font-weight: 700; color: var(--pink);
+      background: rgba(200,242,53,.09); border: 1px solid var(--border);
+      border-radius: 999px; padding: 3px 9px;
+    }
+    .wiki-steps { display: flex; flex-direction: column; gap: 9px; }
+    .wiki-step { display: flex; gap: 10px; font-size: 13px; line-height: 1.45; color: var(--text); }
+    .wiki-step b {
+      font-family: var(--fd); font-weight: 700; font-size: 15px; color: var(--pink);
+      min-width: 14px; line-height: 1.25;
+    }
+    .wiki-done { margin-top: 16px; width: 100%; }
+
+    /* ══════════════════════════════════
        LOG SCREEN — Tinder hero style
     ══════════════════════════════════ */
     .log-hero {
@@ -1641,8 +1683,16 @@ function DailyQuoteCard() {
 /* ═══════════════════════════════════════
    EXERCISE ICONS
 ═══════════════════════════════════════ */
-function ExIcon({ id, size = 28, color = '#242d16', img = null }) {
+function ExIcon({ id, size = 28, color = '#242d16', img = null, builder = null }) {
   const [imgFailed, setImgFailed] = React.useState(false);
+  // Custom exercises: draw the same stick figure the builder previewed,
+  // cropped to the figure, so they get a real icon instead of the fallback.
+  if (builder && (!img || imgFailed)) {
+    return (
+      <svg width={size} height={size} viewBox="40 14 150 146" style={{ display:'block', flexShrink:0 }}
+        dangerouslySetInnerHTML={{ __html: builderFigureSVG(builder.eq, builder.pos, builder.move) }} />
+    );
+  }
   if (img && !imgFailed) {
     return (
       <img
@@ -2252,85 +2302,159 @@ const DB = [
   { group:'core', gl:'Core', eq:'bodyweight', id:'side_plank',        name:'Side Plank', img:'Side Plank.png' },
 ];
 
-/* Curated MuscleWiki how-to links — key = exercise id.
-   Only verified URLs go here (each checked live 2026-07-17);
-   exercises without an entry show no info button. */
-const MW = 'https://musclewiki.com/exercise/';
-const WIKI = {
-  // chest
-  barbell_bench_press:   MW + 'barbell-bench-press',
-  incline_barbell_press: MW + 'barbell-incline-bench-press',
-  db_bench_press:        MW + 'dumbbell-bench-press',
-  incline_db_press:      MW + 'dumbbell-incline-bench-press',
-  pushup:                MW + 'push-up',
-  diamond_pushup:        MW + 'diamond-push-ups',
-  machine_chest_press:   MW + 'machine-chest-press',
-  db_chest_fly:          MW + 'dumbbell-chest-fly',
-  // back
-  deadlift:              MW + 'barbell-deadlift',
-  romanian_deadlift:     MW + 'barbell-romanian-deadlift',
-  barbell_row:           MW + 'barbell-bent-over-row',
-  lat_pulldown:          MW + 'machine-pulldown',
-  pullup:                MW + 'pull-ups',
-  chin_up:               MW + 'chin-ups',
-  seated_cable_row:      MW + 'machine-seated-cable-row',
-  tbar_row:              MW + 'machine-plate-loaded-t-bar-row',
-  db_single_arm_row:     MW + 'dumbbell-row-unilateral',
-  face_pull:             MW + 'machine-face-pulls',
-  face_pull_back:        MW + 'machine-face-pulls',
-  rack_pull:             MW + 'barbell-rack-pull',
-  inverted_row:          MW + 'inverted-row',
-  pendlay_row:           MW + 'barbell-pronated-pendlay-row',
-  // shoulders
-  barbell_ohp:           MW + 'barbell-overhead-press',
-  arnold_press:          MW + 'dumbbell-arnold-press',
-  db_lateral_raise:      MW + 'dumbbell-lateral-raise',
-  db_front_raise:        MW + 'dumbbell-front-raise',
-  db_rear_delt_fly:      MW + 'dumbbell-seated-rear-delt-fly',
-  cable_lateral_raise:   MW + 'cable-low-single-arm-lateral-raise',
-  upright_row:           MW + 'barbell-upright-row',
-  barbell_shrug:         MW + 'barbell-shrug',
-  db_shrug:              MW + 'dumbbell-shrug',
-  // arms
-  barbell_bicep_curl:    MW + 'barbell-curl',
-  ez_bar_curl:           MW + 'ez-bar-curl',
-  preacher_curl:         MW + 'ez-bar-preacher-curl',
-  db_hammer_curl:        MW + 'dumbbell-hammer-curl',
-  concentration_curl:    MW + 'dumbbell-concentration-curl',
-  incline_db_curl:       MW + 'dumbbell-incline-curl',
-  machine_bicep_curl:    MW + 'machine-bicep-curl',
-  cable_rope_hammer_curl:MW + 'cable-rope-hammer-curl',
-  skull_crusher:         MW + 'barbell-skullcrusher',
-  overhead_tricep_ext:   MW + 'barbell-overhead-tricep-extension',
-  cable_tricep_pushdown: MW + 'cable-rope-pushdown',
-  tricep_rope_pushdown:  MW + 'cable-rope-pushdown',
-  tricep_dip:            MW + 'box-dips',
-  close_grip_bench:      MW + 'barbell-close-grip-bench-press',
-  spider_curl:           MW + 'dumbbell-spider-curl',
-  // legs
-  barbell_back_squat:    MW + 'barbell-squat',
-  front_squat:           MW + 'front-squat',
-  goblet_squat:          MW + 'dumbbell-goblet-squat',
-  leg_press:             MW + 'machine-leg-press',
-  leg_extension:         MW + 'machine-leg-extension',
-  lying_leg_curl:        MW + 'machine-hamstring-curl',
-  seated_leg_curl:       MW + 'machine-seated-hamstring-curl',
-  bulgarian_split_squat: MW + 'bulgarian-split-squat',
-  hip_thrust:            MW + 'barbell-hip-thrust',
-  hack_squat:            MW + 'machine-hack-squat',
-  standing_calf_raise:   MW + 'machine-standing-calf-raises',
-  seated_calf_raise:     MW + 'machine-seated-calf-raises',
-  step_up:               MW + 'barbell-step-up',
-  rdl_legs:              MW + 'barbell-romanian-deadlift',
-  sumo_deadlift:         MW + 'barbell-sumo-deadlift',
-  // core
-  plank:                 MW + 'plank',
-  crunches:              MW + 'crunches',
-  russian_twist:         MW + 'russian-twist',
-  leg_raise:             MW + 'laying-leg-raises',
-  cable_crunch:          MW + 'cable-standing-crunch',
-  dead_bug:              MW + 'dead-bug',
+/* ═══════════════════════════════════════
+   VIBELIFT WIKI — built-in exercise guide
+   Replaces the old MuscleWiki links: everything renders in-app.
+   f = [equipment, position, movement] in the exercise-builder vocabulary,
+   which drives the animated figure. t = target muscles. s = how-to steps
+   (our own text — written for VibeLift, not copied from anywhere).
+═══════════════════════════════════════ */
+const WIKI_DATA = {
+  // ── chest ──
+  barbell_bench_press:   { f:['Barbell','Lying Flat','Press'], t:['Chest','Triceps','Front delts'], s:['Lie back with your eyes under the bar, feet planted on the floor.','Grip a little wider than shoulders and unrack over your chest.','Lower the bar to mid-chest under control, elbows about 45°.','Press up and slightly back until your arms lock out.'] },
+  cable_crossover:       { f:['Cable','Standing','Fly'], t:['Chest','Front delts'], s:['Stand centered between the pulleys, one foot forward, slight lean.','With a soft bend in your elbows, sweep both handles down and together.','Squeeze your chest when your hands meet, then open back slowly.'] },
+  chest_dip:             { f:['Bodyweight','Standing','Press'], t:['Lower chest','Triceps'], s:['Support yourself on the bars, lean your torso slightly forward.','Bend your elbows and lower until your upper arms reach parallel.','Press back up without locking your elbows hard at the top.'] },
+  decline_bench_press:   { f:['Barbell','Decline','Press'], t:['Lower chest','Triceps'], s:['Hook your feet in, lie back on the decline bench.','Unrack and lower the bar to your lower chest.','Press straight up over your chest, keep wrists stacked.'] },
+  db_bench_press:        { f:['Dumbbell','Lying Flat','Press'], t:['Chest','Triceps','Front delts'], s:['Lie flat with a dumbbell in each hand at chest level.','Press both up until your arms are straight over your chest.','Lower slowly until you feel a stretch, elbows about 45°.'] },
+  db_chest_fly:          { f:['Dumbbell','Lying Flat','Fly'], t:['Chest'], s:['Lie flat, dumbbells over your chest, palms facing each other.','Keep a soft elbow bend and open your arms wide until you feel a stretch.','Bring the weights back together in a hugging arc.'] },
+  db_pullover:           { f:['Dumbbell','Lying Flat','Pull'], t:['Chest','Lats'], s:['Lie flat holding one dumbbell with both hands above your chest.','Lower it back over your head with nearly straight arms.','Pull it back over your chest, ribs down the whole time.'] },
+  incline_barbell_press: { f:['Barbell','Incline','Press'], t:['Upper chest','Front delts','Triceps'], s:['Set the bench to about 30° and lie back, eyes under the bar.','Lower the bar to your upper chest under control.','Drive it up and slightly back until your arms are straight.'] },
+  incline_cable_fly:     { f:['Cable','Incline','Fly'], t:['Upper chest'], s:['Set the pulleys low, lie back on an incline bench between them.','With soft elbows, sweep the handles up and together over your chest.','Lower wide and slow until you feel the stretch.'] },
+  incline_db_press:      { f:['Dumbbell','Incline','Press'], t:['Upper chest','Front delts','Triceps'], s:['Set the bench to about 30°, dumbbells at shoulder level.','Press both up and slightly in until your arms are straight.','Lower under control to the start.'] },
+  landmine_press:        { f:['Barbell','Standing','Press'], t:['Upper chest','Front delts','Triceps'], s:['Wedge the bar in a corner, hold the free end at your shoulder.','Press it up and forward until your arm is long.','Lower back to the shoulder under control; switch sides each set.'] },
+  machine_chest_press:   { f:['Machine','Seated','Press'], t:['Chest','Triceps'], s:['Set the seat so the handles sit at mid-chest height.','Press the handles forward until your arms are almost straight.','Return slowly, keeping tension — don’t let the stack slam.'] },
+  pec_deck:              { f:['Machine','Seated','Fly'], t:['Chest'], s:['Sit tall with your back flat on the pad, forearms or hands on the pads.','Squeeze the pads together in front of your chest.','Open back slowly until you feel a stretch, stay in control.'] },
+  pushup:                { f:['Bodyweight','Lying Flat','Press'], t:['Chest','Triceps','Core'], s:['Hands under your shoulders, body in one straight line.','Lower your chest to just above the floor, elbows about 45°.','Push the floor away until your arms are straight — no sagging hips.'] },
+  smith_bench_press:     { f:['Smith Machine','Lying Flat','Press'], t:['Chest','Triceps'], s:['Lie so the bar path lands on your mid-chest.','Rotate to unhook, lower the bar to your chest.','Press up along the rails and re-hook when done.'] },
+  incline_db_fly:        { f:['Dumbbell','Incline','Fly'], t:['Upper chest'], s:['Lie on a 30° incline, dumbbells over your chest, palms in.','Open your arms wide with soft elbows until you feel a stretch.','Sweep the weights back together above your chest.'] },
+  low_cable_fly:         { f:['Cable','Standing','Fly'], t:['Upper chest'], s:['Set both pulleys low, stand a step forward with a slight lean.','Sweep the handles up and together to eye height.','Lower wide and slow, keeping your chest tall.'] },
+  incline_machine_press: { f:['Machine','Incline','Press'], t:['Upper chest','Triceps'], s:['Set the seat so the handles start at upper-chest height.','Press up and forward until your arms are nearly straight.','Lower slowly, keeping your back on the pad.'] },
+  // ── back ──
+  barbell_row:           { f:['Barbell','Bent-Over','Row'], t:['Lats','Upper back','Biceps'], s:['Hinge at the hips until your torso is near 45°, back flat.','Pull the bar to your lower ribs, elbows tracking behind you.','Lower with control without letting your back round.'] },
+  chin_up:               { f:['Bodyweight','Hanging','Pull'], t:['Lats','Biceps'], s:['Hang from the bar with palms facing you, shoulder-width grip.','Pull your chest toward the bar, elbows driving down.','Lower all the way to a dead hang each rep.'] },
+  deadlift:              { f:['Barbell','Bent-Over','Row'], t:['Whole back','Glutes','Hamstrings'], s:['Bar over mid-foot, hinge down and grip just outside your legs.','Brace, then push the floor away — bar stays against your body.','Stand tall at the top; hinge back down under control.'] },
+  db_single_arm_row:     { f:['Dumbbell','Bent-Over','Row'], t:['Lats','Upper back','Biceps'], s:['One hand and knee on a bench, back flat, dumbbell hanging.','Row the weight to your hip, elbow close to your body.','Lower slowly to a full stretch; switch sides each set.'] },
+  face_pull_back:        { f:['Cable','Standing','Pull'], t:['Rear delts','Upper back'], s:['Set the rope at face height and grab both ends, thumbs back.','Pull toward your face, elbows high and wide.','Pause, feel your shoulder blades pinch, return slowly.'] },
+  inverted_row:          { f:['Bodyweight','Hanging','Pull'], t:['Upper back','Lats','Biceps'], s:['Hang under a bar, body straight, heels on the floor.','Pull your chest to the bar, squeezing your shoulder blades.','Lower under control, hips staying in line.'] },
+  lat_pulldown:          { f:['Cable','Seated','Pull'], t:['Lats','Biceps'], s:['Sit with thighs under the pads, grip wider than shoulders.','Pull the bar to your upper chest, elbows down and back.','Let it rise slowly to a full stretch overhead.'] },
+  meadows_row:           { f:['Barbell','Bent-Over','Row'], t:['Lats','Upper back'], s:['Stand beside a landmine bar, hinge over, grab the end overhand.','Row the bar end to your hip, elbow flaring out.','Lower to a full stretch; switch sides each set.'] },
+  pullup:                { f:['Bodyweight','Hanging','Pull'], t:['Lats','Upper back','Biceps'], s:['Hang from the bar, palms away, hands just outside shoulders.','Pull until your chin clears the bar, chest up.','Lower all the way down under control.'] },
+  rack_pull:             { f:['Barbell','Bent-Over','Row'], t:['Upper back','Traps','Glutes'], s:['Set the bar on rack pins around knee height.','Hinge, grip, brace — then stand tall, bar against your thighs.','Set it back on the pins under control.'] },
+  romanian_deadlift:     { f:['Barbell','Bent-Over','Row'], t:['Hamstrings','Glutes','Lower back'], s:['Stand tall with the bar at your thighs, slight knee bend.','Push your hips back and slide the bar down your legs.','When your hamstrings pull tight, drive hips forward to stand.'] },
+  seated_cable_row:      { f:['Cable','Seated','Row'], t:['Upper back','Lats','Biceps'], s:['Sit tall, feet braced, arms long holding the handle.','Pull to your stomach, chest up, shoulder blades together.','Let the weight stretch you forward slowly.'] },
+  seated_machine_row:    { f:['Machine','Seated','Row'], t:['Upper back','Lats'], s:['Chest against the pad, grab the handles with long arms.','Row back until your elbows pass your torso.','Return slowly, keeping your chest on the pad.'] },
+  straight_arm_pulldown: { f:['Cable','Standing','Pull'], t:['Lats'], s:['Face a high pulley, arms long on the bar, slight lean forward.','Sweep the bar down to your thighs without bending your elbows.','Let it rise slowly until you feel a full lat stretch.'] },
+  tbar_row:              { f:['Barbell','Bent-Over','Row'], t:['Upper back','Lats'], s:['Straddle the bar, hinge over, grab the handles.','Pull the weight to your chest, squeezing your upper back.','Lower until your arms are long, back staying flat.'] },
+  pendlay_row:           { f:['Barbell','Bent-Over','Row'], t:['Upper back','Lats'], s:['Torso parallel to the floor, bar resting on the ground each rep.','Pull explosively to your lower chest.','Return the bar fully to the floor — reset, then repeat.'] },
+  chest_supported_row:   { f:['Machine','Seated','Row'], t:['Upper back','Lats'], s:['Lie chest-down on the pad so your lower back is out of it.','Row the handles up and back, elbows past your torso.','Lower slowly to a full stretch.'] },
+  close_grip_pulldown:   { f:['Cable','Seated','Pull'], t:['Lats','Biceps'], s:['Use the narrow handle, sit with thighs locked under the pads.','Pull the handle to your upper chest, elbows tight to your sides.','Return slowly to a full stretch overhead.'] },
+  db_deadlift:           { f:['Dumbbell','Bent-Over','Row'], t:['Glutes','Hamstrings','Back'], s:['Dumbbells at your sides, hinge at the hips, back flat.','Lower the weights along your legs until hamstrings pull tight.','Drive your hips forward to stand tall.'] },
+  // ── shoulders ──
+  arnold_press:          { f:['Dumbbell','Seated','Press'], t:['Shoulders','Triceps'], s:['Start with dumbbells at shoulder height, palms facing you.','Press up while rotating your palms to face forward.','Reverse the rotation on the way down.'] },
+  barbell_ohp:           { f:['Barbell','Standing','Press'], t:['Shoulders','Triceps','Core'], s:['Bar at your collarbone, grip just outside shoulders, glutes tight.','Press straight up, moving your head back out of the way.','Lock out overhead, then lower to your collarbone.'] },
+  barbell_shrug:         { f:['Barbell','Standing','Hold'], t:['Traps'], s:['Hold the bar at your thighs with straight arms.','Shrug your shoulders straight up toward your ears.','Pause at the top, lower slowly — no rolling.'] },
+  cable_lateral_raise:   { f:['Cable','Standing','Raise'], t:['Side delts'], s:['Stand side-on to a low pulley, handle in your far hand.','Raise your arm out to the side up to shoulder height.','Lower slowly against the cable’s pull; switch sides.'] },
+  db_front_raise:        { f:['Dumbbell','Standing','Raise'], t:['Front delts'], s:['Dumbbells resting on your thighs, arms long.','Raise one or both straight in front to shoulder height.','Lower under control — no swinging.'] },
+  db_lateral_raise:      { f:['Dumbbell','Standing','Raise'], t:['Side delts'], s:['Dumbbells at your sides, slight elbow bend.','Raise out to the sides until your arms reach shoulder height.','Lower slowly — the way down builds the shoulder.'] },
+  db_rear_delt_fly:      { f:['Dumbbell','Bent-Over','Fly'], t:['Rear delts','Upper back'], s:['Hinge over until your torso is near parallel, weights hanging.','Open your arms out wide like wings, soft elbows.','Lower slowly without standing up between reps.'] },
+  face_pull:             { f:['Cable','Standing','Pull'], t:['Rear delts','Upper back'], s:['Rope at face height, grab both ends, thumbs pointing back.','Pull toward your face, elbows high and wide.','Pause, squeeze your shoulder blades, return slowly.'] },
+  landmine_lateral_raise:{ f:['Barbell','Standing','Raise'], t:['Side delts'], s:['Hold the free end of the landmine bar in front of your body.','Raise it up and across to shoulder height with a long arm.','Lower slowly; switch sides each set.'] },
+  machine_shoulder_press:{ f:['Machine','Seated','Press'], t:['Shoulders','Triceps'], s:['Set the seat so the handles start at shoulder height.','Press up until your arms are nearly straight.','Lower slowly, keeping your back against the pad.'] },
+  plate_front_raise:     { f:['Plate','Standing','Raise'], t:['Front delts'], s:['Hold a plate with both hands at your thighs.','Raise it straight in front of you to shoulder height.','Lower under control — keep your body still.'] },
+  push_press:            { f:['Barbell','Standing','Press'], t:['Shoulders','Triceps','Legs'], s:['Bar at your collarbone, dip a few centimeters at the knees.','Drive up with your legs and punch the bar overhead.','Lower to your shoulders under control and reset.'] },
+  reverse_pec_deck:      { f:['Machine','Seated','Fly'], t:['Rear delts','Upper back'], s:['Sit facing the pad, handles in front of you.','Open your arms back in a wide arc until they line up with your shoulders.','Return slowly, keeping your chest on the pad.'] },
+  seated_db_ohp:         { f:['Dumbbell','Seated','Press'], t:['Shoulders','Triceps'], s:['Sit with back support, dumbbells at shoulder height.','Press both overhead until your arms are straight.','Lower to your shoulders under control.'] },
+  upright_row:           { f:['Barbell','Standing','Curl'], t:['Side delts','Traps'], s:['Hold the bar at your thighs, hands about shoulder-width.','Pull it straight up your body to chest height, elbows leading.','Lower slowly — stop if your shoulders pinch.'] },
+  db_shrug:              { f:['Dumbbell','Standing','Hold'], t:['Traps'], s:['Dumbbells at your sides, arms long.','Shrug your shoulders straight up toward your ears.','Pause, then lower slowly — no rolling.'] },
+  machine_lateral_raise: { f:['Machine','Seated','Raise'], t:['Side delts'], s:['Sit with your arms under the pads, elbows bent 90°.','Raise your elbows out to shoulder height.','Lower slowly, keeping tension in the stack.'] },
+  cable_rear_delt_fly:   { f:['Cable','Standing','Fly'], t:['Rear delts'], s:['Cross the cables, one handle in each opposite hand.','Pull your arms open and back in a wide arc.','Return slowly, arms staying long.'] },
+  // ── legs ──
+  barbell_back_squat:    { f:['Barbell','Standing','Squat'], t:['Quads','Glutes','Core'], s:['Bar on your upper back, feet shoulder-width, toes slightly out.','Sit down between your hips until your thighs reach parallel.','Drive the floor away to stand tall — chest up the whole way.'] },
+  barbell_lunge:         { f:['Barbell','Standing','Lunge'], t:['Quads','Glutes'], s:['Bar on your back, take a long step forward.','Lower until both knees are near 90°, torso tall.','Push off the front foot back to standing; alternate legs.'] },
+  bulgarian_split_squat: { f:['Dumbbell','Standing','Lunge'], t:['Quads','Glutes'], s:['Rear foot on a bench behind you, dumbbells at your sides.','Lower straight down until your front thigh is parallel.','Drive through the front foot to stand; switch legs each set.'] },
+  front_squat:           { f:['Barbell','Standing','Squat'], t:['Quads','Core'], s:['Bar on your front delts, elbows high, fingers under the bar.','Squat down keeping your torso as upright as you can.','Stand up driving through mid-foot, elbows staying up.'] },
+  goblet_squat:          { f:['Dumbbell','Standing','Squat'], t:['Quads','Glutes'], s:['Hold one dumbbell vertically against your chest.','Squat down between your knees, elbows inside them.','Stand tall, keeping the weight tight to your body.'] },
+  hack_squat:            { f:['Machine','Seated','Squat'], t:['Quads'], s:['Back on the pad, shoulders under the shoulder pads, feet mid-platform.','Release the safeties, lower until your thighs reach 90°.','Press through your whole foot back to the top.'] },
+  hip_thrust:            { f:['Barbell','Lying Flat','Squat'], t:['Glutes','Hamstrings'], s:['Upper back on a bench, bar across your hips, feet flat.','Drive your hips up until your body forms a straight line.','Squeeze your glutes hard at the top, lower with control.'] },
+  leg_extension:         { f:['Machine','Seated','Extension'], t:['Quads'], s:['Sit with your shins behind the pad, knees at the pivot.','Kick up until your legs are straight, squeezing your quads.','Lower slowly — don’t let the stack drop.'] },
+  leg_press:             { f:['Machine','Seated','Squat'], t:['Quads','Glutes'], s:['Feet shoulder-width on the platform, back flat on the pad.','Lower the sled until your knees reach about 90°.','Press through your whole foot without locking your knees hard.'] },
+  lying_leg_curl:        { f:['Machine','Lying Flat','Curl'], t:['Hamstrings'], s:['Lie face down, pad against your lower calves.','Curl your heels toward your glutes.','Lower slowly to a full stretch.'] },
+  rdl_legs:              { f:['Barbell','Bent-Over','Row'], t:['Hamstrings','Glutes'], s:['Stand tall with the bar at your thighs, slight knee bend.','Push your hips back and slide the bar down your legs.','When your hamstrings pull tight, drive hips forward to stand.'] },
+  seated_calf_raise:     { f:['Machine','Seated','Hold'], t:['Calves'], s:['Sit with the pad on your knees, balls of your feet on the ledge.','Press up onto your toes as high as you can.','Lower your heels below the ledge for a full stretch.'] },
+  seated_leg_curl:       { f:['Machine','Seated','Curl'], t:['Hamstrings'], s:['Sit with the pad on your lower calves, thighs locked in.','Curl your heels down and under the seat.','Return slowly to a full stretch.'] },
+  standing_calf_raise:   { f:['Dumbbell','Standing','Squat'], t:['Calves'], s:['Stand on a step edge, heels hanging off, weight in hand.','Rise onto your toes as high as you can, pause.','Lower your heels below the step for a deep stretch.'] },
+  step_up:               { f:['Dumbbell','Standing','Lunge'], t:['Quads','Glutes'], s:['Stand facing a knee-height box, dumbbells at your sides.','Step up and drive through that foot to stand on top.','Step down slowly the same way; alternate legs.'] },
+  sumo_deadlift:         { f:['Barbell','Bent-Over','Row'], t:['Glutes','Quads','Back'], s:['Wide stance, toes out, grip the bar inside your knees.','Brace and stand, pushing your knees out the whole way.','Lower along your legs under control.'] },
+  walking_lunge:         { f:['Dumbbell','Standing','Lunge'], t:['Quads','Glutes'], s:['Dumbbells at your sides, take a long step forward.','Lower until both knees near 90°, then drive through the front foot.','Step straight into the next lunge — keep walking.'] },
+  hip_abduction:         { f:['Machine','Seated','Hold'], t:['Glutes'], s:['Sit with knees inside the pads.','Push your knees apart as far as they go.','Return slowly, keeping tension.'] },
+  cable_glute_kickback:  { f:['Cable','Standing','Lunge'], t:['Glutes'], s:['Cuff on your ankle, hold the frame, slight forward lean.','Kick the leg straight back, squeezing your glute.','Return slowly; switch legs each set.'] },
+  // ── arms ──
+  barbell_bicep_curl:    { f:['Barbell','Standing','Curl'], t:['Biceps'], s:['Hold the bar at your thighs, elbows pinned to your sides.','Curl to shoulder height without moving your upper arms.','Lower slowly all the way down.'] },
+  cable_overhead_tricep_ext:{ f:['Cable','Standing','Extension'], t:['Triceps'], s:['Face away from a low pulley, rope behind your head, elbows up.','Extend your arms overhead until they are straight.','Bend slowly back behind your head.'] },
+  cable_rope_hammer_curl:{ f:['Cable','Standing','Curl'], t:['Biceps','Forearms'], s:['Rope on a low pulley, palms facing each other.','Curl to your shoulders, elbows pinned at your sides.','Lower slowly to straight arms.'] },
+  cable_tricep_pushdown: { f:['Cable','Standing','Extension'], t:['Triceps'], s:['Elbows pinned at your sides, hands at chest height on the bar.','Push down until your arms are fully straight.','Let it rise slowly to chest height — elbows never move.'] },
+  concentration_curl:    { f:['Dumbbell','Seated','Curl'], t:['Biceps'], s:['Seated, elbow braced against your inner thigh.','Curl the dumbbell to your shoulder.','Lower slowly to a straight arm; switch sides.'] },
+  diamond_pushup:        { f:['Bodyweight','Lying Flat','Press'], t:['Triceps','Chest'], s:['Hands together under your chest, thumbs and fingers forming a diamond.','Lower your chest to your hands, elbows tracking back.','Press up to straight arms, body in one line.'] },
+  db_hammer_curl:        { f:['Dumbbell','Standing','Curl'], t:['Biceps','Forearms'], s:['Dumbbells at your sides, palms facing your body.','Curl to your shoulders keeping the neutral grip.','Lower slowly without swinging.'] },
+  ez_bar_curl:           { f:['Barbell','Standing','Curl'], t:['Biceps'], s:['Grip the angled sections of the EZ bar at your thighs.','Curl to shoulder height, elbows pinned to your sides.','Lower slowly all the way down.'] },
+  incline_db_curl:       { f:['Dumbbell','Incline','Curl'], t:['Biceps'], s:['Lie back on an incline bench, arms hanging straight down.','Curl both dumbbells up without your elbows drifting forward.','Lower slowly to the deep stretch at the bottom.'] },
+  machine_bicep_curl:    { f:['Machine','Seated','Curl'], t:['Biceps'], s:['Upper arms flat on the pad, grab the handles.','Curl up as far as the machine allows.','Lower slowly to nearly straight arms.'] },
+  overhead_tricep_ext:   { f:['Dumbbell','Standing','Extension'], t:['Triceps'], s:['Hold one dumbbell with both hands straight overhead.','Bend your elbows to lower it behind your head.','Extend back to straight arms, elbows staying close to your head.'] },
+  preacher_curl:         { f:['Barbell','Seated','Curl'], t:['Biceps'], s:['Upper arms flat on the preacher pad, grip the bar.','Curl up until your forearms are vertical.','Lower slowly until your arms are almost straight.'] },
+  skull_crusher:         { f:['Barbell','Lying Flat','Extension'], t:['Triceps'], s:['Lie flat, bar over your face with a narrow grip.','Bend only your elbows to lower the bar toward your forehead.','Extend back to straight arms over your chest.'] },
+  tricep_dip:            { f:['Bodyweight','Standing','Press'], t:['Triceps','Chest'], s:['Support yourself on the bars, torso upright.','Bend your elbows straight back and lower until upper arms are parallel.','Press back to straight arms.'] },
+  tricep_rope_pushdown:  { f:['Cable','Standing','Extension'], t:['Triceps'], s:['Rope at chest height, elbows pinned at your sides.','Push down and pull the rope apart at the bottom.','Return slowly to chest height — elbows never move.'] },
+  close_grip_bench:      { f:['Barbell','Lying Flat','Press'], t:['Triceps','Chest'], s:['Lie flat, grip the bar at shoulder-width or slightly inside.','Lower to your lower chest, elbows tucked close.','Press up until your arms lock out.'] },
+  spider_curl:           { f:['Dumbbell','Incline','Curl'], t:['Biceps'], s:['Lie chest-down on an incline bench, arms hanging straight.','Curl both dumbbells up without swinging.','Lower slowly to a full hang.'] },
+  cable_bicep_curl:      { f:['Cable','Standing','Curl'], t:['Biceps'], s:['Bar on a low pulley, elbows pinned at your sides.','Curl to shoulder height against the cable.','Lower slowly — constant tension is the point.'] },
+  reverse_curl:          { f:['Barbell','Standing','Curl'], t:['Forearms','Biceps'], s:['Grip the bar palms-down at your thighs.','Curl to shoulder height keeping your wrists straight.','Lower slowly all the way down.'] },
+  // ── core ──
+  plank:                 { f:['Bodyweight','Lying Flat','Hold'], t:['Core'], s:['Forearms on the floor, body in one straight line.','Squeeze your glutes and brace your stomach.','Hold — breathe steadily, never let your hips sag.'] },
+  crunches:              { f:['Bodyweight','Lying Flat','Squat'], t:['Abs'], s:['Lie on your back, knees bent, hands by your temples.','Curl your ribs toward your hips — shoulder blades off the floor.','Lower slowly; your lower back stays down the whole time.'] },
+  leg_raise:             { f:['Bodyweight','Lying Flat','Raise'], t:['Lower abs','Hip flexors'], s:['Lie flat, legs straight, hands under your hips if needed.','Raise your legs to vertical without bending your knees.','Lower slowly — stop before your lower back arches off the floor.'] },
+  russian_twist:         { f:['Bodyweight','Seated','Hold'], t:['Obliques'], s:['Sit leaned back at 45°, feet up or lightly touching the floor.','Rotate your torso side to side, hands sweeping across.','Move from the waist, not the arms.'] },
+  ab_wheel:              { f:['Bodyweight','Kneeling','Extension'], t:['Core','Lats'], s:['Kneel with the wheel under your shoulders.','Roll forward as far as you can hold a flat back.','Pull back to the start using your abs, not your hips.'] },
+  hanging_leg_raise:     { f:['Bodyweight','Hanging','Pull'], t:['Lower abs','Hip flexors'], s:['Hang from a bar with long arms.','Raise your legs to hip height or higher without swinging.','Lower slowly — control beats height.'] },
+  cable_crunch:          { f:['Cable','Kneeling','Pull'], t:['Abs'], s:['Kneel below a high pulley, rope held beside your head.','Crunch your ribs toward your hips against the cable.','Return slowly until your torso is tall again.'] },
+  dead_bug:              { f:['Bodyweight','Lying Flat','Raise'], t:['Core'], s:['Lie on your back, arms up, knees bent over your hips.','Lower one arm and the opposite leg toward the floor.','Return and switch sides — lower back pressed down throughout.'] },
+  side_plank:            { f:['Bodyweight','Lying Flat','Hold'], t:['Obliques','Core'], s:['Lie on your side, forearm under your shoulder.','Lift your hips so your body forms one straight line.','Hold, then switch sides.'] },
 };
+
+/* Generic how-to for user-built custom exercises, assembled from their
+   builder choices. Not exercise science — just a sane cue set. */
+function customWikiSteps(b) {
+  const pos = {
+    'Standing':'Stand tall, feet about shoulder-width, core braced.',
+    'Seated':'Sit tall with your back supported, feet planted.',
+    'Lying Flat':'Lie back with your feet planted and lower back settled.',
+    'Incline':'Set the bench to about 30° and lie back fully.',
+    'Decline':'Secure your feet and lie back on the decline.',
+    'Bent-Over':'Hinge at the hips, back flat, knees soft.',
+    'Kneeling':'Kneel with your hips stacked over your knees.',
+    'Hanging':'Hang from the bar with long arms and a tight core.',
+  }[b.pos] || 'Get set with a stable, braced position.';
+  const move = {
+    'Press':'Press the weight away until your arms are straight, then return under control.',
+    'Row':'Pull the weight toward your body, elbows leading, then lower slowly.',
+    'Curl':'Curl the weight up without moving your upper arms, then lower slowly.',
+    'Raise':'Raise the weight with long arms to shoulder height, then lower slowly.',
+    'Extension':'Extend at the elbow until your arms are straight, keeping elbows still.',
+    'Squat':'Lower down under control, then drive back up through your whole foot.',
+    'Lunge':'Step and lower until both knees are near 90°, then drive back up.',
+    'Fly':'Open your arms wide with soft elbows, then sweep them back together.',
+    'Pull':'Pull down or through with your back doing the work, then return slowly.',
+    'Hold':'Squeeze into the top position and hold with steady breathing.',
+  }[b.move] || 'Move through the full range under control.';
+  return [pos, move, 'Same speed both directions — if you have to swing, it’s too heavy.'];
+}
+
+/* The wiki entry for any exercise, or null when there is nothing to show. */
+function wikiInfo(ex) {
+  const d = WIKI_DATA[ex.id];
+  if (d) return { eq: d.f[0], pos: d.f[1], move: d.f[2], tgt: d.t, steps: d.s };
+  if (ex.builder) return { eq: ex.builder.eq, pos: ex.builder.pos, move: ex.builder.move, tgt: [ex.gl], steps: customWikiSteps(ex.builder) };
+  return null;
+}
 
 const GROUP_META = {
   chest:     { grad: 'linear-gradient(140deg,#2d0b1f 0%,#8c1a40 55%,#e91e5e 100%)', icon: 'bench_press',  color: '#e91e5e', img: 'Chest.jpg' },
@@ -2538,6 +2662,25 @@ function getPersonalBest(history, exId) {
   let best = 0;
   for (const w of history) for (const e of w.exercises) if (e.id === exId) for (const s of e.sets) if (s.weight > best) best = s.weight;
   return best;
+}
+
+/* Weights are stored in kg everywhere (history, sets, PBs). These convert only
+   at the screen edge, so switching units in Settings re-labels nothing — it
+   genuinely converts: 50 kg shows as 110 lb, and 110 lb typed comes back as 50 kg. */
+const KG_PER_LB = 0.45359237;
+function kgToDisp(kg, unit) {
+  if (unit === 'lb') return Math.round((kg / KG_PER_LB) * 2) / 2;   // nearest 0.5 lb
+  return Math.round(kg * 100) / 100;
+}
+function dispToKg(v, unit) {
+  return unit === 'lb' ? Math.round(v * KG_PER_LB * 100) / 100 : v;
+}
+function fmtVol(kgVol, unit) {
+  if (unit === 'lb') {
+    const lb = Math.round(kgVol / KG_PER_LB);
+    return lb >= 2000 ? (lb / 2000).toFixed(1) + 't' : lb + 'lb';   // short tons
+  }
+  return kgVol >= 1000 ? (kgVol / 1000).toFixed(1) + 't' : kgVol + 'kg';
 }
 
 function getTrend(history, exId) {
@@ -3701,7 +3844,7 @@ function HistoryScreen({ onBack, history, weightUnit = 'kg' }) {
                   <div className="hist-workout-date">{fmtDate(w.date)}</div>
                   <div className="hist-workout-meta">{w.exercises.length} exercises · {totalSets} sets</div>
                 </div>
-                <div className="hist-workout-vol">{totalVol >= 1000 ? (totalVol/1000).toFixed(1)+'t' : totalVol+weightUnit}</div>
+                <div className="hist-workout-vol">{fmtVol(totalVol, weightUnit)}</div>
               </div>
               <div className="hist-ex-list">
                 {w.exercises.map((ex, j) => {
@@ -3710,12 +3853,12 @@ function HistoryScreen({ onBack, history, weightUnit = 'kg' }) {
                     <div key={j} className="hist-ex-row">
                       {ex.sessionAdded
                         ? <div style={{ width:26, height:26, borderRadius:8, background:meta.color+'22', display:'flex', alignItems:'center', justifyContent:'center', fontSize:8, fontWeight:800, color:meta.color, textAlign:'center', lineHeight:1, flexShrink:0 }}>{ex.name.substring(0,3).toUpperCase()}</div>
-                        : <ExIcon id={ex.id} size={26} color={meta.color} img={ex.img || null} />}
+                        : <ExIcon id={ex.id} size={26} color={meta.color} img={ex.img || null} builder={ex.builder || null} />}
                       <div className="hist-ex-info">
                         <div className="hist-ex-name">{ex.name}</div>
                         <div className="hist-ex-sets">
                           {ex.sets.map((s, k) => (
-                            <span key={k} className="hist-set-pill">{s.weight}{weightUnit} × {s.reps}</span>
+                            <span key={k} className="hist-set-pill">{s.bw ? 'BW' : kgToDisp(s.weight, weightUnit) + weightUnit} × {s.reps}</span>
                           ))}
                         </div>
                       </div>
@@ -3828,25 +3971,53 @@ const BUILDER_ARMS = {
   'Hold':      { e:[2,-13],  h:[4,-23] },
   '_idle':     { e:[3,-13],  h:[5,-23] },
 };
-function builderFigureSVG(eq, pos, move) {
+/* Arm pose at the START of a rep (t = 0). BUILDER_ARMS above is the peak
+   (t = 1). The wiki animation lerps between the two. Moves missing here
+   animate the body instead (Squat/Lunge/hanging) or hold still (Hold). */
+const BUILDER_ARM_START = {
+  'Press':     { e:[5,2],   h:[8,10] },
+  'Row':       { e:[12,8],  h:[22,16] },
+  'Curl':      { e:[3,-16], h:[6,-28] },
+  'Raise':     { e:[6,-12], h:[11,-22] },
+  'Extension': { e:[7,16],  h:[8,8] },
+  'Fly':       { e:[18,-4], h:[32,-2] },
+  'Pull':      { e:[6,0],   h:[10,8] },
+};
+function builderFigureSVG(eq, pos, move, t) {
   const FIG = '#f0f5d8', EQC = '#c8f235', BEN = '#59614a';
   const pose = BUILDER_POSES[pos || 'Standing'];
   let arm = BUILDER_ARMS[move || '_idle'];
   if (pose.hang) arm = BUILDER_ARMS['Pull'];
   if (pose.pressUp && move === 'Press') arm = { e:[2,14], h:[2,30] };
+  // t == null → static preview (exact old behavior). t in 0..1 → wiki animation.
+  const bodyMoves = move === 'Squat' || move === 'Lunge';
+  let dy = 0;
+  if (t != null) {
+    if (pose.hang || bodyMoves) dy = (1 - t) * 14;
+    else {
+      const f = BUILDER_ARM_START[move];
+      if (f) arm = { e:[f.e[0]+(arm.e[0]-f.e[0])*t, f.e[1]+(arm.e[1]-f.e[1])*t],
+                     h:[f.h[0]+(arm.h[0]-f.h[0])*t, f.h[1]+(arm.h[1]-f.h[1])*t] };
+    }
+  }
+  const legsFixed = bodyMoves && !pose.hang;      // squatting: feet stay planted
+  const B = p => [p[0], p[1] + dy];
+  const head = B(pose.head), hip = B(pose.hip);
+  const knee = legsFixed ? pose.knee : B(pose.knee);
+  const foot = legsFixed ? pose.foot : B(pose.foot);
   const Pt = (base, off) => [base[0]+pose.fwd[0]*off[0]+pose.up[0]*off[1], base[1]+pose.fwd[1]*off[0]+pose.up[1]*off[1]];
   const Ln = (a,b,w,c,o) => `<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="${c||FIG}" stroke-width="${w||5}" stroke-linecap="round"${o?` opacity="${o}"`:''}/>`;
   const Ci = (p,r,c,o) => `<circle cx="${p[0]}" cy="${p[1]}" r="${r}" fill="${c||FIG}"${o?` opacity="${o}"`:''}/>`;
-  const sh = pose.sh;
+  const sh = B(pose.sh);
   let elbow = Pt(sh, arm.e), hand = Pt(sh, arm.h);
-  if (pose.hang) { elbow = [sh[0]+6, 52]; hand = [sh[0]+8, 32]; }
+  if (pose.hang) { elbow = [sh[0]+6, (sh[1]+32)/2]; hand = [pose.sh[0]+8, 32]; }
   let s = `<line x1="20" y1="150" x2="200" y2="150" stroke="rgba(127,127,127,.25)" stroke-width="2"/>` + pose.bench;
   if (eq === 'Cable') { const py = hand[1] < sh[1] ? 32 : 144; s += `<rect x="186" y="24" width="8" height="126" rx="3" fill="${BEN}"/>` + Ci([190,py],4,EQC) + Ln(hand,[190,py],2.5,EQC); }
   if (eq === 'Machine') { s += `<rect x="48" y="26" width="7" height="124" rx="3" fill="${BEN}"/><rect x="48" y="26" width="60" height="7" rx="3" fill="${BEN}"/>` + Ln([104,32],hand,3,BEN); }
   if (eq === 'Smith Machine') { s += `<rect x="60" y="22" width="5" height="128" fill="${BEN}"/><rect x="158" y="22" width="5" height="128" fill="${BEN}"/>` + Ln([62,hand[1]],[161,hand[1]],4,EQC) + Ci([70,hand[1]],7,EQC) + Ci([152,hand[1]],7,EQC); }
   const e2 = [elbow[0]-7, elbow[1]+3], h2 = [hand[0]-7, hand[1]+3];
   s += Ln(sh,e2,5,FIG,.3) + Ln(e2,h2,5,FIG,.3) + Ci(h2,3,FIG,.3);
-  s += Ln(pose.sh,pose.hip,7) + Ln(pose.hip,pose.knee,5.5) + Ln(pose.knee,pose.foot,5.5) + Ci(pose.foot,3.5) + Ln(pose.sh,pose.head,4) + Ci(pose.head,8);
+  s += Ln(sh,hip,7) + Ln(hip,knee,5.5) + Ln(knee,foot,5.5) + Ci(foot,3.5) + Ln(sh,head,4) + Ci(head,8);
   s += Ln(sh,elbow,5) + Ln(elbow,hand,5) + Ci(hand,3.5);
   if (eq === 'Barbell') {
     if (move === 'Squat' || move === 'Lunge') s += Ci([sh[0],sh[1]-4],8,EQC,.9) + Ln([sh[0]-16,sh[1]-4],[sh[0]+16,sh[1]-4],4,EQC);
@@ -3857,6 +4028,51 @@ function builderFigureSVG(eq, pos, move) {
   if (eq === 'Plate') s += Ci(hand,10,EQC,.92) + Ci(hand,4,'#121508');
   if (eq === 'Band') { const a = [pose.foot[0],148]; s += `<path d="M ${hand[0]} ${hand[1]} Q ${(hand[0]+a[0])/2+9} ${(hand[1]+a[1])/2} ${a[0]} ${a[1]}" stroke="${EQC}" stroke-width="3" fill="none" stroke-dasharray="5 4"/>`; }
   return s;
+}
+
+/* Looping animated figure for the wiki sheet — re-renders builderFigureSVG
+   with a phase easing 0→1→0, one rep every ~2.2 s with a pause at the peak. */
+function AnimatedFigure({ eq, pos, move }) {
+  const [t, setT] = useState(1);
+  useEffect(() => {
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    let raf;
+    const start = performance.now();
+    const ease = x => x < .5 ? 2*x*x : 1 - Math.pow(-2*x + 2, 2) / 2;
+    const loop = now => {
+      const ph = ((now - start) % 2200) / 2200;
+      const lin = ph < .4 ? ph / .4 : ph < .55 ? 1 : ph < .95 ? 1 - (ph - .55) / .4 : 0;
+      setT(ease(lin));
+      raf = requestAnimationFrame(loop);
+    };
+    raf = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(raf);
+  }, [eq, pos, move]);
+  return <svg viewBox="0 0 220 170" dangerouslySetInnerHTML={{ __html: builderFigureSVG(eq, pos, move, t) }} />;
+}
+
+/* The VibeLift wiki bottom sheet — replaces the old external MuscleWiki links. */
+function WikiSheet({ exercise, onClose }) {
+  const info = wikiInfo(exercise);
+  if (!info) return null;
+  return (
+    <FixedLayer>
+      <div className="wiki-dim" onClick={onClose} />
+      <div className="wiki-sheet" role="dialog" aria-label={`How to do ${exercise.name}`}>
+        <div className="wiki-grab" />
+        <div className="wiki-title">{exercise.name.toUpperCase()}</div>
+        <div className="wiki-stage"><AnimatedFigure eq={info.eq} pos={info.pos} move={info.move} /></div>
+        <div className="wiki-target">
+          <span className="wiki-target-lbl">Target</span>
+          {info.tgt.map(m => <span key={m} className="wiki-chip">{m}</span>)}
+        </div>
+        <div className="wiki-steps">
+          {info.steps.map((st, i) => <div key={i} className="wiki-step"><b>{i + 1}</b><span>{st}</span></div>)}
+        </div>
+        <button className="btn-pink wiki-done" onClick={onClose}>Got it</button>
+      </div>
+    </FixedLayer>
+  );
 }
 
 function ExerciseBuilder({ group, gl, onSave, onCancel }) {
@@ -3938,8 +4154,9 @@ function ExerciseBuilder({ group, gl, onSave, onCancel }) {
 /* ═══════════════════════════════════════
    GROUP DETAIL SCREEN
 ═══════════════════════════════════════ */
-function GroupDetailScreen({ group, onBack, onPick, onFinish, completedIds, partialMap = {}, history, allExercises, onSaveCustom, planMode = false, planIds = [], onTogglePlan, onSavePlan }) {
+function GroupDetailScreen({ group, onBack, onPick, onFinish, completedIds, partialMap = {}, history, allExercises, onSaveCustom, planMode = false, planIds = [], onTogglePlan, onSavePlan, weightUnit = 'kg' }) {
   const [showAddCustom, setShowAddCustom] = useState(false);
+  const [wikiEx, setWikiEx] = useState(null);
   const meta = GROUP_META[group];
   const exsRaw = (allExercises || DB).filter(e => e.group === group);
   // A planned workout floats its exercises to the top of the list.
@@ -3986,17 +4203,17 @@ function GroupDetailScreen({ group, onBack, onPick, onFinish, completedIds, part
           return (
             <div key={ex.id} className={`ex-row-card ${done ? 'done-row' : ''}`} onClick={() => planMode ? onTogglePlan(ex) : onPick(ex)}>
               <div className="ex-row-icon">
-                <ExIcon id={ex.id} size={28} color={done ? '#0daa74' : meta.color} img={ex.img || null} />
+                <ExIcon id={ex.id} size={28} color={done ? '#0daa74' : meta.color} img={ex.img || null} builder={ex.builder || null} />
               </div>
               <div className="ex-row-info">
                 <div className="ex-row-name">{ex.name}</div>
-                {pb > 0 && <div className="ex-row-pb">Best: {pb}</div>}
+                {pb > 0 && <div className="ex-row-pb">Best: {kgToDisp(pb, weightUnit)} {weightUnit}</div>}
                 {ex.custom && <span className="ex-custom-tag">Custom</span>}
                 {!planMode && inPlan && !completedIds.includes(ex.id) && <span className="ex-plan-tag">Planned</span>}
               </div>
-              {WIKI[ex.id] && (
+              {wikiInfo(ex) && (
                 <button className="ex-info-btn" aria-label={`How to do ${ex.name}`}
-                  onClick={e => { e.stopPropagation(); window.open(WIKI[ex.id], '_blank', 'noopener'); }}>i</button>
+                  onClick={e => { e.stopPropagation(); setWikiEx(ex); }}>i</button>
               )}
               {done && <div className="ex-row-check">✓</div>}
               {!done && partialSets > 0 && (
@@ -4033,6 +4250,7 @@ function GroupDetailScreen({ group, onBack, onPick, onFinish, completedIds, part
           <button className="btn-pink" onClick={onFinish}>Finish Workout</button>
         </div>
       )}
+      {wikiEx && <WikiSheet exercise={wikiEx} onClose={() => setWikiEx(null)} />}
     </div>
   );
 }
@@ -4086,6 +4304,7 @@ function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, hist
   const [reps, setReps] = useState('');
   const [allDone, setAllDone] = useState(false);
   const [weightType, setWeightType] = useState(null); // null | 'free' | 'barbell'
+  const [showWiki, setShowWiki] = useState(false);
   const [platesPerSide, setPlatesPerSide] = useState([]);
   const [addBothSides, setAddBothSides] = useState(true);
   const [barType, setBarType] = useState('straight'); // 'straight' | 'ez'
@@ -4110,7 +4329,7 @@ function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, hist
 
   useEffect(() => {
     if (lastSets && lastSets[0]) {
-      if (!lastSets[0].bw) setWeight(String(lastSets[0].weight));
+      if (!lastSets[0].bw) setWeight(String(kgToDisp(lastSets[0].weight, unit)));
       setReps(String(lastSets[0].reps));
     }
     if (exercise.name && exercise.name.toLowerCase().includes('ez bar')) setBarType('ez');
@@ -4131,7 +4350,7 @@ function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, hist
       setWarmup(savedEntry.warmup || 'done');
       setWeightType(savedEntry.weightType || null);
       const last = savedEntry.sets[savedEntry.sets.length - 1];
-      if (last && !last.bw) setWeight(String(last.weight));
+      if (last && !last.bw) setWeight(String(kgToDisp(last.weight, unit)));
       if (last) setReps(String(last.reps));
       if (savedEntry.sets.length >= planned) setAllDone(true);
     }
@@ -4174,7 +4393,7 @@ function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, hist
       <div className="last-time">
         <span className="last-time-lbl">Last time</span>
         <span className="last-time-val">
-          {prev.bw ? 'BW' : `${prev.weight} ${unit}`} × {prev.reps}
+          {prev.bw ? 'BW' : `${kgToDisp(prev.weight, unit)} ${unit}`} × {prev.reps}
         </span>
         {better && <span className="last-time-up">up on last week</span>}
       </div>
@@ -4353,10 +4572,10 @@ function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, hist
       s = { setNum: currentSet, weight: 0, reps: parseInt(reps), bw: true };
     } else if (weightType === 'barbell') {
       if (!reps) return;
-      s = { setNum: currentSet, weight: totalBarbellWeight, reps: parseInt(reps) };
+      s = { setNum: currentSet, weight: dispToKg(totalBarbellWeight, unit), reps: parseInt(reps) };
     } else {
       if (!weight || !reps) return;
-      s = { setNum: currentSet, weight: parseFloat(weight), reps: parseInt(reps) };
+      s = { setNum: currentSet, weight: dispToKg(parseFloat(weight), unit), reps: parseInt(reps) };
     }
     if (e && e.currentTarget) {
       const r = e.currentTarget.getBoundingClientRect();
@@ -4379,7 +4598,7 @@ function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, hist
       setCurrentSet(nextSet);
       const prev = lastSets && lastSets[nextSet - 1];
       if (prev) {
-        if (!prev.bw && weightType !== 'barbell') setWeight(String(prev.weight));
+        if (!prev.bw && weightType !== 'barbell') setWeight(String(kgToDisp(prev.weight, unit)));
         setReps(String(prev.reps));
       }
       if (restSecs !== 'off') {
@@ -4404,7 +4623,7 @@ function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, hist
     stopRestAlarm();
     setRest(null);
     if (removed) {
-      if (!removed.bw && weightType !== 'barbell') setWeight(String(removed.weight));
+      if (!removed.bw && weightType !== 'barbell') setWeight(String(kgToDisp(removed.weight, unit)));
       setReps(String(removed.reps));
     }
     vibe(20);
@@ -4432,20 +4651,20 @@ function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, hist
         : meta.img ? { backgroundColor: '#111' } : { background: meta.grad }}>
         {meta.img && <div style={{ position:'absolute', inset:0, background:'rgba(0,0,0,0.42)', zIndex:0 }} />}
         <button className="log-hero-back" onClick={handleBack}>←</button>
-        {WIKI[exercise.id] && (
+        {wikiInfo(exercise) && (
           <button className="log-hero-wiki" aria-label={`How to do ${exercise.name}`}
-            onClick={() => window.open(WIKI[exercise.id], '_blank', 'noopener')}>i</button>
+            onClick={() => setShowWiki(true)}>i</button>
         )}
         {!exercise.img && (
           <div className="log-hero-bg-icon">
-            <ExIcon id={exercise.id} size={160} color="white" />
+            <ExIcon id={exercise.id} size={160} color="white" builder={exercise.builder || null} />
           </div>
         )}
         <div className="log-hero-content">
           <div className="log-hero-eyebrow">{exercise.gl}</div>
           <div className="log-hero-name">{exercise.name}</div>
           <div className="log-hero-pb">
-            {pb > 0 ? <>Personal best: <strong>{pb} {unit}</strong>{trend === 'up' && ' ↑'}{trend === 'down' && ' ↓'}</> : 'First time logging this'}
+            {pb > 0 ? <>Personal best: <strong>{kgToDisp(pb, unit)} {unit}</strong>{trend === 'up' && ' ↑'}{trend === 'down' && ' ↓'}</> : 'First time logging this'}
             {isNewPR && <span className="pr-glow">New PR</span>}
           </div>
         </div>
@@ -4482,6 +4701,8 @@ function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, hist
           </div>
         </div>
 
+        {showWiki && <WikiSheet exercise={exercise} onClose={() => setShowWiki(false)} />}
+
         {/* Rest timer — floating, always on screen, drag it wherever you like */}
         {rest && !allDone && (
           <FixedLayer>
@@ -4501,6 +4722,10 @@ function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, hist
               {rest.left > 0 && <span className="rest-float-time">{Math.floor(rest.left / 60)}:{String(rest.left % 60).padStart(2, '0')}</span>}
               {rest.left > 0 && (
                 <>
+                  <button className="rest-btn" onClick={() => {
+                    if (rest.left <= 30) { stopRestAlarm(); setRest(null); return; }
+                    setRest(r => { if (!r) return r; const left = r.left - 30; startRestAlarm(left); return { ...r, endAt: r.endAt - 30000, total: Math.max(r.total - 30, left), left }; });
+                  }}>−30s</button>
                   <button className="rest-btn" onClick={() => setRest(r => { if (!r) return r; const left = r.left + 30; startRestAlarm(left); return { ...r, endAt: r.endAt + 30000, total: r.total + 30, left }; })}>+30s</button>
                   <button className="rest-btn" onClick={() => { stopRestAlarm(); setRest(null); }} aria-label="Dismiss rest timer">✕</button>
                 </>
@@ -4736,7 +4961,7 @@ function LogScreen({ exercise, savedEntry, onBack, onComplete, onSetLogged, hist
               <div key={i} className="prev-set-row">
                 <span className="prev-set-lbl">Set {s.setNum}</span>
                 <span className="prev-set-val">
-                  {s.bw ? 'BW' : `${s.weight} ${unit}`} × {s.reps} reps
+                  {s.bw ? 'BW' : `${kgToDisp(s.weight, unit)} ${unit}`} × {s.reps} reps
                   {!s.bw && s.weight >= maxLogged && isNewPR && <span className="pr-badge">PR</span>}
                 </span>
                 <button className="prev-set-undo" onClick={() => undoSet(i)}
@@ -4816,7 +5041,9 @@ function CelebrationOverlay({ workout, streak, onDone, weightUnit = 'kg' }) {
   const totalVol  = workout.exercises.reduce((s,e)=>e.sets.reduce((a,t)=>a+t.weight*t.reps,s),0);
   const exCount = Math.round(useCountUp(workout.exercises.length, 900));
   const setCount = Math.round(useCountUp(totalSets, 1200));
-  const volCount = Math.round(useCountUp(totalVol, 1500));
+  const dispVol  = weightUnit === 'lb' ? Math.round(totalVol / KG_PER_LB) : totalVol;
+  const volDiv   = weightUnit === 'lb' ? 2000 : 1000;
+  const volCount = Math.round(useCountUp(dispVol, 1500));
   const confetti = useMemo(() => {
     const colors = ['#c8f235', '#0daa74', '#ffd700', '#ff8c42', '#f0f5d8'];
     return Array.from({ length: 40 }, (_, i) => ({
@@ -4841,7 +5068,7 @@ function CelebrationOverlay({ workout, streak, onDone, weightUnit = 'kg' }) {
       <div className="celebrate-stats">
         <div className="celebrate-stat"><div className="celebrate-stat-v">{exCount}</div><div className="celebrate-stat-l">Exercises</div></div>
         <div className="celebrate-stat"><div className="celebrate-stat-v">{setCount}</div><div className="celebrate-stat-l">Sets</div></div>
-        <div className="celebrate-stat"><div className="celebrate-stat-v">{totalVol >= 1000 ? (volCount/1000).toFixed(1)+'t' : volCount+weightUnit}</div><div className="celebrate-stat-l">Volume</div></div>
+        <div className="celebrate-stat"><div className="celebrate-stat-v">{dispVol >= volDiv ? (volCount/volDiv).toFixed(1)+'t' : volCount+weightUnit}</div><div className="celebrate-stat-l">Volume</div></div>
       </div>
       {streak > 0 && <div className="celebrate-streak">Day {streak} Streak</div>}
       <div className="celebrate-hint">tap anywhere to continue</div>
@@ -4860,7 +5087,7 @@ function SummaryScreen({ workout, baseHistory, onDone, weightUnit = 'kg' }) {
         <div className="sum-stats">
           <div className="sum-stat"><div className="sum-stat-v">{workout.exercises.length}</div><div className="sum-stat-l">Exercises</div></div>
           <div className="sum-stat"><div className="sum-stat-v">{totalSets}</div><div className="sum-stat-l">Sets</div></div>
-          <div className="sum-stat"><div className="sum-stat-v">{totalVol >= 1000 ? (totalVol/1000).toFixed(1)+'t' : totalVol+weightUnit}</div><div className="sum-stat-l">Volume</div></div>
+          <div className="sum-stat"><div className="sum-stat-v">{fmtVol(totalVol, weightUnit)}</div><div className="sum-stat-l">Volume</div></div>
         </div>
       </div>
       <div className="sum-body">
@@ -4886,7 +5113,7 @@ function SummaryScreen({ workout, baseHistory, onDone, weightUnit = 'kg' }) {
               <div className="sum-ex-hdr">
                 {ex.sessionAdded
                   ? <div style={{ width:30, height:30, borderRadius:8, background:meta.color+'22', display:'flex', alignItems:'center', justifyContent:'center', fontSize:9, fontWeight:800, color:meta.color, textAlign:'center', lineHeight:1, flexShrink:0 }}>{ex.name.substring(0,3).toUpperCase()}</div>
-                  : <ExIcon id={ex.id} size={30} color={meta.color} img={ex.img || null} />}
+                  : <ExIcon id={ex.id} size={30} color={meta.color} img={ex.img || null} builder={ex.builder || null} />}
                 <div>
                   <div className="sum-ex-name">
                     {ex.name}
@@ -4901,7 +5128,7 @@ function SummaryScreen({ workout, baseHistory, onDone, weightUnit = 'kg' }) {
                   <div key={j} className="sum-set-row">
                     <span className="sum-set-n">#{s.setNum}</span>
                     <span className="sum-set-w" style={{ color: s.bw ? 'var(--pink)' : (s.weight === maxW && isNewPR ? 'var(--pink)' : 'var(--text)') }}>
-                      {s.bw ? 'BW' : `${s.weight} ${weightUnit}`}
+                      {s.bw ? 'BW' : `${kgToDisp(s.weight, weightUnit)} ${weightUnit}`}
                     </span>
                     <span className="sum-set-r">{s.reps} reps</span>
                   </div>
@@ -5394,11 +5621,11 @@ function App() {
       )}
 
       {!splash && screen === 'group-select' && (
-        <GroupSelectScreen onBack={backFromGroupSelect} onSelectGroup={selectGroup} onFinish={finishWorkout} completedIds={doneIds} partialMap={partialMap} allExercises={allExercises} planIds={(current && current.planIds) || []} />
+        <GroupSelectScreen onBack={backFromGroupSelect} onSelectGroup={selectGroup} onFinish={finishWorkout} completedIds={doneIds} partialMap={partialMap} allExercises={allExercises} planIds={(current && current.planIds) || []} weightUnit={weightUnit} />
       )}
 
       {!splash && screen === 'group-detail' && activeGroup && (
-        <GroupDetailScreen group={activeGroup} onBack={backFromGroupDetail} onPick={pickExercise} onFinish={finishWorkout} completedIds={doneIds} partialMap={partialMap} history={history} allExercises={allExercises} onSaveCustom={ex => onSaveCustomEx([...customEx, ex])} planIds={(current && current.planIds) || []} />
+        <GroupDetailScreen group={activeGroup} onBack={backFromGroupDetail} onPick={pickExercise} onFinish={finishWorkout} completedIds={doneIds} partialMap={partialMap} history={history} allExercises={allExercises} onSaveCustom={ex => onSaveCustomEx([...customEx, ex])} planIds={(current && current.planIds) || []} weightUnit={weightUnit} />
       )}
 
       {!splash && screen === 'log' && activeEx && (
