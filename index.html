@@ -2308,6 +2308,20 @@ const DB = [
   { group:'core', gl:'Core', eq:'cable',      id:'cable_crunch',      name:'Cable Crunch', img:'Cable Crunch.png' },
   { group:'core', gl:'Core', eq:'bodyweight', id:'dead_bug',          name:'Dead Bug', img:'Dead Bug.png' },
   { group:'core', gl:'Core', eq:'bodyweight', id:'side_plank',        name:'Side Plank', img:'Side Plank.png' },
+
+  // ── added 2026-09-16 (library expansion) ──
+  { group:'chest', gl:'Chest', eq:'dumbbell', id:'decline_db_press', name:'Decline Dumbbell Press', img:'Decline Dumbbell Press.png' },
+  { group:'chest', gl:'Chest', eq:'dumbbell', id:'decline_db_fly', name:'Decline Dumbbell Fly', img:'Decline Dumbbell Fly.png' },
+  { group:'chest', gl:'Chest', eq:'bodyweight', id:'decline_pushup', name:'Decline Push-Up', img:'Decline Push-Up.png' },
+  { group:'chest', gl:'Chest', eq:'bodyweight', id:'wide_pushup', name:'Wide Push-Up', img:'Wide Push-Up.png' },
+  { group:'chest', gl:'Chest', eq:'bodyweight', id:'knee_pushup', name:'Knee Push-Up', img:'Knee Push-Up.png' },
+  { group:'chest', gl:'Chest', eq:'bodyweight', id:'plyo_pushup', name:'Plyometric Push-Up', img:'Plyometric Push-Up.png' },
+  { group:'chest', gl:'Chest', eq:'bodyweight', id:'archer_pushup', name:'Archer Push-Up', img:'Archer Push-Up.png' },
+  { group:'chest', gl:'Chest', eq:'cable', id:'high_low_cable_fly', name:'High-to-Low Cable Fly', img:'High-to-Low Cable Fly.png' },
+  { group:'chest', gl:'Chest', eq:'cable', id:'single_arm_cable_fly', name:'Single-Arm Cable Fly', img:'Single-Arm Cable Fly.png' },
+  { group:'chest', gl:'Chest', eq:'cable', id:'cable_pullover', name:'Cable Pullover', img:'Cable Pullover.png' },
+  { group:'chest', gl:'Chest', eq:'barbell', id:'barbell_pullover', name:'Barbell Pullover', img:'Barbell Pullover.png' },
+  { group:'chest', gl:'Chest', eq:'barbell', id:'reverse_grip_bench', name:'Reverse-Grip Bench Press', img:'Reverse-Grip Bench Press.png' },
 ];
 
 /* ═══════════════════════════════════════
@@ -2426,6 +2440,19 @@ const WIKI_DATA = {
   cable_crunch:          { f:['Cable','Kneeling','Pull'], t:['Abs'], s:['Kneel below a high pulley, rope held beside your head.','Crunch your ribs toward your hips against the cable.','Return slowly until your torso is tall again.'] },
   dead_bug:              { f:['Bodyweight','Lying Flat','Raise'], t:['Core'], s:['Lie on your back, arms up, knees bent over your hips.','Lower one arm and the opposite leg toward the floor.','Return and switch sides — lower back pressed down throughout.'] },
   side_plank:            { f:['Bodyweight','Lying Flat','Hold'], t:['Obliques','Core'], s:['Lie on your side, forearm under your shoulder.','Lift your hips so your body forms one straight line.','Hold, then switch sides.'] },
+  // ── added 2026-09-16 (library expansion) ──
+  decline_db_press: { f:['Dumbbell','Decline','Press'], t:['Lower chest','Triceps'], s:['Hook your feet in and lie back with a dumbbell at each side of your lower chest.','Press both up until your arms are straight over your chest.','Lower slowly until you feel a stretch, elbows about 45°.'] },
+  decline_db_fly: { f:['Dumbbell','Decline','Fly'], t:['Lower chest'], s:['Lie back on the decline bench, dumbbells over your chest, palms facing each other.','Open your arms wide with a soft elbow bend until you feel a stretch.','Hug the weights back together over your lower chest.'] },
+  decline_pushup: { f:['Bodyweight','Decline','Press'], t:['Upper chest','Front delts','Triceps'], s:['Feet up on a bench, hands under your shoulders on the floor.','Lower your forehead toward the floor, body rigid.','Press back up to straight arms, core braced the whole time.'] },
+  wide_pushup: { f:['Bodyweight','Lying Flat','Press'], t:['Chest','Front delts'], s:['Hands well outside your shoulders, fingers slightly turned out.','Lower until your chest is just above the floor.','Push up, squeezing your chest as your arms straighten.'] },
+  knee_pushup: { f:['Bodyweight','Lying Flat','Press'], t:['Chest','Triceps'], s:['Knees on the mat, hands under your shoulders, hips in line with your body.','Lower your chest toward the floor, elbows about 45°.','Press back up to straight arms without piking at the hips.'] },
+  plyo_pushup: { f:['Bodyweight','Lying Flat','Press'], t:['Chest','Triceps','Core'], s:['Start in a normal push-up, body rigid.','Lower fast, then drive up hard enough for your hands to leave the floor.','Land with soft elbows and go straight into the next rep.'] },
+  archer_pushup: { f:['Bodyweight','Lying Flat','Press'], t:['Chest','Triceps','Core'], s:['Hands very wide, body in one line.','Lower toward one hand, keeping the other arm straight out to the side.','Push back to center, then repeat to the other side.'] },
+  high_low_cable_fly: { f:['Cable','Standing','Fly'], t:['Lower chest'], s:['Set both pulleys high, step forward with a slight lean.','Sweep the handles down and together in front of your hips, elbows soft.','Squeeze your lower chest, then open back up under control.'] },
+  single_arm_cable_fly: { f:['Cable','Standing','Fly'], t:['Chest'], s:['Stand side-on to one tower, handle at chest height in your far hand.','Sweep it across your body to the centre of your chest.','Return slowly, keeping your torso still. Switch sides each set.'] },
+  cable_pullover: { f:['Cable','Standing','Pull'], t:['Chest','Lats'], s:['Face the tower, straight bar from the high pulley, arms nearly straight.','Pull the bar in an arc down to your thighs with a slight forward lean.','Let it rise back overhead slowly, ribs down.'] },
+  barbell_pullover: { f:['Barbell','Lying Flat','Pull'], t:['Chest','Lats'], s:['Lie flat holding a light bar over your chest with straight arms.','Lower it back behind your head until you feel a stretch.','Pull it back over your chest without arching your lower back.'] },
+  reverse_grip_bench: { f:['Barbell','Lying Flat','Press'], t:['Upper chest','Triceps'], s:['Grip the bar underhand, a little wider than shoulders.','Lower to your lower chest with elbows tucked.','Press up and slightly back to lockout.'] },
 };
 
 /* Generic how-to for user-built custom exercises, assembled from their

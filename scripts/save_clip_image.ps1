@@ -6,6 +6,13 @@ Add-Type -AssemblyName System.Drawing
 $img = [System.Windows.Forms.Clipboard]::GetImage()
 if ($null -eq $img) { Write-Output "ERROR no image on clipboard"; exit 1 }
 $root = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
+# Duplicate guard: if this is the same bitmap we saved last time, the Copy image click failed.
+$ms = New-Object System.IO.MemoryStream
+$img.Save($ms, [System.Drawing.Imaging.ImageFormat]::Png)
+$hash = [System.BitConverter]::ToString([System.Security.Cryptography.MD5]::Create().ComputeHash($ms.ToArray()))
+$hashFile = Join-Path $PSScriptRoot ".last_clip_hash"
+if ((Test-Path $hashFile) -and ((Get-Content $hashFile -Raw).Trim() -eq $hash)) { Write-Output "ERROR clipboard still holds the previous image (Copy image failed), nothing saved"; exit 1 }
+Set-Content -Path $hashFile -Value $hash
 $arch = Join-Path $root "New lustrations\_gemini_v2"
 New-Item -ItemType Directory -Force $arch | Out-Null
 $img.Save((Join-Path $arch ($Name + ".png")), [System.Drawing.Imaging.ImageFormat]::Png)
