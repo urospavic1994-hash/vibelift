@@ -2337,6 +2337,24 @@ const DB = [
   { group:'chest', gl:'Chest', eq:'barbell', id:'kneeling_landmine_press', name:'Kneeling Landmine Press', img:'Kneeling Landmine Press.png' },
   { group:'chest', gl:'Chest', eq:'plate', id:'svend_press', name:'Svend Press', img:'Svend Press.png' },
   { group:'chest', gl:'Chest', eq:'dumbbell', id:'incline_db_pullover', name:'Incline Dumbbell Pullover', img:'Incline Dumbbell Pullover.png' },
+
+  // ── added 2026-09-17 (library expansion) ──
+  { group:'back', gl:'Back', eq:'cable', id:'wide_grip_pulldown', name:'Wide-Grip Lat Pulldown', img:'Wide-Grip Lat Pulldown.png' },
+  { group:'back', gl:'Back', eq:'cable', id:'reverse_grip_pulldown', name:'Reverse-Grip Lat Pulldown', img:'Reverse-Grip Lat Pulldown.png' },
+  { group:'back', gl:'Back', eq:'cable', id:'single_arm_pulldown', name:'Single-Arm Lat Pulldown', img:'Single-Arm Lat Pulldown.png' },
+  { group:'back', gl:'Back', eq:'machine', id:'plate_loaded_pulldown', name:'Plate-Loaded Lat Pulldown', img:'Plate-Loaded Lat Pulldown.png' },
+  { group:'back', gl:'Back', eq:'bodyweight', id:'wide_grip_pullup', name:'Wide-Grip Pull-Up', img:'Wide-Grip Pull-Up.png' },
+  { group:'back', gl:'Back', eq:'bodyweight', id:'neutral_grip_pullup', name:'Neutral-Grip Pull-Up', img:'Neutral-Grip Pull-Up.png' },
+  { group:'back', gl:'Back', eq:'bodyweight', id:'weighted_pullup', name:'Weighted Pull-Up', img:'Weighted Pull-Up.png' },
+  { group:'back', gl:'Back', eq:'machine', id:'assisted_pullup', name:'Assisted Pull-Up Machine', img:'Assisted Pull-Up Machine.png' },
+  { group:'back', gl:'Back', eq:'bodyweight', id:'negative_pullup', name:'Negative Pull-Up', img:'Negative Pull-Up.png' },
+  { group:'back', gl:'Back', eq:'bodyweight', id:'scapular_pullup', name:'Scapular Pull-Up', img:'Scapular Pull-Up.png' },
+  { group:'back', gl:'Back', eq:'barbell', id:'underhand_barbell_row', name:'Underhand Barbell Row', img:'Underhand Barbell Row.png' },
+  { group:'back', gl:'Back', eq:'machine', id:'smith_row', name:'Smith Machine Row', img:'Smith Machine Row.png' },
+  { group:'back', gl:'Back', eq:'dumbbell', id:'db_bent_over_row', name:'Dumbbell Bent-Over Row', img:'Dumbbell Bent-Over Row.png' },
+  { group:'back', gl:'Back', eq:'barbell', id:'seal_row', name:'Seal Row', img:'Seal Row.png' },
+  { group:'back', gl:'Back', eq:'dumbbell', id:'renegade_row', name:'Renegade Row', img:'Renegade Row.png' },
+  { group:'back', gl:'Back', eq:'barbell', id:'landmine_row', name:'Landmine Row', img:'Landmine Row.png' },
 ];
 
 /* ═══════════════════════════════════════
@@ -2482,6 +2500,23 @@ const WIKI_DATA = {
   kneeling_landmine_press: { f:['Barbell','Kneeling','Press'], t:['Upper chest','Front delts','Triceps'], s:['One knee down, bar end at your shoulder, core braced.','Press it up and forward until your arm is long.','Lower under control. Switch sides each set.'] },
   svend_press: { f:['Plate','Standing','Press'], t:['Chest'], s:['Squeeze one plate flat between your palms at chest height.','Press it straight out in front until your arms are long, still squeezing.','Pull it back to your chest slowly. Light plate, hard squeeze.'] },
   incline_db_pullover: { f:['Dumbbell','Incline','Pull'], t:['Chest','Lats'], s:['Lie back on the incline holding one dumbbell over your chest with both hands.','Lower it back behind your head with nearly straight arms.','Pull it back over your chest, ribs down.'] },
+  // ── added 2026-09-17 (library expansion) ──
+  wide_grip_pulldown: { f:['Cable','Seated','Pull'], t:['Lats','Upper back'], s:['Grip the long bar well outside your shoulders, thighs under the pads.','Pull the bar to your upper chest, elbows driving down and back.','Let it rise slowly until your arms are straight and lats stretched.'] },
+  reverse_grip_pulldown: { f:['Cable','Seated','Pull'], t:['Lats','Biceps'], s:['Grip the bar underhand at shoulder width.','Pull it to your chest, elbows tucked close to your sides.','Control the way up to a full stretch.'] },
+  single_arm_pulldown: { f:['Cable','Seated','Pull'], t:['Lats'], s:['One handle from the high pulley, sit tall.','Pull the handle down to your side, elbow toward your hip.','Let it rise slowly, feel the lat stretch. Switch arms each set.'] },
+  plate_loaded_pulldown: { f:['Machine','Seated','Pull'], t:['Lats','Upper back'], s:['Thighs locked under the pads, grip both overhead handles.','Pull both handles down to your shoulders, chest up.','Return slowly until your arms are straight.'] },
+  wide_grip_pullup: { f:['Bodyweight','Hanging','Pull'], t:['Lats','Upper back'], s:['Hang from a wide overhand grip, shoulders pulled down.','Pull your chest toward the bar, elbows down and back.','Lower all the way to straight arms every rep.'] },
+  neutral_grip_pullup: { f:['Bodyweight','Hanging','Pull'], t:['Lats','Biceps'], s:['Hang from the parallel handles, palms facing each other.','Pull up until your chin clears the handles.','Lower under control to a full hang.'] },
+  weighted_pullup: { f:['Bodyweight','Hanging','Pull'], t:['Lats','Upper back','Biceps'], s:['Plate on a dip belt, hang with a shoulder-width overhand grip.','Pull until your chin is over the bar, no swinging.','Lower slowly to straight arms.'] },
+  assisted_pullup: { f:['Machine','Kneeling','Pull'], t:['Lats','Upper back'], s:['Kneel on the pad, grip the wide handles overhead.','Pull yourself up until your chin passes your hands.','Lower slowly. Less assist weight = harder.'] },
+  negative_pullup: { f:['Bodyweight','Hanging','Pull'], t:['Lats','Upper back','Biceps'], s:['Jump or step so your chin starts above the bar.','Lower yourself as slowly as you can, aiming for 3 to 5 seconds.','Reset at the bottom and repeat.'] },
+  scapular_pullup: { f:['Bodyweight','Hanging','Pull'], t:['Lats','Upper back'], s:['Hang with straight arms, relaxed shoulders.','Without bending your elbows, pull your shoulder blades down so your body rises a few centimetres.','Hold a second, then relax back into the hang.'] },
+  underhand_barbell_row: { f:['Barbell','Bent-Over','Row'], t:['Lats','Biceps','Upper back'], s:['Hinge to about 45°, underhand grip at shoulder width.','Row the bar to your lower stomach, elbows close to your sides.','Lower under control without rounding your back.'] },
+  smith_row: { f:['Smith Machine','Bent-Over','Row'], t:['Upper back','Lats'], s:['Hinge over the bar, flat back, grip just outside your legs.','Row the bar to your stomach along the rails.','Lower slowly to straight arms.'] },
+  db_bent_over_row: { f:['Dumbbell','Bent-Over','Row'], t:['Upper back','Lats'], s:['Hinge to about 45° with a dumbbell in each hand.','Row both up to your ribs, elbows driving back.','Lower slowly, keep your back flat the whole set.'] },
+  seal_row: { f:['Barbell','Lying Flat','Row'], t:['Upper back','Lats'], s:['Lie face down on a high bench, bar hanging below at arm length.','Row the bar up until it touches the underside of the bench.','Lower all the way; no body English possible here.'] },
+  renegade_row: { f:['Dumbbell','Lying Flat','Row'], t:['Upper back','Core'], s:['High plank with a hand on each dumbbell, feet wide.','Row one dumbbell to your ribs without letting your hips twist.','Set it down, row the other side.'] },
+  landmine_row: { f:['Barbell','Bent-Over','Row'], t:['Lats','Upper back'], s:['Straddle the bar, hinge over it, V-handle under the collar.','Row the bar end to your chest, elbows back.','Lower under control, back flat.'] },
 };
 
 /* Generic how-to for user-built custom exercises, assembled from their
