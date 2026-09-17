@@ -33,7 +33,8 @@ VibeLift's reason to exist: **adapt to the real gym on the spot** — bench take
 |---|---|
 | Hosting | Vercel; start on free `*.vercel.app` subdomain, buy real domain before charging money |
 | Pricing | **$9.99/month, single plan, no free tier** |
-| Trial | 7 days, **no card required** |
+| Trial | **3 days** (changed by Uroš 17 Sep 2026, was 7), **no card required** |
+| Seller | Uroš personally, not Kos-komerc (17 Sep 2026). Payment + Google sign-in plan: `docs/PLAN-login-and-payments.md` |
 | Launch gate | **Full premium set live before anyone is charged**: login + sync + Mission Control + Smart Swap + rest timer + progress charts |
 | Payment rails | UNDECIDED — research task (see 5.1). Constraint: Uroš is in Serbia; Stripe does not onboard Serbian businesses. Merchant-of-record (Paddle / Lemon Squeezy / Polar) is the likely answer |
 | Distribution | Web + PWA first; app stores = open question, not blocking |

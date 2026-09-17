@@ -624,7 +624,8 @@
     .lg-input {
       width: 100%; padding: 16px; border-radius: var(--r-sm);
       border: 2px solid var(--border); background: var(--sfx); color: var(--text);
-      font-family: var(--fb); font-size: 17px; font-weight: 600;
+      /* 16px is the floor: iPhone Safari zooms the page when a focused input is smaller */
+      font-family: var(--fb); font-size: 16px; font-weight: 600;
       transition: border-color .15s;
     }
     .lg-input::placeholder { color: var(--text2); opacity: .55; }
@@ -657,6 +658,27 @@
     .lg-ghost:active { color: var(--text); background: rgba(255,255,255,.05); }
     .lg-fine { font-size: 12px; line-height: 1.55; color: var(--text2); text-align: center; }
     .lg-fine a { color: var(--text2); }
+    /* Google button — colours fixed by Google's branding rules (dark theme), not our tokens */
+    .lg-google {
+      width: 100%; padding: 15px; border-radius: var(--r-sm); cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      background: #131314; border: 1px solid #8E918F; color: #E3E3E3;
+      font-family: var(--fb); font-size: 16px; font-weight: 500;
+    }
+    [data-theme="light"] .lg-google { background: #FFFFFF; border-color: #747775; color: #1F1F1F; }
+    .lg-google:disabled { opacity: .6; }
+    .lg-google:active { filter: brightness(1.25); }
+    .lg-google svg { width: 20px; height: 20px; flex-shrink: 0; }
+    .lg-or {
+      display: flex; align-items: center; gap: 12px; margin: 2px 0;
+      font-size: 10px; font-weight: 800; letter-spacing: 1.6px; text-transform: uppercase; color: var(--text2);
+    }
+    .lg-or::before, .lg-or::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    .lg-line {
+      width: 100%; padding: 15px; border-radius: var(--r-sm); cursor: pointer;
+      background: transparent; border: 2px solid var(--border); color: var(--text);
+      font-family: var(--fd); font-size: 17px; font-weight: 800; letter-spacing: .6px;
+    }
 
     /* ─── EXERCISE BUILDER ─── */
     .builder-card {
@@ -3882,8 +3904,117 @@ async function verifyEmailCode(em, token) {
   return { data, err };
 }
 
+/* ── Google sign-in connector (optional — see docs/PLAN-login-and-payments.md §7) ──
+   The button exists only when ALL of these hold; otherwise the login screen is
+   exactly the email-code screen it was before:
+   1. GOOGLE_LOGIN_ON is true, or this device switched the preview on
+      (tap the VibeLift wordmark 5 times on the login screen);
+   2. Supabase reports the Google provider as enabled for this project.
+   Nothing here can block the email-code path. */
+const GOOGLE_LOGIN_ON = false;
+const GOOGLE_PREVIEW_KEY = 'vibelift_google_preview';
+const OAUTH_PENDING_KEY  = 'vibelift_oauth_pending';   // sessionStorage: set just before leaving for Google
+
+function googlePreviewOn() {
+  try { return localStorage.getItem(GOOGLE_PREVIEW_KEY) === '1'; } catch { return false; }
+}
+function oauthPending() {
+  try { return sessionStorage.getItem(OAUTH_PENDING_KEY) === '1'; } catch { return false; }
+}
+function clearOauthPending() {
+  try { sessionStorage.removeItem(OAUTH_PENDING_KEY); } catch {}
+}
+// Google refuses sign-in from browsers embedded inside other apps.
+function inAppBrowser() {
+  return /Instagram|FBAN|FBAV|FB_IAB|TikTok|musical_ly|BytedanceWebview|Snapchat|LinkedInApp|Line\//i
+    .test(navigator.userAgent || '');
+}
+// Asks Supabase whether the Google provider is switched on. Any failure → false.
+async function googleProviderEnabled() {
+  try {
+    const res = await fetch(SUPA_URL + '/auth/v1/settings', { headers: { apikey: SUPA_KEY } });
+    if (!res.ok) return false;
+    const s = await res.json();
+    return !!(s && s.external && s.external.google);
+  } catch { return false; }
+}
+// Supabase sends a failed Google round-trip back with error details in the URL.
+function readOauthError() {
+  try {
+    const q = new URLSearchParams(window.location.search);
+    const h = new URLSearchParams((window.location.hash || '').replace(/^#/, ''));
+    const desc = q.get('error_description') || h.get('error_description') || q.get('error') || h.get('error');
+    if (!desc) return '';
+    history.replaceState(null, '', window.location.pathname);
+    return desc.replace(/\+/g, ' ');
+  } catch { return ''; }
+}
+
+const GoogleG = () => (
+  <svg viewBox="0 0 48 48" aria-hidden="true">
+    <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+    <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+    <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+    <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+  </svg>
+);
+
 function LoginScreen({ onSignedIn, onSkip }) {
-  const [step, setStep]   = useState('email');  // email | code
+  const [step, setStep]   = useState('email');  // email | code | inapp
+  const [googleOk, setGoogleOk] = useState(false);
+  const [logoTaps, setLogoTaps] = useState(0);
+  const [copied, setCopied]     = useState(false);
+
+  // Connector check: flag (or this device's preview) AND provider enabled at Supabase
+  useEffect(() => {
+    if (!supa) return;
+    if (!GOOGLE_LOGIN_ON && !googlePreviewOn()) return;
+    let cancelled = false;
+    googleProviderEnabled().then(ok => { if (!cancelled) setGoogleOk(ok); });
+    return () => { cancelled = true; };
+  }, [logoTaps >= 5]);
+
+  // A Google round-trip that came back without a session: say why, keep email working
+  useEffect(() => {
+    const desc = readOauthError();
+    if (oauthPending() || desc) {
+      clearOauthPending();
+      setError("Google sign-in didn't finish" + (desc ? ' (' + desc + ')' : '') +
+        ". Nothing was changed. Try again, or use the email code below — it always works.");
+    }
+  }, []);
+
+  const tapCount = React.useRef(0);   // ref, not state: fast taps land in the same render
+  function tapLogo() {
+    tapCount.current += 1;
+    if (tapCount.current === 5) { try { localStorage.setItem(GOOGLE_PREVIEW_KEY, '1'); } catch {} }
+    setLogoTaps(tapCount.current);
+  }
+
+  async function google() {
+    if (busy) return;
+    if (inAppBrowser()) { setError(''); setStep('inapp'); return; }
+    setError(''); setBusy('google');
+    try { sessionStorage.setItem(OAUTH_PENDING_KEY, '1'); } catch {}
+    const { error: err } = await supa.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: window.location.origin + window.location.pathname,
+        queryParams: { prompt: 'select_account' },
+      }
+    });
+    // On success the browser is already leaving for Google; we only get here on failure.
+    if (err) {
+      clearOauthPending(); setBusy('');
+      setError("Couldn't open Google sign-in (" + (err.message || 'unknown error') + "). Check your connection and try again, or use the email code below.");
+    }
+  }
+
+  async function copyLink() {
+    try { await navigator.clipboard.writeText(window.location.origin + window.location.pathname); setCopied(true); }
+    catch { setCopied(false); setError('Copying was blocked by this browser. Type this address into Safari or Chrome instead: ' + window.location.host); }
+  }
+
   const [email, setEmail] = useState('');
   const [code, setCode]   = useState('');
   const [busy, setBusy]   = useState('');       // '' | 'sending' | 'verifying'
@@ -3958,8 +4089,17 @@ function LoginScreen({ onSignedIn, onSkip }) {
 
         {step === 'email' && (
           <>
-            <BrandWordmark size={34} className="lg-logo" />
+            <div className="lg-logo" onClick={tapLogo}><BrandWordmark size={34} /></div>
             <DailyQuoteCard />
+
+            {googleOk && (
+              <>
+                <button className="lg-google" onClick={google} disabled={!!busy}>
+                  <GoogleG />{busy === 'google' ? 'Opening Google…' : 'Continue with Google'}
+                </button>
+                <div className="lg-or">or</div>
+              </>
+            )}
 
             <label className="lg-label" htmlFor="lg-email">Email</label>
             <input
@@ -3971,12 +4111,12 @@ function LoginScreen({ onSignedIn, onSkip }) {
               onChange={e => { setEmail(e.target.value); setError(''); }}
               onKeyDown={e => { if (e.key === 'Enter') send(false); }}
             />
-            <div className="lg-hint">New or returning — we email you a sign-in code. No password.</div>
+            <div className="lg-hint">{googleOk ? 'Returning? Use the same email. No password.' : 'We email you a sign-in code. No password.'}</div>
 
             {error && <div className="lg-err">{error}</div>}
 
             <button className="btn-pink lg-cta" onClick={() => send(false)} disabled={!emailOk || busy === 'sending'}>
-              {busy === 'sending' ? <><span className="lg-spin" />Sending code…</> : 'Continue →'}
+              {busy === 'sending' ? <><span className="lg-spin" />Sending code…</> : 'Email me a code →'}
             </button>
 
             <button className="lg-ghost" onClick={skip}>Skip — use this phone only</button>
@@ -4010,6 +4150,19 @@ function LoginScreen({ onSignedIn, onSkip }) {
               {busy === 'sending' ? 'Sending…' : cooldown > 0 ? `Resend in ${cooldown}s` : 'Resend code'}
             </button>
             <button className="lg-ghost" onClick={() => { setStep('email'); setCode(''); setError(''); setCooldown(0); }} disabled={!!busy}>← Back</button>
+          </>
+        )}
+
+        {step === 'inapp' && (
+          <>
+            <div className="lg-title">Open in {/iPhone|iPad|iPod/i.test(navigator.userAgent) ? 'Safari' : 'Chrome'}</div>
+            <div className="lg-lede">Google does not allow sign-in from inside Instagram, TikTok or Facebook. Two ways forward:</div>
+
+            {error && <div className="lg-err">{error}</div>}
+
+            <button className="btn-pink lg-cta" onClick={copyLink}>{copied ? 'Link copied — paste it in your browser' : 'Copy link for my browser'}</button>
+            <button className="lg-line" onClick={() => { setStep('email'); setError(''); setCopied(false); }}>Use email code instead</button>
+            <div className="lg-hint">Or tap the ··· menu at the top of this screen and choose "Open in browser".</div>
           </>
         )}
 
@@ -5905,9 +6058,13 @@ function App() {
   useEffect(() => {
     if (!postSplash || !authReady) return;
     setPostSplash(false);
+    // Back from Google with a session: go through the login route so the first
+    // cloud sync finishes BEFORE routing (same reason as the magic-link effect below).
+    if (supa && hasSession && oauthPending()) { clearOauthPending(); setOauthReturn(true); setScreen('login'); return; }
     if (supa && !hasSession && !authOnboarded()) { setScreen('login'); return; }
     routeOnward();
   }, [postSplash, authReady]);
+  const [oauthReturn, setOauthReturn] = useState(false);
 
   // Magic link opened in this browser → session appears → leave the login screen.
   // Wait for the first cloud sync so a returning user's profile (name, avatar,
@@ -6042,11 +6199,20 @@ function App() {
         />
       )}
 
-      {!splash && screen === 'login' && (
+      {!splash && screen === 'login' && !oauthReturn && (
         <LoginScreen
           onSignedIn={() => routeOnward()}
           onSkip={() => routeOnward()}
         />
+      )}
+
+      {!splash && screen === 'login' && oauthReturn && (
+        <div className="screen lg-screen">
+          <div className="lg-body">
+            <div className="lg-title">Signing you in…</div>
+            <div className="lg-lede">Bringing your workouts over from the cloud. This takes a few seconds.</div>
+          </div>
+        </div>
       )}
 
       {!splash && screen === 'profile-setup' && (
