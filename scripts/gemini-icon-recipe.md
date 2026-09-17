@@ -1,6 +1,6 @@
 # Gemini icon recipe v5 — batch call + OS-level "Copy image" (proven 17 Sep 2026, fully unattended)
 
-Preconditions (already true when you start): Chrome window with the Gemini tab is in the FOREGROUND and the tab is visible. Do not create tabs, do not move windows, do not touch anything else. If a JS result ever shows vis:"hidden", STOP and report.
+Preconditions (already true when you start): Chrome window with the Gemini tab is in the FOREGROUND and the tab is visible. Do not create tabs, do not move windows, do not touch anything else. If a JS result shows vis:"hidden", run STEP 0 and retry that step; STOP only if it is still hidden after STEP 0.
 
 Load tools once: ToolSearch `select:mcp__claude-in-chrome__tabs_context_mcp,mcp__claude-in-chrome__browser_batch,mcp__claude-in-chrome__javascript_tool,mcp__claude-in-chrome__computer,mcp__claude-in-chrome__navigate`
 Call tabs_context_mcp once; use the tab whose URL contains gemini.google.com (currently tabId 1809796402).
@@ -9,6 +9,10 @@ Call tabs_context_mcp once; use the tab whose URL contains gemini.google.com (cu
 Generate a square 1:1 image. Flat vector isometric illustration, pure white background, no floor, no ground shadow, no platform. ONE faceless muscular man with short brown hair, red tank top, black shorts, dark grey socks, grey sneakers. EXACTLY ONE piece of gym equipment in the whole picture, the one named below. No extra barbells, no extra dumbbells, no loose plates, no racks, nothing else on the floor. Equipment frame is white and light grey with blue accents; the plates or dumbbell heads he is holding are blue with a grey steel bar. Clean minimal style, soft flat shading, no outlines, no text, 3/4 isometric camera, subject centered with white space around. Consistent fitness-app icon set.
 
 P = BASE + " Exercise: <Name>. " + exercise line.  (No double quotes inside P. Escape nothing else.)
+
+## STEP 0 — once at the start, and again whenever a JS result shows vis:"hidden" or zero/negative coordinates
+PowerShell tool:  powershell -NoProfile -File "C:\Users\UrosPcSoba\Desktop\Claude\VibeLift\scripts\wake_display.ps1"
+Expect "OK foreground=... Google Gemini ...". The monitor sleeps at night; this wakes it and brings the window forward. Then repeat the step that failed.
 
 ## Per image — exactly 3 tool calls
 
