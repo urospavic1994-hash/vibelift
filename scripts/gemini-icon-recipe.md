@@ -10,6 +10,10 @@ Generate a square 1:1 image. Flat vector isometric illustration, pure white back
 
 P = BASE + " Exercise: <Name>. " + exercise line.  (No double quotes inside P. Escape nothing else.)
 
+BODYWEIGHT RULE: if the item's tag in the prompt file is [bodyweight], append this sentence to the end of P:
+" This is a bodyweight exercise: draw NO gym equipment of any kind. No dumbbells, no barbells, no plates, no racks, no machines. Only the man, and a thin grey mat or a bench or a pull-up bar if the exercise line names one."
+(Without it Gemini invents a dumbbell to satisfy the one-piece-of-equipment rule.)
+
 ## STEP 0 — once at the start, and again whenever a JS result shows vis:"hidden" or zero/negative coordinates
 PowerShell tool:  powershell -NoProfile -File "C:\Users\UrosPcSoba\Desktop\Claude\VibeLift\scripts\wake_display.ps1"
 Expect "OK foreground=... Google Gemini ...". The monitor sleeps at night; this wakes it and brings the window forward. Then repeat the step that failed.

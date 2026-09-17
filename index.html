@@ -2464,6 +2464,14 @@ const DB = [
   { group:'arms', gl:'Arms', eq:'barbell', id:'jm_press', name:'JM Press', img:'JM Press.png' },
   { group:'arms', gl:'Arms', eq:'bodyweight', id:'weighted_tricep_dip', name:'Weighted Tricep Dip', img:'Weighted Tricep Dip.png' },
   { group:'arms', gl:'Arms', eq:'machine', id:'smith_close_grip_bench', name:'Smith Machine Close-Grip Bench', img:'Smith Machine Close-Grip Bench.png' },
+
+  // ── added 2026-09-17 (library expansion) ──
+  { group:'core', gl:'Core', eq:'bodyweight', id:'decline_crunch', name:'Decline Crunch', img:'Decline Crunch.png' },
+  { group:'core', gl:'Core', eq:'plate', id:'weighted_crunch', name:'Weighted Crunch', img:'Weighted Crunch.png' },
+  { group:'core', gl:'Core', eq:'machine', id:'machine_crunch', name:'Machine Crunch', img:'Machine Crunch.png' },
+  { group:'core', gl:'Core', eq:'bodyweight', id:'hanging_knee_raise', name:'Hanging Knee Raise', img:'Hanging Knee Raise.png' },
+  { group:'core', gl:'Core', eq:'machine', id:'captains_chair_knee_raise', name:'Captains Chair Knee Raise', img:'Captains Chair Knee Raise.png' },
+  { group:'core', gl:'Core', eq:'bodyweight', id:'toes_to_bar', name:'Toes to Bar', img:'Toes to Bar.png' },
 ];
 
 /* ═══════════════════════════════════════
@@ -2728,6 +2736,13 @@ const WIKI_DATA = {
   jm_press: { f:['Barbell','Lying Flat','Press'], t:['Triceps'], s:['Lie flat, close grip, bar over your upper chest.','Lower the bar toward your chin, elbows forward and tucked.','Press back up. Light weight, it is half skull crusher, half press.'] },
   weighted_tricep_dip: { f:['Bodyweight','Standing','Press'], t:['Triceps','Lower chest'], s:['Plate on a dip belt, torso upright on the bars.','Lower until your elbows reach 90°, elbows back.','Press back up to straight arms.'] },
   smith_close_grip_bench: { f:['Smith Machine','Lying Flat','Press'], t:['Triceps','Chest'], s:['Grip the bar at shoulder width, unhook.','Lower to your lower chest with elbows tucked.','Press up along the rails, re-hook when done.'] },
+  // ── added 2026-09-17 (library expansion) ──
+  decline_crunch: { f:['Bodyweight','Decline','Curl'], t:['Abs'], s:['Feet hooked, hands behind your head.','Curl your shoulders off the bench, ribs toward hips.','Lower slowly, keep tension.'] },
+  weighted_crunch: { f:['Plate','Lying Flat','Curl'], t:['Abs'], s:['Hold a plate against your chest, knees bent.','Curl your shoulders up, ribs toward hips.','Lower slowly.'] },
+  machine_crunch: { f:['Machine','Seated','Curl'], t:['Abs'], s:['Sit with the pad on your chest, hands on the handles.','Curl forward, bringing your ribs toward your hips.','Return slowly, keep tension.'] },
+  hanging_knee_raise: { f:['Bodyweight','Hanging','Raise'], t:['Lower abs','Hip flexors'], s:['Hang from the bar, shoulders pulled down.','Pull both knees up to hip height or higher.','Lower slowly without swinging.'] },
+  captains_chair_knee_raise: { f:['Machine','Hanging','Raise'], t:['Lower abs','Hip flexors'], s:['Forearms on the pads, back against the pad, legs hanging.','Raise your knees to chest height.','Lower slowly, no swinging.'] },
+  toes_to_bar: { f:['Bodyweight','Hanging','Raise'], t:['Abs','Hip flexors','Lats'], s:['Hang from the bar with straight arms.','Swing your straight legs up until your toes touch the bar.','Lower under control.'] },
 };
 
 /* Generic how-to for user-built custom exercises, assembled from their
