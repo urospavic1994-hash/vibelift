@@ -2430,6 +2430,24 @@ const DB = [
   { group:'legs', gl:'Legs', eq:'machine', id:'hip_adduction', name:'Hip Adduction Machine', img:'Hip Adduction Machine.png' },
   { group:'legs', gl:'Legs', eq:'machine', id:'single_leg_press', name:'Single-Leg Leg Press', img:'Single-Leg Leg Press.png' },
   { group:'legs', gl:'Legs', eq:'machine', id:'sled_push', name:'Sled Push', img:'Sled Push.png' },
+
+  // ── added 2026-09-17 (library expansion) ──
+  { group:'arms', gl:'Arms', eq:'dumbbell', id:'db_bicep_curl', name:'Dumbbell Bicep Curl', img:'Dumbbell Bicep Curl.png' },
+  { group:'arms', gl:'Arms', eq:'dumbbell', id:'seated_db_curl', name:'Seated Dumbbell Curl', img:'Seated Dumbbell Curl.png' },
+  { group:'arms', gl:'Arms', eq:'dumbbell', id:'zottman_curl', name:'Zottman Curl', img:'Zottman Curl.png' },
+  { group:'arms', gl:'Arms', eq:'dumbbell', id:'cross_body_hammer_curl', name:'Cross-Body Hammer Curl', img:'Cross-Body Hammer Curl.png' },
+  { group:'arms', gl:'Arms', eq:'dumbbell', id:'db_preacher_curl', name:'Dumbbell Preacher Curl', img:'Dumbbell Preacher Curl.png' },
+  { group:'arms', gl:'Arms', eq:'machine', id:'machine_preacher_curl', name:'Machine Preacher Curl', img:'Machine Preacher Curl.png' },
+  { group:'arms', gl:'Arms', eq:'cable', id:'bayesian_curl', name:'Bayesian Cable Curl', img:'Bayesian Cable Curl.png' },
+  { group:'arms', gl:'Arms', eq:'cable', id:'high_cable_curl', name:'High Cable Curl', img:'High Cable Curl.png' },
+  { group:'arms', gl:'Arms', eq:'cable', id:'single_arm_cable_curl', name:'Single-Arm Cable Curl', img:'Single-Arm Cable Curl.png' },
+  { group:'arms', gl:'Arms', eq:'barbell', id:'drag_curl', name:'Drag Curl', img:'Drag Curl.png' },
+  { group:'arms', gl:'Arms', eq:'barbell', id:'wide_grip_barbell_curl', name:'Wide-Grip Barbell Curl', img:'Wide-Grip Barbell Curl.png' },
+  { group:'arms', gl:'Arms', eq:'cable', id:'cable_reverse_curl', name:'Cable Reverse Curl', img:'Cable Reverse Curl.png' },
+  { group:'arms', gl:'Arms', eq:'barbell', id:'barbell_wrist_curl', name:'Barbell Wrist Curl', img:'Barbell Wrist Curl.png' },
+  { group:'arms', gl:'Arms', eq:'barbell', id:'reverse_wrist_curl', name:'Reverse Wrist Curl', img:'Reverse Wrist Curl.png' },
+  { group:'arms', gl:'Arms', eq:'plate', id:'plate_pinch_hold', name:'Plate Pinch Hold', img:'Plate Pinch Hold.png' },
+  { group:'arms', gl:'Arms', eq:'dumbbell', id:'db_wrist_curl', name:'Dumbbell Wrist Curl', img:'Dumbbell Wrist Curl.png' },
 ];
 
 /* ═══════════════════════════════════════
@@ -2662,6 +2680,23 @@ const WIKI_DATA = {
   hip_adduction: { f:['Machine','Seated','Squat'], t:['Glutes','Legs'], s:['Sit with the pads on the inside of your knees, legs open.','Squeeze your legs together against the pads.','Open slowly under control.'] },
   single_leg_press: { f:['Machine','Seated','Press'], t:['Quads','Glutes'], s:['One foot centred on the platform, other foot on the floor or rest.','Lower until your knee is at about 90°.','Press back up without locking the knee. Switch legs.'] },
   sled_push: { f:['Machine','Standing','Press'], t:['Quads','Glutes','Calves'], s:['Arms straight on the high handles, lean in at about 45°.','Drive with short powerful steps, pushing through the balls of your feet.','Keep your back flat and head neutral the whole way.'] },
+  // ── added 2026-09-17 (library expansion) ──
+  db_bicep_curl: { f:['Dumbbell','Standing','Curl'], t:['Biceps'], s:['Dumbbells at your sides, palms forward, elbows pinned.','Curl one up to your shoulder, then the other.','Lower slowly each time, no swinging.'] },
+  seated_db_curl: { f:['Dumbbell','Seated','Curl'], t:['Biceps'], s:['Sit on an upright bench, dumbbells hanging at your sides.','Curl both up to your shoulders, elbows still.','Lower slowly; the seat stops you cheating.'] },
+  zottman_curl: { f:['Dumbbell','Standing','Curl'], t:['Biceps','Forearms'], s:['Curl the dumbbells up with palms facing up.','At the top, rotate your palms to face down.','Lower slowly with the overhand grip, then rotate back.'] },
+  cross_body_hammer_curl: { f:['Dumbbell','Standing','Curl'], t:['Biceps','Forearms'], s:['Dumbbells at your sides, palms facing in.','Curl one across your body toward the opposite shoulder.','Lower slowly, then the other side.'] },
+  db_preacher_curl: { f:['Dumbbell','Seated','Curl'], t:['Biceps'], s:['Upper arm flat on the preacher pad, dumbbell hanging.','Curl it up until your forearm is vertical.','Lower slowly to a full stretch. Switch arms.'] },
+  machine_preacher_curl: { f:['Machine','Seated','Curl'], t:['Biceps'], s:['Upper arms on the pad, grip the handles.','Curl the handles up toward your shoulders.','Lower slowly until your arms are almost straight.'] },
+  bayesian_curl: { f:['Cable','Standing','Curl'], t:['Biceps'], s:['Back to the tower, one handle from the low pulley, arm stretched behind you.','Curl the handle forward and up to your shoulder.','Lower slowly, feel the stretch at the bottom. Switch arms.'] },
+  high_cable_curl: { f:['Cable','Standing','Curl'], t:['Biceps'], s:['Stand between two high pulleys, arms out to the sides holding the handles.','Curl both hands in toward your head.','Straighten slowly, keeping your upper arms level.'] },
+  single_arm_cable_curl: { f:['Cable','Standing','Curl'], t:['Biceps'], s:['Face the tower, one handle from the low pulley, elbow pinned.','Curl it up to your shoulder.','Lower slowly against the cable. Switch arms.'] },
+  drag_curl: { f:['Barbell','Standing','Curl'], t:['Biceps'], s:['Bar at your thighs, shoulder-width grip.','Drag the bar straight up your body, pulling your elbows back behind you.','Lower along the same path slowly.'] },
+  wide_grip_barbell_curl: { f:['Barbell','Standing','Curl'], t:['Biceps'], s:['Grip the bar well outside your shoulders.','Curl to shoulder height, elbows pinned to your sides.','Lower slowly to straight arms.'] },
+  cable_reverse_curl: { f:['Cable','Standing','Curl'], t:['Forearms','Biceps'], s:['Face the tower, straight bar from the low pulley, overhand grip.','Curl the bar to chest height, wrists straight.','Lower slowly.'] },
+  barbell_wrist_curl: { f:['Barbell','Seated','Curl'], t:['Forearms'], s:['Sit with forearms on your thighs, palms up, bar hanging past your knees.','Curl the bar up using only your wrists.','Lower slowly, letting the bar roll to your fingers.'] },
+  reverse_wrist_curl: { f:['Barbell','Seated','Curl'], t:['Forearms'], s:['Forearms on your thighs, palms down, light bar in hand.','Lift the bar by extending your wrists upward.','Lower slowly. Very light weight.'] },
+  plate_pinch_hold: { f:['Plate','Standing','Hold'], t:['Forearms'], s:['Pinch a plate by its edge between your fingers and thumb.','Hold it at your side with a straight arm for time.','Set it down before it slips. Switch hands.'] },
+  db_wrist_curl: { f:['Dumbbell','Seated','Curl'], t:['Forearms'], s:['Forearm on your thigh, palm up, dumbbell hanging past your knee.','Curl it up using only your wrist.','Lower slowly. Switch arms.'] },
 };
 
 /* Generic how-to for user-built custom exercises, assembled from their
