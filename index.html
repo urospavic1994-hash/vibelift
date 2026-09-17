@@ -2401,6 +2401,22 @@ const DB = [
   { group:'shoulders', gl:'Shoulders', eq:'dumbbell', id:'overhead_db_carry', name:'Overhead Dumbbell Carry', img:'Overhead Dumbbell Carry.png' },
   { group:'shoulders', gl:'Shoulders', eq:'cable', id:'cable_y_raise', name:'Cable Y Raise', img:'Cable Y Raise.png' },
   { group:'shoulders', gl:'Shoulders', eq:'dumbbell', id:'db_rear_delt_row', name:'Dumbbell Rear Delt Row', img:'Dumbbell Rear Delt Row.png' },
+
+  // ── added 2026-09-17 (library expansion) ──
+  { group:'legs', gl:'Legs', eq:'machine', id:'smith_squat', name:'Smith Machine Squat', img:'Smith Machine Squat.png' },
+  { group:'legs', gl:'Legs', eq:'dumbbell', id:'db_squat', name:'Dumbbell Squat', img:'Dumbbell Squat.png' },
+  { group:'legs', gl:'Legs', eq:'barbell', id:'box_squat', name:'Box Squat', img:'Box Squat.png' },
+  { group:'legs', gl:'Legs', eq:'barbell', id:'zercher_squat', name:'Zercher Squat', img:'Zercher Squat.png' },
+  { group:'legs', gl:'Legs', eq:'machine', id:'pendulum_squat', name:'Pendulum Squat', img:'Pendulum Squat.png' },
+  { group:'legs', gl:'Legs', eq:'machine', id:'belt_squat', name:'Belt Squat', img:'Belt Squat.png' },
+  { group:'legs', gl:'Legs', eq:'bodyweight', id:'sissy_squat', name:'Sissy Squat', img:'Sissy Squat.png' },
+  { group:'legs', gl:'Legs', eq:'bodyweight', id:'pistol_squat', name:'Pistol Squat', img:'Pistol Squat.png' },
+  { group:'legs', gl:'Legs', eq:'bodyweight', id:'bodyweight_squat', name:'Bodyweight Squat', img:'Bodyweight Squat.png' },
+  { group:'legs', gl:'Legs', eq:'bodyweight', id:'box_jump', name:'Box Jump', img:'Box Jump.png' },
+  { group:'legs', gl:'Legs', eq:'dumbbell', id:'reverse_lunge', name:'Reverse Lunge', img:'Reverse Lunge.png' },
+  { group:'legs', gl:'Legs', eq:'dumbbell', id:'curtsy_lunge', name:'Curtsy Lunge', img:'Curtsy Lunge.png' },
+  { group:'legs', gl:'Legs', eq:'dumbbell', id:'split_squat', name:'Split Squat', img:'Split Squat.png' },
+  { group:'legs', gl:'Legs', eq:'machine', id:'leg_press_calf_raise', name:'Leg Press Calf Raise', img:'Leg Press Calf Raise.png' },
 ];
 
 /* ═══════════════════════════════════════
@@ -2606,6 +2622,21 @@ const WIKI_DATA = {
   overhead_db_carry: { f:['Dumbbell','Standing','Hold'], t:['Shoulders','Core'], s:['Press one dumbbell overhead and lock the arm out.','Walk tall with short steps, ribs down, arm vertical.','Switch arms halfway.'] },
   cable_y_raise: { f:['Cable','Standing','Raise'], t:['Rear delts','Upper back'], s:['Face two low pulleys, cross your arms to grab the opposite handles.','Raise both arms up and out into a Y, thumbs up.','Lower slowly. Light weight.'] },
   db_rear_delt_row: { f:['Dumbbell','Bent-Over','Row'], t:['Rear delts','Upper back'], s:['Hinge to about 45°, dumbbells hanging.','Row with your elbows flared wide, pulling to shoulder height.','Lower slowly; elbows stay out, not tucked.'] },
+  // ── added 2026-09-17 (library expansion) ──
+  smith_squat: { f:['Smith Machine','Standing','Squat'], t:['Quads','Glutes'], s:['Bar on your upper back, feet a little in front of the bar.','Unhook and squat until your thighs are parallel.','Drive up through your whole foot, re-hook when done.'] },
+  db_squat: { f:['Dumbbell','Standing','Squat'], t:['Quads','Glutes'], s:['Dumbbell in each hand at your sides, feet shoulder width.','Sit down until your thighs are parallel, chest up.','Stand tall, squeezing your glutes at the top.'] },
+  box_squat: { f:['Barbell','Standing','Squat'], t:['Glutes','Quads','Hamstrings'], s:['Bar on your back, box behind you, feet a little wide.','Sit back onto the box under control, shins near vertical.','Pause a second, then drive up without rocking.'] },
+  zercher_squat: { f:['Barbell','Standing','Squat'], t:['Quads','Glutes','Core'], s:['Cradle the bar in the crooks of your elbows, hands clasped.','Squat down keeping your elbows high and torso upright.','Drive up through your heels.'] },
+  pendulum_squat: { f:['Machine','Standing','Squat'], t:['Quads','Glutes'], s:['Shoulders under the pads, back on the swinging pad, feet on the platform.','Squat as deep as you can, knees tracking over toes.','Drive up, stopping just short of lockout.'] },
+  belt_squat: { f:['Machine','Standing','Squat'], t:['Quads','Glutes'], s:['Belt around your hips, stand on the platform, hold the handles lightly.','Squat until your thighs are parallel, torso upright.','Drive up; no load on your spine here.'] },
+  sissy_squat: { f:['Bodyweight','Standing','Squat'], t:['Quads'], s:['Hold something for balance, rise onto your toes.','Lean back and push your knees forward, body in one straight line.','Come back up by squeezing your quads.'] },
+  pistol_squat: { f:['Bodyweight','Standing','Squat'], t:['Quads','Glutes','Core'], s:['Stand on one leg, other leg straight out in front, arms forward.','Squat all the way down on the standing leg.','Drive back up. Hold a post if you need balance.'] },
+  bodyweight_squat: { f:['Bodyweight','Standing','Squat'], t:['Quads','Glutes'], s:['Feet shoulder width, arms out in front.','Sit down until your thighs are at least parallel.','Stand up tall, knees tracking over your toes.'] },
+  box_jump: { f:['Bodyweight','Standing','Squat'], t:['Quads','Glutes','Calves'], s:['Stand a short step from the box, feet hip width.','Swing your arms and jump, landing softly on top in a quarter squat.','Step down, never jump down.'] },
+  reverse_lunge: { f:['Dumbbell','Standing','Lunge'], t:['Glutes','Quads'], s:['Dumbbells at your sides, stand tall.','Step one foot back and lower until the back knee nearly touches.','Push through the front heel to stand. Alternate legs.'] },
+  curtsy_lunge: { f:['Dumbbell','Standing','Lunge'], t:['Glutes','Quads'], s:['Dumbbells at your sides, stand tall.','Step one leg back and across behind the other, lowering into a curtsy.','Push through the front heel to stand. Alternate.'] },
+  split_squat: { f:['Dumbbell','Standing','Lunge'], t:['Quads','Glutes'], s:['Take a long stance, dumbbells at your sides.','Lower straight down until the back knee is near the floor.','Drive up through the front foot. All reps one side, then switch.'] },
+  leg_press_calf_raise: { f:['Machine','Seated','Raise'], t:['Calves'], s:['Balls of your feet on the bottom edge of the platform, legs straight.','Push through your toes as far as you can.','Lower slowly to a full stretch.'] },
 };
 
 /* Generic how-to for user-built custom exercises, assembled from their
