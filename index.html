@@ -756,6 +756,11 @@
     .wiki-stage svg { display: block; width: 100%; height: auto; max-height: 200px; }
     .wiki-stage-img { background: #fff; display: flex; justify-content: center; }
     .wiki-stage-img img { display: block; width: auto; max-width: 100%; height: 220px; object-fit: contain; }
+    /* Two-frame motion: frame 2 sits on top of frame 1 and blinks on/off every 0.5 s. No fade, no GIF. */
+    .wiki-frames { position: relative; }
+    .wiki-frames .wiki-f2 { position: absolute; top: 0; left: 50%; transform: translateX(-50%); background: #fff; animation: wikiFlip 1s steps(1, end) infinite; }
+    @keyframes wikiFlip { 0% { opacity: 0; } 50% { opacity: 1; } 100% { opacity: 1; } }
+    @media (prefers-reduced-motion: reduce) { .wiki-frames .wiki-f2 { animation: none; opacity: 0; } }
     .wiki-target { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin-bottom: 12px; }
     .wiki-target-lbl {
       font-size: 10px; font-weight: 800; letter-spacing: 1.6px; color: var(--text2);
@@ -2278,7 +2283,7 @@ const DB = [
   { group:'arms', gl:'Arms', eq:'machine',    id:'machine_bicep_curl',        name:'Machine Bicep Curl',              img:'Machine Bicep Curl.png' },
   { group:'arms', gl:'Arms', eq:'dumbbell',   id:'overhead_tricep_ext',       name:'Overhead Tricep Extension',       img:'Overhead Tricep Extension.png' },
   { group:'arms', gl:'Arms', eq:'barbell',    id:'preacher_curl',             name:'Preacher Curl',                   img:'Preacher Curl.png' },
-  { group:'arms', gl:'Arms', eq:'barbell',    id:'skull_crusher',             name:'Skull Crusher',                   img:'Skull Crusher.png' },
+  { group:'arms', gl:'Arms', eq:'barbell',    id:'skull_crusher',             name:'Skull Crusher',                   img:'Skull Crusher.png', img2:'Skull Crusher.b.png' },
   { group:'arms', gl:'Arms', eq:'bodyweight', id:'tricep_dip',                name:'Tricep Dip',                      img:'Tricep Dip.png' },
   { group:'arms', gl:'Arms', eq:'cable',      id:'tricep_rope_pushdown',      name:'Tricep Rope Pushdown',            img:'Tricep Rope Pushdown.png' },
   // ── CORE (no illustrations yet) ────────────────────────────────────
@@ -4513,14 +4518,23 @@ function AnimatedFigure({ eq, pos, move }) {
 function WikiSheet({ exercise, onClose }) {
   const info = wikiInfo(exercise);
   if (!info) return null;
+  // Pictures come from the catalog by id, so exercises saved in old workouts pick up new frames too.
+  const cat = DB.find(e => e.id === exercise.id) || exercise;
+  const img = cat.img || exercise.img || null;
+  const img2 = img ? (cat.img2 || null) : null;
   return (
     <FixedLayer>
       <div className="wiki-dim" onClick={onClose} />
       <div className="wiki-sheet" role="dialog" aria-label={`How to do ${exercise.name}`}>
         <div className="wiki-grab" />
         <div className="wiki-title">{exercise.name.toUpperCase()}</div>
-        {exercise.img
-          ? <div className="wiki-stage wiki-stage-img"><img src={`./assets/exercises/${encodeURIComponent(exercise.img)}`} alt={`${exercise.name} illustration`} /></div>
+        {img
+          ? <div className={`wiki-stage wiki-stage-img ${img2 ? 'wiki-frames' : ''}`}>
+              <img src={`./assets/exercises/${encodeURIComponent(img)}`} alt={`${exercise.name}, start position`} />
+              {/* CONNECTOR: optional second frame. No img2 → static picture, exactly as before. */}
+              {img2 && <img className="wiki-f2" src={`./assets/exercises/${encodeURIComponent(img2)}`} alt={`${exercise.name}, end position`}
+                onError={e => { e.currentTarget.style.display = 'none'; }} />}
+            </div>
           : <div className="wiki-stage"><AnimatedFigure eq={info.eq} pos={info.pos} move={info.move} /></div>}
         <div className="wiki-target">
           <span className="wiki-target-lbl">Target</span>
