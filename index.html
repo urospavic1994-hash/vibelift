@@ -754,6 +754,8 @@
       border-radius: 16px; overflow: hidden;
     }
     .wiki-stage svg { display: block; width: 100%; height: auto; max-height: 200px; }
+    .wiki-stage-img { background: #fff; display: flex; justify-content: center; }
+    .wiki-stage-img img { display: block; width: auto; max-width: 100%; height: 220px; object-fit: contain; }
     .wiki-target { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin-bottom: 12px; }
     .wiki-target-lbl {
       font-size: 10px; font-weight: 800; letter-spacing: 1.6px; color: var(--text2);
@@ -4517,7 +4519,9 @@ function WikiSheet({ exercise, onClose }) {
       <div className="wiki-sheet" role="dialog" aria-label={`How to do ${exercise.name}`}>
         <div className="wiki-grab" />
         <div className="wiki-title">{exercise.name.toUpperCase()}</div>
-        <div className="wiki-stage"><AnimatedFigure eq={info.eq} pos={info.pos} move={info.move} /></div>
+        {exercise.img
+          ? <div className="wiki-stage wiki-stage-img"><img src={`./assets/exercises/${encodeURIComponent(exercise.img)}`} alt={`${exercise.name} illustration`} /></div>
+          : <div className="wiki-stage"><AnimatedFigure eq={info.eq} pos={info.pos} move={info.move} /></div>}
         <div className="wiki-target">
           <span className="wiki-target-lbl">Target</span>
           {info.tgt.map(m => <span key={m} className="wiki-chip">{m}</span>)}
