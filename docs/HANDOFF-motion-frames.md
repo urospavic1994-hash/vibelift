@@ -7,7 +7,7 @@ Written 17 Sep 2026 for a fresh chat. Read this whole file before doing anything
 ## 1. What Uroš wants (his words, tidied)
 
 In the info sheet (the "i" button) each exercise should show the MOVEMENT for people who do not know it:
-picture of the start position, picture of the end position, switching every half second. First, second, first,
+picture of the start position, picture of the end position, switching every 0.75 s (Uroš asked for 0.5 s + 0.25 s for a premium feel). First, second, first,
 second. Hard switch, no fade. Small and light on resources. Not a GIF file (his phone showed the GIF preview as a
 still image) and not the old generic stick figure (it was wrong for most exercises).
 
@@ -15,7 +15,7 @@ still image) and not the old generic stick figure (it was wrong for most exercis
 
 - 300 exercises live, 295 with a verified 320px PNG in `assets/exercises/<Name>.png`.
 - The info sheet (`WikiSheet` in index.html) shows that PNG. If the catalog line has `img2`, it stacks the second
-  PNG on top and blinks it on/off every 0.5 s with CSS (`.wiki-frames .wiki-f2`, keyframes `wikiFlip`,
+  PNG on top and switches it on/off every 0.75 s with CSS (`wikiFlip 1.5s`) (`.wiki-frames .wiki-f2`, keyframes `wikiFlip`,
   `steps(1)`, respects reduced-motion). No `img2` → static picture, exactly as before.
 - One working example is live: **Skull Crusher** (`Skull Crusher.png` + `Skull Crusher.b.png`). Open it on the
   phone to see the target behaviour.
@@ -87,7 +87,7 @@ so a cheap operator can run the batch from a file, as was done for the icons.
 
 ```
 node scripts/attach_frames.js --write      # adds img2 only where <Name>.b.png exists
-# bump CACHE_VERSION in sw.js (currently vibelift-v13 → v14 …)
+# bump CACHE_VERSION in sw.js (currently vibelift-v14 → v15 …)
 node -e "const fs=require('fs');const s=fs.readFileSync('index.html','utf8');const b=require('@babel/standalone');const m=/<script type=\"text\/vibelift-jsx\" id=\"app-src\">([\s\S]*?)<\/script>/.exec(s);b.transform(m[1],{presets:['react']});console.log('JSX OK')"
 git add index.html sw.js assets/exercises && git commit -m "Motion frames: <group/slice>" && git push origin main
 until curl -s https://vibelift.vercel.app/sw.js | grep -q "vibelift-vNN"; do sleep 10; done   # verify live
