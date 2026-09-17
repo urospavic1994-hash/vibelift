@@ -2355,6 +2355,21 @@ const DB = [
   { group:'back', gl:'Back', eq:'barbell', id:'seal_row', name:'Seal Row', img:'Seal Row.png' },
   { group:'back', gl:'Back', eq:'dumbbell', id:'renegade_row', name:'Renegade Row', img:'Renegade Row.png' },
   { group:'back', gl:'Back', eq:'barbell', id:'landmine_row', name:'Landmine Row', img:'Landmine Row.png' },
+
+  // ── added 2026-09-17 (library expansion) ──
+  { group:'back', gl:'Back', eq:'cable', id:'single_arm_cable_row', name:'Single-Arm Cable Row', img:'Single-Arm Cable Row.png' },
+  { group:'back', gl:'Back', eq:'cable', id:'wide_grip_cable_row', name:'Wide-Grip Seated Cable Row', img:'Wide-Grip Seated Cable Row.png' },
+  { group:'back', gl:'Back', eq:'machine', id:'machine_high_row', name:'Machine High Row', img:'Machine High Row.png' },
+  { group:'back', gl:'Back', eq:'machine', id:'plate_loaded_low_row', name:'Plate-Loaded Low Row', img:'Plate-Loaded Low Row.png' },
+  { group:'back', gl:'Back', eq:'machine', id:'chest_supported_tbar', name:'Chest-Supported T-Bar Row', img:'Chest-Supported T-Bar Row.png' },
+  { group:'back', gl:'Back', eq:'barbell', id:'trap_bar_deadlift', name:'Trap Bar Deadlift', img:'Trap Bar Deadlift.png' },
+  { group:'back', gl:'Back', eq:'barbell', id:'deficit_deadlift', name:'Deficit Deadlift', img:'Deficit Deadlift.png' },
+  { group:'back', gl:'Back', eq:'barbell', id:'stiff_leg_deadlift', name:'Stiff-Leg Deadlift', img:'Stiff-Leg Deadlift.png' },
+  { group:'back', gl:'Back', eq:'barbell', id:'good_morning', name:'Good Morning', img:'Good Morning.png' },
+  { group:'back', gl:'Back', eq:'bodyweight', id:'back_extension', name:'Back Extension', img:'Back Extension.png' },
+  { group:'back', gl:'Back', eq:'machine', id:'machine_back_extension', name:'Machine Back Extension', img:'Machine Back Extension.png' },
+  { group:'back', gl:'Back', eq:'machine', id:'reverse_hyper', name:'Reverse Hyperextension', img:'Reverse Hyperextension.png' },
+  { group:'back', gl:'Back', eq:'dumbbell', id:'farmers_carry', name:'Farmers Carry', img:'Farmers Carry.png' },
 ];
 
 /* ═══════════════════════════════════════
@@ -2517,6 +2532,20 @@ const WIKI_DATA = {
   seal_row: { f:['Barbell','Lying Flat','Row'], t:['Upper back','Lats'], s:['Lie face down on a high bench, bar hanging below at arm length.','Row the bar up until it touches the underside of the bench.','Lower all the way; no body English possible here.'] },
   renegade_row: { f:['Dumbbell','Lying Flat','Row'], t:['Upper back','Core'], s:['High plank with a hand on each dumbbell, feet wide.','Row one dumbbell to your ribs without letting your hips twist.','Set it down, row the other side.'] },
   landmine_row: { f:['Barbell','Bent-Over','Row'], t:['Lats','Upper back'], s:['Straddle the bar, hinge over it, V-handle under the collar.','Row the bar end to your chest, elbows back.','Lower under control, back flat.'] },
+  // ── added 2026-09-17 (library expansion) ──
+  single_arm_cable_row: { f:['Cable','Seated','Row'], t:['Lats','Upper back'], s:['Sit tall, one handle at low height, free hand on your knee.','Pull the handle to your ribs, elbow tight to your side.','Let it forward slowly, feel the stretch. Switch arms each set.'] },
+  wide_grip_cable_row: { f:['Cable','Seated','Row'], t:['Upper back','Rear delts'], s:['Long bar, wide overhand grip, sit tall.','Pull the bar to your upper stomach with elbows flared out.','Squeeze your shoulder blades, then return slowly.'] },
+  machine_high_row: { f:['Machine','Seated','Row'], t:['Lats','Upper back'], s:['Chest on the pad, grip the overhead handles.','Pull them down and back toward your shoulders.','Return slowly until your arms are straight.'] },
+  plate_loaded_low_row: { f:['Machine','Seated','Row'], t:['Lats','Upper back'], s:['Chest against the pad, grip the low handles.','Pull straight back to your ribs, elbows close.','Let the weight forward slowly, shoulders relaxed.'] },
+  chest_supported_tbar: { f:['Machine','Incline','Row'], t:['Upper back','Lats'], s:['Chest flat on the angled pad, grip the handles under it.','Row until the plates nearly touch the pad.','Lower to a full stretch without lifting your chest.'] },
+  trap_bar_deadlift: { f:['Barbell','Standing','Pull'], t:['Whole back','Glutes','Quads'], s:['Stand inside the bar, grip the handles, hips back, chest up.','Push the floor away and stand tall.','Lower by pushing your hips back, bar close to your legs.'] },
+  deficit_deadlift: { f:['Barbell','Standing','Pull'], t:['Whole back','Glutes','Hamstrings'], s:['Stand on a low platform so the bar starts lower than usual.','Hips lower, chest up, push the floor away.','Lower under control. Use less weight than a normal deadlift.'] },
+  stiff_leg_deadlift: { f:['Barbell','Standing','Pull'], t:['Hamstrings','Lower back','Glutes'], s:['Legs almost straight, bar at your thighs.','Hinge at the hips, sliding the bar down your legs to mid-shin.','Drive your hips forward to stand, no rounding.'] },
+  good_morning: { f:['Barbell','Standing','Pull'], t:['Hamstrings','Lower back','Glutes'], s:['Bar on your upper back like a squat, knees soft.','Push your hips back and fold forward until your torso is near parallel.','Squeeze your glutes to stand back up. Light weight.'] },
+  back_extension: { f:['Bodyweight','Incline','Raise'], t:['Lower back','Glutes','Hamstrings'], s:['Hips on the pad, feet locked, arms crossed on your chest.','Lower your torso until it hangs toward the floor.','Raise back up to a straight line, no higher.'] },
+  machine_back_extension: { f:['Machine','Seated','Extension'], t:['Lower back'], s:['Sit with the pad against your upper back, feet on the platform.','Lean back against the pad until your body is nearly straight.','Return slowly, do not bounce.'] },
+  reverse_hyper: { f:['Machine','Lying Flat','Raise'], t:['Glutes','Lower back','Hamstrings'], s:['Lie face down on the pad, hold the handles, legs hanging.','Swing both straight legs up to hip height.','Lower slowly, no jerking.'] },
+  farmers_carry: { f:['Dumbbell','Standing','Hold'], t:['Traps','Forearms','Core'], s:['Heavy dumbbell in each hand, stand tall, shoulders back.','Walk with short quick steps, arms straight.','Set them down with a flat back when your grip is nearly gone.'] },
 };
 
 /* Generic how-to for user-built custom exercises, assembled from their
