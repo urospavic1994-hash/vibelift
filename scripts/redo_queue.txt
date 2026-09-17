@@ -10,3 +10,5 @@ Superman
 Barbell Front Raise
 Incline Y Raise
 Incline Rear Delt Fly
+Behind-the-Back Barbell Shrug
+Pike Push-Up
