@@ -2448,6 +2448,22 @@ const DB = [
   { group:'arms', gl:'Arms', eq:'barbell', id:'reverse_wrist_curl', name:'Reverse Wrist Curl', img:'Reverse Wrist Curl.png' },
   { group:'arms', gl:'Arms', eq:'plate', id:'plate_pinch_hold', name:'Plate Pinch Hold', img:'Plate Pinch Hold.png' },
   { group:'arms', gl:'Arms', eq:'dumbbell', id:'db_wrist_curl', name:'Dumbbell Wrist Curl', img:'Dumbbell Wrist Curl.png' },
+
+  // ── added 2026-09-17 (library expansion) ──
+  { group:'arms', gl:'Arms', eq:'dumbbell', id:'tricep_kickback', name:'Tricep Kickback', img:'Tricep Kickback.png' },
+  { group:'arms', gl:'Arms', eq:'cable', id:'cable_tricep_kickback', name:'Cable Tricep Kickback', img:'Cable Tricep Kickback.png' },
+  { group:'arms', gl:'Arms', eq:'dumbbell', id:'single_arm_overhead_ext', name:'Single-Arm Overhead Dumbbell Extension', img:'Single-Arm Overhead Dumbbell Extension.png' },
+  { group:'arms', gl:'Arms', eq:'cable', id:'single_arm_pushdown', name:'Single-Arm Cable Pushdown', img:'Single-Arm Cable Pushdown.png' },
+  { group:'arms', gl:'Arms', eq:'cable', id:'reverse_grip_pushdown', name:'Reverse-Grip Tricep Pushdown', img:'Reverse-Grip Tricep Pushdown.png' },
+  { group:'arms', gl:'Arms', eq:'cable', id:'vbar_pushdown', name:'V-Bar Tricep Pushdown', img:'V-Bar Tricep Pushdown.png' },
+  { group:'arms', gl:'Arms', eq:'barbell', id:'ez_overhead_ext', name:'EZ Bar Overhead Extension', img:'EZ Bar Overhead Extension.png' },
+  { group:'arms', gl:'Arms', eq:'machine', id:'machine_tricep_ext', name:'Machine Tricep Extension', img:'Machine Tricep Extension.png' },
+  { group:'arms', gl:'Arms', eq:'machine', id:'machine_tricep_dip', name:'Machine Tricep Dip', img:'Machine Tricep Dip.png' },
+  { group:'arms', gl:'Arms', eq:'machine', id:'assisted_tricep_dip', name:'Assisted Tricep Dip', img:'Assisted Tricep Dip.png' },
+  { group:'arms', gl:'Arms', eq:'bodyweight', id:'bench_dip', name:'Bench Dip', img:'Bench Dip.png' },
+  { group:'arms', gl:'Arms', eq:'barbell', id:'jm_press', name:'JM Press', img:'JM Press.png' },
+  { group:'arms', gl:'Arms', eq:'bodyweight', id:'weighted_tricep_dip', name:'Weighted Tricep Dip', img:'Weighted Tricep Dip.png' },
+  { group:'arms', gl:'Arms', eq:'machine', id:'smith_close_grip_bench', name:'Smith Machine Close-Grip Bench', img:'Smith Machine Close-Grip Bench.png' },
 ];
 
 /* ═══════════════════════════════════════
@@ -2697,6 +2713,21 @@ const WIKI_DATA = {
   reverse_wrist_curl: { f:['Barbell','Seated','Curl'], t:['Forearms'], s:['Forearms on your thighs, palms down, light bar in hand.','Lift the bar by extending your wrists upward.','Lower slowly. Very light weight.'] },
   plate_pinch_hold: { f:['Plate','Standing','Hold'], t:['Forearms'], s:['Pinch a plate by its edge between your fingers and thumb.','Hold it at your side with a straight arm for time.','Set it down before it slips. Switch hands.'] },
   db_wrist_curl: { f:['Dumbbell','Seated','Curl'], t:['Forearms'], s:['Forearm on your thigh, palm up, dumbbell hanging past your knee.','Curl it up using only your wrist.','Lower slowly. Switch arms.'] },
+  // ── added 2026-09-17 (library expansion) ──
+  tricep_kickback: { f:['Dumbbell','Bent-Over','Extension'], t:['Triceps'], s:['One hand on a bench, upper arm along your side, elbow bent 90°.','Straighten the arm back until it is fully extended.','Lower slowly; the upper arm never moves.'] },
+  cable_tricep_kickback: { f:['Cable','Bent-Over','Extension'], t:['Triceps'], s:['Hinge over facing the tower, handle from the low pulley, upper arm along your side.','Extend the arm straight back.','Return slowly. Switch arms.'] },
+  single_arm_overhead_ext: { f:['Dumbbell','Standing','Extension'], t:['Triceps'], s:['One dumbbell overhead, arm straight, other hand supporting the elbow.','Lower it behind your head by bending only the elbow.','Extend back to straight. Switch arms.'] },
+  single_arm_pushdown: { f:['Cable','Standing','Extension'], t:['Triceps'], s:['Face the tower, one handle from the high pulley, elbow pinned.','Push the handle down until your arm is straight.','Return slowly to 90°. Switch arms.'] },
+  reverse_grip_pushdown: { f:['Cable','Standing','Extension'], t:['Triceps'], s:['Straight bar from the high pulley, underhand grip, elbows at your sides.','Push the bar down to your thighs.','Let it rise slowly to 90°.'] },
+  vbar_pushdown: { f:['Cable','Standing','Extension'], t:['Triceps'], s:['V-bar from the high pulley, elbows tucked at your sides.','Push down until your arms are straight, squeeze.','Return slowly to 90°.'] },
+  ez_overhead_ext: { f:['Barbell','Seated','Extension'], t:['Triceps'], s:['Sit tall, EZ bar overhead with straight arms, narrow grip.','Lower it behind your head by bending only your elbows.','Extend back up without flaring your elbows out.'] },
+  machine_tricep_ext: { f:['Machine','Seated','Extension'], t:['Triceps'], s:['Upper arms on the pad, grip the handles.','Push the handles down until your arms are straight.','Return slowly to the start.'] },
+  machine_tricep_dip: { f:['Machine','Seated','Press'], t:['Triceps','Lower chest'], s:['Sit tall, hands on the handles at your sides.','Press them down until your arms are straight.','Let them rise slowly to 90°.'] },
+  assisted_tricep_dip: { f:['Machine','Kneeling','Press'], t:['Triceps'], s:['Kneel on the pad, torso upright, hands on the bars.','Lower until your elbows are at 90°, elbows pointing back.','Press up. Less assist weight = harder.'] },
+  bench_dip: { f:['Bodyweight','Seated','Press'], t:['Triceps'], s:['Hands on the bench edge behind you, legs out in front.','Lower your hips by bending your elbows to 90°.','Press back up, elbows pointing straight back.'] },
+  jm_press: { f:['Barbell','Lying Flat','Press'], t:['Triceps'], s:['Lie flat, close grip, bar over your upper chest.','Lower the bar toward your chin, elbows forward and tucked.','Press back up. Light weight, it is half skull crusher, half press.'] },
+  weighted_tricep_dip: { f:['Bodyweight','Standing','Press'], t:['Triceps','Lower chest'], s:['Plate on a dip belt, torso upright on the bars.','Lower until your elbows reach 90°, elbows back.','Press back up to straight arms.'] },
+  smith_close_grip_bench: { f:['Smith Machine','Lying Flat','Press'], t:['Triceps','Chest'], s:['Grip the bar at shoulder width, unhook.','Lower to your lower chest with elbows tucked.','Press up along the rails, re-hook when done.'] },
 };
 
 /* Generic how-to for user-built custom exercises, assembled from their
