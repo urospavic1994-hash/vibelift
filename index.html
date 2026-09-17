@@ -2518,6 +2518,21 @@ const DB = [
   { group:'legs', gl:'Legs', eq:'bodyweight', id:'jump_squat', name:'Jump Squat', img:'Jump Squat.png' },
   { group:'legs', gl:'Legs', eq:'dumbbell', id:'lateral_lunge', name:'Lateral Lunge', img:'Lateral Lunge.png' },
   { group:'legs', gl:'Legs', eq:'cable', id:'cable_pull_through', name:'Cable Pull-Through', img:'Cable Pull-Through.png' },
+
+  // ── added 2026-09-17 (library expansion) ──
+  { group:'legs', gl:'Legs', eq:'bodyweight', id:'glute_bridge', name:'Glute Bridge', img:'Glute Bridge.png' },
+  { group:'legs', gl:'Legs', eq:'bodyweight', id:'single_leg_hip_thrust', name:'Single-Leg Hip Thrust', img:'Single-Leg Hip Thrust.png' },
+  { group:'legs', gl:'Legs', eq:'cable', id:'cable_hip_abduction', name:'Cable Hip Abduction', img:'Cable Hip Abduction.png' },
+  { group:'arms', gl:'Arms', eq:'dumbbell', id:'lying_db_tricep_ext', name:'Lying Dumbbell Tricep Extension', img:'Lying Dumbbell Tricep Extension.png' },
+  { group:'core', gl:'Core', eq:'bodyweight', id:'situp', name:'Sit-Up', img:'Sit-Up.png' },
+  { group:'core', gl:'Core', eq:'bodyweight', id:'decline_situp', name:'Decline Sit-Up', img:'Decline Sit-Up.png' },
+  { group:'core', gl:'Core', eq:'bodyweight', id:'bicycle_crunch', name:'Bicycle Crunch', img:'Bicycle Crunch.png' },
+  { group:'core', gl:'Core', eq:'bodyweight', id:'reverse_crunch', name:'Reverse Crunch', img:'Reverse Crunch.png' },
+  { group:'core', gl:'Core', eq:'bodyweight', id:'oblique_crunch', name:'Oblique Crunch', img:'Oblique Crunch.png' },
+  { group:'core', gl:'Core', eq:'bodyweight', id:'toe_touch', name:'Toe Touch', img:'Toe Touch.png' },
+  { group:'core', gl:'Core', eq:'bodyweight', id:'flutter_kicks', name:'Flutter Kicks', img:'Flutter Kicks.png' },
+  { group:'core', gl:'Core', eq:'bodyweight', id:'hollow_hold', name:'Hollow Body Hold', img:'Hollow Body Hold.png' },
+  { group:'core', gl:'Core', eq:'bodyweight', id:'dragon_flag', name:'Dragon Flag', img:'Dragon Flag.png' },
 ];
 
 /* ═══════════════════════════════════════
@@ -2831,6 +2846,20 @@ const WIKI_DATA = {
   jump_squat: { f:['Bodyweight','Standing','Squat'], t:['Quads','Glutes','Calves'], s:['Squat to about parallel, arms swinging back.','Explode up as high as you can.','Land softly into the next squat.'] },
   lateral_lunge: { f:['Dumbbell','Standing','Lunge'], t:['Glutes','Quads','Hamstrings'], s:['Hold one dumbbell at your chest, feet together.','Step wide to one side and sit into that hip, other leg straight.','Push back to standing. Alternate sides.'] },
   cable_pull_through: { f:['Cable','Standing','Pull'], t:['Glutes','Hamstrings'], s:['Face away from the tower, rope between your legs from the low pulley.','Hinge at the hips, letting the rope pull back between your legs.','Drive your hips forward and squeeze your glutes to stand.'] },
+  // ── added 2026-09-17 (library expansion) ──
+  glute_bridge: { f:['Bodyweight','Lying Flat','Squat'], t:['Glutes','Hamstrings'], s:['Lie on your back, knees bent, feet flat.','Drive your hips up until your body is straight from shoulders to knees.','Squeeze your glutes at the top, lower slowly.'] },
+  single_leg_hip_thrust: { f:['Bodyweight','Lying Flat','Squat'], t:['Glutes','Hamstrings'], s:['Upper back on a bench, one foot flat, other leg extended.','Drive the planted heel down and lift your hips until level.','Lower slowly. All reps one side, then switch.'] },
+  cable_hip_abduction: { f:['Cable','Standing','Raise'], t:['Glutes'], s:['Side-on to the tower, cuff on your far ankle, hold the frame.','Lift that leg straight out to the side, toes forward.','Lower slowly. Switch sides.'] },
+  lying_db_tricep_ext: { f:['Dumbbell','Lying Flat','Extension'], t:['Triceps'], s:['Lie flat, dumbbells over your chest, palms facing each other.','Bend your elbows to lower them beside your head.','Extend back up; upper arms stay vertical.'] },
+  situp: { f:['Bodyweight','Lying Flat','Curl'], t:['Abs','Hip flexors'], s:['Lie back, knees bent, feet flat, hands behind your head.','Curl all the way up until your chest is near your knees.','Lower slowly, one vertebra at a time.'] },
+  decline_situp: { f:['Bodyweight','Decline','Curl'], t:['Abs','Hip flexors'], s:['Hook your feet under the pads, lie back on the decline.','Sit up until your torso is upright.','Lower slowly, don’t drop.'] },
+  bicycle_crunch: { f:['Bodyweight','Lying Flat','Curl'], t:['Abs','Obliques'], s:['Hands behind your head, legs raised.','Bring one elbow to the opposite knee while the other leg extends.','Switch sides in a slow pedalling rhythm.'] },
+  reverse_crunch: { f:['Bodyweight','Lying Flat','Curl'], t:['Lower abs'], s:['Lie back, hands at your sides, knees bent over your hips.','Curl your hips off the floor, pulling your knees toward your chest.','Lower slowly without swinging.'] },
+  oblique_crunch: { f:['Bodyweight','Lying Flat','Curl'], t:['Obliques'], s:['Lie back with your knees dropped to one side.','Crunch straight up, shoulders off the floor.','Lower slowly. Switch sides halfway.'] },
+  toe_touch: { f:['Bodyweight','Lying Flat','Curl'], t:['Abs'], s:['Legs straight up, arms reaching toward the ceiling.','Crunch up and reach for your toes.','Lower your shoulders slowly, legs stay up.'] },
+  flutter_kicks: { f:['Bodyweight','Lying Flat','Raise'], t:['Lower abs','Hip flexors'], s:['Hands under your hips, legs straight and slightly raised.','Kick your legs up and down in small quick movements.','Keep your lower back pressed into the floor.'] },
+  hollow_hold: { f:['Bodyweight','Lying Flat','Hold'], t:['Abs','Core'], s:['Lie flat, press your lower back into the floor.','Lift your arms overhead and legs a few centimetres, body a shallow curve.','Hold for time, breathing steadily.'] },
+  dragon_flag: { f:['Bodyweight','Lying Flat','Raise'], t:['Abs','Core'], s:['Lie on a bench and grip it behind your head.','Raise your whole body rigid onto your shoulders.','Lower slowly as one straight line. Advanced move.'] },
 };
 
 /* Generic how-to for user-built custom exercises, assembled from their
