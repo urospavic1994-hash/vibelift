@@ -2503,6 +2503,21 @@ const DB = [
   { group:'core', gl:'Core', eq:'bodyweight', id:'jackknife_situp', name:'Jackknife Sit-Up', img:'Jackknife Sit-Up.png' },
   { group:'core', gl:'Core', eq:'bodyweight', id:'heel_touch', name:'Heel Touch', img:'Heel Touch.png' },
   { group:'core', gl:'Core', eq:'plate', id:'weighted_russian_twist', name:'Weighted Russian Twist', img:'Weighted Russian Twist.png' },
+
+  // ── added 2026-09-17 (library expansion) ──
+  { group:'chest', gl:'Chest', eq:'bodyweight', id:'incline_pushup', name:'Incline Push-Up', img:'Incline Push-Up.png' },
+  { group:'chest', gl:'Chest', eq:'cable', id:'flat_bench_cable_fly', name:'Flat Bench Cable Fly', img:'Flat Bench Cable Fly.png' },
+  { group:'chest', gl:'Chest', eq:'barbell', id:'wide_grip_bench', name:'Wide-Grip Bench Press', img:'Wide-Grip Bench Press.png' },
+  { group:'back', gl:'Back', eq:'barbell', id:'snatch_grip_deadlift', name:'Snatch-Grip Deadlift', img:'Snatch-Grip Deadlift.png' },
+  { group:'back', gl:'Back', eq:'bodyweight', id:'superman', name:'Superman', img:'Superman.png' },
+  { group:'shoulders', gl:'Shoulders', eq:'barbell', id:'barbell_front_raise', name:'Barbell Front Raise', img:'Barbell Front Raise.png' },
+  { group:'shoulders', gl:'Shoulders', eq:'dumbbell', id:'incline_y_raise', name:'Incline Y Raise', img:'Incline Y Raise.png' },
+  { group:'shoulders', gl:'Shoulders', eq:'dumbbell', id:'incline_rear_delt_fly', name:'Incline Rear Delt Fly', img:'Incline Rear Delt Fly.png' },
+  { group:'shoulders', gl:'Shoulders', eq:'barbell', id:'behind_back_shrug', name:'Behind-the-Back Barbell Shrug', img:'Behind-the-Back Barbell Shrug.png' },
+  { group:'shoulders', gl:'Shoulders', eq:'bodyweight', id:'pike_pushup', name:'Pike Push-Up', img:'Pike Push-Up.png' },
+  { group:'legs', gl:'Legs', eq:'bodyweight', id:'jump_squat', name:'Jump Squat', img:'Jump Squat.png' },
+  { group:'legs', gl:'Legs', eq:'dumbbell', id:'lateral_lunge', name:'Lateral Lunge', img:'Lateral Lunge.png' },
+  { group:'legs', gl:'Legs', eq:'cable', id:'cable_pull_through', name:'Cable Pull-Through', img:'Cable Pull-Through.png' },
 ];
 
 /* ═══════════════════════════════════════
@@ -2802,6 +2817,20 @@ const WIKI_DATA = {
   jackknife_situp: { f:['Bodyweight','Lying Flat','Curl'], t:['Abs','Hip flexors'], s:['Lie flat, arms overhead, legs straight.','Fold in half, hands reaching your shins above your hips.','Lower slowly back to flat.'] },
   heel_touch: { f:['Bodyweight','Lying Flat','Curl'], t:['Obliques'], s:['Lie back, knees bent, shoulders lifted a little.','Reach one hand down to touch the same-side heel.','Alternate sides, shoulders stay up.'] },
   weighted_russian_twist: { f:['Plate','Seated','Pull'], t:['Obliques','Abs'], s:['Sit leaning back, feet raised, plate in both hands.','Rotate your torso to one side, plate following.','Rotate to the other side, slow and controlled.'] },
+  // ── added 2026-09-17 (library expansion) ──
+  incline_pushup: { f:['Bodyweight','Incline','Press'], t:['Lower chest','Triceps','Core'], s:['Hands on a bench, body in one straight line from head to heels.','Lower your chest to the bench edge, elbows about 45°.','Push back up without letting your hips sag.'] },
+  flat_bench_cable_fly: { f:['Cable','Lying Flat','Fly'], t:['Chest'], s:['Bench between the towers, pulleys low, handles over your chest.','Open wide with soft elbows until you feel the stretch.','Bring the handles together above your chest and squeeze.'] },
+  wide_grip_bench: { f:['Barbell','Lying Flat','Press'], t:['Chest','Front delts'], s:['Grip well outside your shoulders, feet planted.','Lower the bar to mid-chest, elbows flared a little more than usual.','Press straight up and lock out.'] },
+  snatch_grip_deadlift: { f:['Barbell','Standing','Pull'], t:['Upper back','Traps','Hamstrings'], s:['Very wide grip, hands near the plates, hips low.','Stand up, keeping the bar close and upper back tight.','Lower with control. Much lighter than your normal deadlift.'] },
+  superman: { f:['Bodyweight','Lying Flat','Raise'], t:['Lower back','Glutes'], s:['Lie face down, arms stretched forward.','Lift arms, chest and legs off the floor together.','Hold 2 seconds, lower slowly.'] },
+  barbell_front_raise: { f:['Barbell','Standing','Raise'], t:['Front delts'], s:['Hold a light bar at your thighs, overhand grip.','Raise it with straight arms to shoulder height.','Lower slowly, no swinging.'] },
+  incline_y_raise: { f:['Dumbbell','Incline','Raise'], t:['Rear delts','Upper back'], s:['Chest down on an incline bench, light dumbbells hanging, thumbs up.','Raise your arms up and forward into a Y shape.','Lower slowly. Very light weight works.'] },
+  incline_rear_delt_fly: { f:['Dumbbell','Incline','Fly'], t:['Rear delts'], s:['Chest down on an incline bench, dumbbells hanging.','Raise them straight out to the sides to shoulder height.','Lower slowly, keeping your chest on the pad.'] },
+  behind_back_shrug: { f:['Barbell','Standing','Raise'], t:['Traps'], s:['Hold the bar behind your thighs, overhand grip.','Shrug your shoulders up toward your ears.','Lower slowly, keep your chest up.'] },
+  pike_pushup: { f:['Bodyweight','Kneeling','Press'], t:['Shoulders','Triceps'], s:['Hands and feet on the floor, hips pushed high into a V.','Lower the top of your head toward the floor between your hands.','Press back up until your arms are straight.'] },
+  jump_squat: { f:['Bodyweight','Standing','Squat'], t:['Quads','Glutes','Calves'], s:['Squat to about parallel, arms swinging back.','Explode up as high as you can.','Land softly into the next squat.'] },
+  lateral_lunge: { f:['Dumbbell','Standing','Lunge'], t:['Glutes','Quads','Hamstrings'], s:['Hold one dumbbell at your chest, feet together.','Step wide to one side and sit into that hip, other leg straight.','Push back to standing. Alternate sides.'] },
+  cable_pull_through: { f:['Cable','Standing','Pull'], t:['Glutes','Hamstrings'], s:['Face away from the tower, rope between your legs from the low pulley.','Hinge at the hips, letting the rope pull back between your legs.','Drive your hips forward and squeeze your glutes to stand.'] },
 };
 
 /* Generic how-to for user-built custom exercises, assembled from their
