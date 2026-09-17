@@ -2370,6 +2370,21 @@ const DB = [
   { group:'back', gl:'Back', eq:'machine', id:'machine_back_extension', name:'Machine Back Extension', img:'Machine Back Extension.png' },
   { group:'back', gl:'Back', eq:'machine', id:'reverse_hyper', name:'Reverse Hyperextension', img:'Reverse Hyperextension.png' },
   { group:'back', gl:'Back', eq:'dumbbell', id:'farmers_carry', name:'Farmers Carry', img:'Farmers Carry.png' },
+
+  // ── added 2026-09-17 (library expansion) ──
+  { group:'shoulders', gl:'Shoulders', eq:'dumbbell', id:'standing_db_ohp', name:'Standing Dumbbell Overhead Press', img:'Standing Dumbbell Overhead Press.png' },
+  { group:'shoulders', gl:'Shoulders', eq:'barbell', id:'seated_barbell_ohp', name:'Seated Barbell Overhead Press', img:'Seated Barbell Overhead Press.png' },
+  { group:'shoulders', gl:'Shoulders', eq:'machine', id:'smith_shoulder_press', name:'Smith Machine Shoulder Press', img:'Smith Machine Shoulder Press.png' },
+  { group:'shoulders', gl:'Shoulders', eq:'barbell', id:'z_press', name:'Z Press', img:'Z Press.png' },
+  { group:'shoulders', gl:'Shoulders', eq:'dumbbell', id:'single_arm_db_press', name:'Single-Arm Dumbbell Press', img:'Single-Arm Dumbbell Press.png' },
+  { group:'shoulders', gl:'Shoulders', eq:'dumbbell', id:'db_push_press', name:'Dumbbell Push Press', img:'Dumbbell Push Press.png' },
+  { group:'shoulders', gl:'Shoulders', eq:'cable', id:'cable_front_raise', name:'Cable Front Raise', img:'Cable Front Raise.png' },
+  { group:'shoulders', gl:'Shoulders', eq:'dumbbell', id:'leaning_db_lateral_raise', name:'Leaning Dumbbell Lateral Raise', img:'Leaning Dumbbell Lateral Raise.png' },
+  { group:'shoulders', gl:'Shoulders', eq:'dumbbell', id:'seated_db_lateral_raise', name:'Seated Dumbbell Lateral Raise', img:'Seated Dumbbell Lateral Raise.png' },
+  { group:'shoulders', gl:'Shoulders', eq:'dumbbell', id:'seated_rear_delt_fly', name:'Seated Rear Delt Fly', img:'Seated Rear Delt Fly.png' },
+  { group:'shoulders', gl:'Shoulders', eq:'cable', id:'single_arm_cable_rear_delt', name:'Single-Arm Cable Rear Delt Fly', img:'Single-Arm Cable Rear Delt Fly.png' },
+  { group:'shoulders', gl:'Shoulders', eq:'cable', id:'cable_upright_row', name:'Cable Upright Row', img:'Cable Upright Row.png' },
+  { group:'shoulders', gl:'Shoulders', eq:'dumbbell', id:'db_upright_row', name:'Dumbbell Upright Row', img:'Dumbbell Upright Row.png' },
 ];
 
 /* ═══════════════════════════════════════
@@ -2546,6 +2561,20 @@ const WIKI_DATA = {
   machine_back_extension: { f:['Machine','Seated','Extension'], t:['Lower back'], s:['Sit with the pad against your upper back, feet on the platform.','Lean back against the pad until your body is nearly straight.','Return slowly, do not bounce.'] },
   reverse_hyper: { f:['Machine','Lying Flat','Raise'], t:['Glutes','Lower back','Hamstrings'], s:['Lie face down on the pad, hold the handles, legs hanging.','Swing both straight legs up to hip height.','Lower slowly, no jerking.'] },
   farmers_carry: { f:['Dumbbell','Standing','Hold'], t:['Traps','Forearms','Core'], s:['Heavy dumbbell in each hand, stand tall, shoulders back.','Walk with short quick steps, arms straight.','Set them down with a flat back when your grip is nearly gone.'] },
+  // ── added 2026-09-17 (library expansion) ──
+  standing_db_ohp: { f:['Dumbbell','Standing','Press'], t:['Shoulders','Triceps'], s:['Dumbbells at shoulder height, feet hip width, core braced.','Press both straight up until your arms lock out.','Lower to your shoulders under control, no leaning back.'] },
+  seated_barbell_ohp: { f:['Barbell','Seated','Press'], t:['Shoulders','Triceps'], s:['Sit tall against the upright pad, bar at your collarbone.','Press straight up, moving your head back slightly to clear the bar.','Lower to the collarbone under control.'] },
+  smith_shoulder_press: { f:['Smith Machine','Seated','Press'], t:['Shoulders','Triceps'], s:['Bench under the bar so it lands just in front of your face.','Unhook, press up along the rails to lockout.','Lower to chin height, re-hook when done.'] },
+  z_press: { f:['Barbell','Seated','Press'], t:['Shoulders','Core','Triceps'], s:['Sit on the floor with legs straight out, bar at your collarbone.','Press overhead without leaning back; your core does the work.','Lower slowly. Light weight, strict form.'] },
+  single_arm_db_press: { f:['Dumbbell','Standing','Press'], t:['Shoulders','Core'], s:['One dumbbell at shoulder height, other arm at your side.','Press straight up without leaning away from it.','Lower slowly. Switch arms each set.'] },
+  db_push_press: { f:['Dumbbell','Standing','Press'], t:['Shoulders','Triceps','Legs'], s:['Dumbbells at your shoulders, feet hip width.','Dip your knees a little, then drive up and press in one motion.','Lower the dumbbells to your shoulders slowly.'] },
+  cable_front_raise: { f:['Cable','Standing','Raise'], t:['Front delts'], s:['Back to the tower, straight bar from the low pulley at your thighs.','Raise it to shoulder height with straight arms.','Lower slowly against the cable.'] },
+  leaning_db_lateral_raise: { f:['Dumbbell','Standing','Raise'], t:['Side delts'], s:['Hold a post with one hand and lean away from it, dumbbell in the other.','Raise the dumbbell out to the side to shoulder height.','Lower slowly. The lean keeps tension on from the start.'] },
+  seated_db_lateral_raise: { f:['Dumbbell','Seated','Raise'], t:['Side delts'], s:['Sit on the bench end, dumbbells at your sides.','Raise both out to shoulder height, elbows slightly bent.','Lower slowly; sitting stops you from cheating.'] },
+  seated_rear_delt_fly: { f:['Dumbbell','Bent-Over','Fly'], t:['Rear delts','Upper back'], s:['Sit on the bench end and fold your chest onto your thighs.','Raise the dumbbells out to the sides, elbows slightly bent.','Lower slowly without lifting your chest.'] },
+  single_arm_cable_rear_delt: { f:['Cable','Standing','Fly'], t:['Rear delts'], s:['Stand side-on, handle at shoulder height in your far hand.','Pull it across and out to the side with a nearly straight arm.','Return slowly. Switch arms each set.'] },
+  cable_upright_row: { f:['Cable','Standing','Pull'], t:['Side delts','Traps'], s:['Face the tower, straight bar from the low pulley at your thighs.','Pull it up your body to chest height, elbows leading.','Lower slowly to straight arms.'] },
+  db_upright_row: { f:['Dumbbell','Standing','Pull'], t:['Side delts','Traps'], s:['Dumbbells in front of your thighs, palms facing you.','Pull them up along your body to chest height, elbows high and wide.','Lower under control.'] },
 };
 
 /* Generic how-to for user-built custom exercises, assembled from their
