@@ -2490,6 +2490,19 @@ const DB = [
   { group:'core', gl:'Core', eq:'cable', id:'standing_cable_crunch', name:'Standing Cable Crunch', img:'Standing Cable Crunch.png' },
   { group:'core', gl:'Core', eq:'cable', id:'cable_side_bend', name:'Cable Side Bend', img:'Cable Side Bend.png' },
   { group:'core', gl:'Core', eq:'dumbbell', id:'db_side_bend', name:'Dumbbell Side Bend', img:'Dumbbell Side Bend.png' },
+
+  // ── added 2026-09-17 (library expansion) ──
+  { group:'core', gl:'Core', eq:'barbell', id:'landmine_rotation', name:'Landmine Rotation', img:'Landmine Rotation.png' },
+  { group:'core', gl:'Core', eq:'dumbbell', id:'suitcase_carry', name:'Suitcase Carry', img:'Suitcase Carry.png' },
+  { group:'core', gl:'Core', eq:'plate', id:'weighted_plank', name:'Weighted Plank', img:'Weighted Plank.png' },
+  { group:'core', gl:'Core', eq:'bodyweight', id:'plank_leg_lift', name:'Plank Leg Lift', img:'Plank Leg Lift.png' },
+  { group:'core', gl:'Core', eq:'bodyweight', id:'reverse_plank', name:'Reverse Plank', img:'Reverse Plank.png' },
+  { group:'core', gl:'Core', eq:'bodyweight', id:'l_sit', name:'L-Sit', img:'L-Sit.png' },
+  { group:'core', gl:'Core', eq:'bodyweight', id:'hanging_oblique_knee_raise', name:'Hanging Oblique Knee Raise', img:'Hanging Oblique Knee Raise.png' },
+  { group:'core', gl:'Core', eq:'barbell', id:'barbell_rollout', name:'Barbell Rollout', img:'Barbell Rollout.png' },
+  { group:'core', gl:'Core', eq:'bodyweight', id:'jackknife_situp', name:'Jackknife Sit-Up', img:'Jackknife Sit-Up.png' },
+  { group:'core', gl:'Core', eq:'bodyweight', id:'heel_touch', name:'Heel Touch', img:'Heel Touch.png' },
+  { group:'core', gl:'Core', eq:'plate', id:'weighted_russian_twist', name:'Weighted Russian Twist', img:'Weighted Russian Twist.png' },
 ];
 
 /* ═══════════════════════════════════════
@@ -2777,6 +2790,18 @@ const WIKI_DATA = {
   standing_cable_crunch: { f:['Cable','Standing','Curl'], t:['Abs'], s:['Back to the tower, rope from the high pulley held beside your head.','Crunch forward and down, ribs toward hips.','Return slowly without leaning back.'] },
   cable_side_bend: { f:['Cable','Standing','Pull'], t:['Obliques'], s:['Side-on to the tower, handle from the low pulley in your near hand.','Bend sideways away from the tower.','Return slowly. Switch sides.'] },
   db_side_bend: { f:['Dumbbell','Standing','Pull'], t:['Obliques'], s:['Dumbbell in one hand, other hand behind your head.','Bend sideways toward the dumbbell, then pull back up past centre.','All reps one side, then switch.'] },
+  // ── added 2026-09-17 (library expansion) ──
+  landmine_rotation: { f:['Barbell','Standing','Pull'], t:['Obliques','Core'], s:['Hold the bar end at chest height with straight arms.','Rotate it in an arc down to one hip, pivoting your back foot.','Bring it back up and over to the other side.'] },
+  suitcase_carry: { f:['Dumbbell','Standing','Hold'], t:['Obliques','Core','Forearms'], s:['Heavy dumbbell in one hand only, stand perfectly straight.','Walk with short steps without leaning to either side.','Switch hands halfway.'] },
+  weighted_plank: { f:['Plate','Lying Flat','Hold'], t:['Core','Abs'], s:['Forearm plank, a plate placed on your upper back.','Hold a straight line for time.','Squeeze glutes and abs; no sagging hips.'] },
+  plank_leg_lift: { f:['Bodyweight','Lying Flat','Raise'], t:['Core','Glutes'], s:['Forearm plank, body straight.','Lift one leg a few centimetres, hold 2 seconds.','Lower, switch legs. Hips stay level.'] },
+  reverse_plank: { f:['Bodyweight','Seated','Hold'], t:['Core','Glutes','Lower back'], s:['Sit with legs straight, hands behind you, fingers forward.','Lift your hips until your body is a straight line facing up.','Hold for time, squeezing your glutes.'] },
+  l_sit: { f:['Bodyweight','Seated','Hold'], t:['Abs','Hip flexors','Triceps'], s:['Support yourself on parallel bars with straight arms.','Lift both legs straight out in front, parallel to the floor.','Hold for time. Bend knees to make it easier.'] },
+  hanging_oblique_knee_raise: { f:['Bodyweight','Hanging','Raise'], t:['Obliques','Lower abs'], s:['Hang from the bar, shoulders down.','Raise your knees up and twist them to one side.','Lower slowly, then the other side.'] },
+  barbell_rollout: { f:['Barbell','Kneeling','Extension'], t:['Abs','Core'], s:['Kneel gripping a bar with small plates on the floor.','Roll it forward with straight arms until your body is stretched out.','Pull back using your abs, not your hips.'] },
+  jackknife_situp: { f:['Bodyweight','Lying Flat','Curl'], t:['Abs','Hip flexors'], s:['Lie flat, arms overhead, legs straight.','Fold in half, hands reaching your shins above your hips.','Lower slowly back to flat.'] },
+  heel_touch: { f:['Bodyweight','Lying Flat','Curl'], t:['Obliques'], s:['Lie back, knees bent, shoulders lifted a little.','Reach one hand down to touch the same-side heel.','Alternate sides, shoulders stay up.'] },
+  weighted_russian_twist: { f:['Plate','Seated','Pull'], t:['Obliques','Abs'], s:['Sit leaning back, feet raised, plate in both hands.','Rotate your torso to one side, plate following.','Rotate to the other side, slow and controlled.'] },
 };
 
 /* Generic how-to for user-built custom exercises, assembled from their
