@@ -2417,6 +2417,19 @@ const DB = [
   { group:'legs', gl:'Legs', eq:'dumbbell', id:'curtsy_lunge', name:'Curtsy Lunge', img:'Curtsy Lunge.png' },
   { group:'legs', gl:'Legs', eq:'dumbbell', id:'split_squat', name:'Split Squat', img:'Split Squat.png' },
   { group:'legs', gl:'Legs', eq:'machine', id:'leg_press_calf_raise', name:'Leg Press Calf Raise', img:'Leg Press Calf Raise.png' },
+
+  // ── added 2026-09-17 (library expansion) ──
+  { group:'legs', gl:'Legs', eq:'machine', id:'donkey_calf_raise', name:'Donkey Calf Raise', img:'Donkey Calf Raise.png' },
+  { group:'legs', gl:'Legs', eq:'dumbbell', id:'single_leg_calf_raise', name:'Single-Leg Calf Raise', img:'Single-Leg Calf Raise.png' },
+  { group:'legs', gl:'Legs', eq:'machine', id:'smith_calf_raise', name:'Smith Machine Calf Raise', img:'Smith Machine Calf Raise.png' },
+  { group:'legs', gl:'Legs', eq:'dumbbell', id:'db_rdl', name:'Dumbbell Romanian Deadlift', img:'Dumbbell Romanian Deadlift.png' },
+  { group:'legs', gl:'Legs', eq:'dumbbell', id:'single_leg_rdl', name:'Single-Leg Romanian Deadlift', img:'Single-Leg Romanian Deadlift.png' },
+  { group:'legs', gl:'Legs', eq:'bodyweight', id:'nordic_curl', name:'Nordic Hamstring Curl', img:'Nordic Hamstring Curl.png' },
+  { group:'legs', gl:'Legs', eq:'machine', id:'glute_ham_raise', name:'Glute Ham Raise', img:'Glute Ham Raise.png' },
+  { group:'legs', gl:'Legs', eq:'machine', id:'machine_hip_thrust', name:'Machine Hip Thrust', img:'Machine Hip Thrust.png' },
+  { group:'legs', gl:'Legs', eq:'machine', id:'hip_adduction', name:'Hip Adduction Machine', img:'Hip Adduction Machine.png' },
+  { group:'legs', gl:'Legs', eq:'machine', id:'single_leg_press', name:'Single-Leg Leg Press', img:'Single-Leg Leg Press.png' },
+  { group:'legs', gl:'Legs', eq:'machine', id:'sled_push', name:'Sled Push', img:'Sled Push.png' },
 ];
 
 /* ═══════════════════════════════════════
@@ -2637,6 +2650,18 @@ const WIKI_DATA = {
   curtsy_lunge: { f:['Dumbbell','Standing','Lunge'], t:['Glutes','Quads'], s:['Dumbbells at your sides, stand tall.','Step one leg back and across behind the other, lowering into a curtsy.','Push through the front heel to stand. Alternate.'] },
   split_squat: { f:['Dumbbell','Standing','Lunge'], t:['Quads','Glutes'], s:['Take a long stance, dumbbells at your sides.','Lower straight down until the back knee is near the floor.','Drive up through the front foot. All reps one side, then switch.'] },
   leg_press_calf_raise: { f:['Machine','Seated','Raise'], t:['Calves'], s:['Balls of your feet on the bottom edge of the platform, legs straight.','Push through your toes as far as you can.','Lower slowly to a full stretch.'] },
+  // ── added 2026-09-17 (library expansion) ──
+  donkey_calf_raise: { f:['Machine','Bent-Over','Raise'], t:['Calves'], s:['Hinge over with the pad on your lower back, toes on the edge.','Rise up onto your toes as high as you can.','Lower slowly until your heels are below the edge.'] },
+  single_leg_calf_raise: { f:['Dumbbell','Standing','Raise'], t:['Calves'], s:['Ball of one foot on a step, dumbbell on the same side, other hand for balance.','Rise as high as you can onto your toes.','Lower slowly below the step. Switch legs.'] },
+  smith_calf_raise: { f:['Smith Machine','Standing','Raise'], t:['Calves'], s:['Bar on your shoulders, balls of your feet on a block.','Rise up onto your toes, pause at the top.','Lower slowly to a deep stretch.'] },
+  db_rdl: { f:['Dumbbell','Standing','Pull'], t:['Hamstrings','Glutes'], s:['Dumbbells in front of your thighs, knees slightly bent.','Push your hips back and slide the dumbbells down your legs to knee height.','Drive your hips forward to stand, back flat throughout.'] },
+  single_leg_rdl: { f:['Dumbbell','Standing','Pull'], t:['Hamstrings','Glutes','Core'], s:['Dumbbell in one hand, stand on the opposite leg.','Hinge forward, free leg extending straight behind you.','Squeeze the glute to come back up. Switch sides.'] },
+  nordic_curl: { f:['Bodyweight','Kneeling','Curl'], t:['Hamstrings'], s:['Kneel with your ankles anchored, body upright.','Lower your torso forward as slowly as you can, hips straight.','Catch yourself with your hands and push back to the start.'] },
+  glute_ham_raise: { f:['Machine','Kneeling','Curl'], t:['Hamstrings','Glutes'], s:['Knees on the pad, feet locked, torso horizontal.','Curl your body up to vertical using your hamstrings.','Lower slowly back to horizontal.'] },
+  machine_hip_thrust: { f:['Machine','Seated','Squat'], t:['Glutes','Hamstrings'], s:['Back on the pad, belt across your hips, feet flat.','Thrust your hips up until your body is straight.','Squeeze hard at the top, lower under control.'] },
+  hip_adduction: { f:['Machine','Seated','Squat'], t:['Glutes','Legs'], s:['Sit with the pads on the inside of your knees, legs open.','Squeeze your legs together against the pads.','Open slowly under control.'] },
+  single_leg_press: { f:['Machine','Seated','Press'], t:['Quads','Glutes'], s:['One foot centred on the platform, other foot on the floor or rest.','Lower until your knee is at about 90°.','Press back up without locking the knee. Switch legs.'] },
+  sled_push: { f:['Machine','Standing','Press'], t:['Quads','Glutes','Calves'], s:['Arms straight on the high handles, lean in at about 45°.','Drive with short powerful steps, pushing through the balls of your feet.','Keep your back flat and head neutral the whole way.'] },
 };
 
 /* Generic how-to for user-built custom exercises, assembled from their
