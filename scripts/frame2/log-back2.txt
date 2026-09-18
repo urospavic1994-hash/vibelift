@@ -1,0 +1,14 @@
+Reverse-Grip Lat Pulldown | OK | 3.7%
+Single-Arm Lat Pulldown | OK | 4.5%
+Plate-Loaded Lat Pulldown | OK | 5.1%
+Wide-Grip Pull-Up | OK | 7.8%
+Neutral-Grip Pull-Up | OK | 3.6%
+Weighted Pull-Up | OK | 1.7%
+Assisted Pull-Up Machine | OK | 4.6%
+Negative Pull-Up | OK | 1.8%
+Scapular Pull-Up | FAIL | echo
+Underhand Barbell Row | OK | 1.7%
+Smith Machine Row | OK | 1.9%
+Dumbbell Bent-Over Row | OK | 7.7%
+Seal Row | OK | 3.0%
+Renegade Row | OK | 8.6%

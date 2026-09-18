@@ -1,0 +1,14 @@
+Chin-Up | OK | 5.9%
+Dumbbell Single Arm Row | FAIL | echo
+Face Pull | OK | 2.6%
+Meadows Row | OK | 3.8%
+Rack Pull | OK | 1.8%
+Seated Cable Row | OK | 3.6%
+Seated Machine Row | OK | 1.7%
+Straight Arm Pulldown | OK | 2.8%
+T-Bar Row using a T-bar row machine | OK | 9.0%
+Pendlay Row | OK | 10.9%
+Chest-Supported Row | OK | 3.9%
+Close-Grip Lat Pulldown | OK | 3.3%
+Dumbbell Deadlift | OK | 15.5%
+Wide-Grip Lat Pulldown | OK | 3.7%

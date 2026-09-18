@@ -1,0 +1,14 @@
+Landmine Row | OK | 3.4%
+Single-Arm Cable Row | OK | 3.5%
+Wide-Grip Seated Cable Row | OK | 4.0%
+Machine High Row | OK | 5.4%
+Plate-Loaded Low Row | OK | 4.3%
+Chest-Supported T-Bar Row | OK | 2.8%
+Trap Bar Deadlift | OK | 4.2%
+Deficit Deadlift | OK | 4.5%
+Stiff-Leg Deadlift | OK | 2.2%
+Good Morning | OK | 2.7%
+Back Extension | OK | 5.2%
+Reverse Hyperextension | OK | 5.3%
+Snatch-Grip Deadlift | OK | 15.7%
+Superman | OK | 3.2%
