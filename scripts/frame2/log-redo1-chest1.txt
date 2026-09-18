@@ -1,0 +1,15 @@
+Pull-Up | OK | 6.2%
+Dumbbell Lateral Raise | OK | 4.9%
+Barbell Bicep Curl | OK | 8.0%
+Push-Up | OK | 2.0%
+Barbell Row | FAIL | echo
+Leg Press | OK | 1.9%
+Hip Thrust | OK | 2.1%
+Cable Crossover | OK | 2.4%
+Chest Dip | FAIL | echo
+Decline Barbell Bench Press | FAIL | echo
+Dumbbell Bench Press | OK | 6.7%
+Dumbbell Chest Fly | OK | 5.2%
+Dumbbell Pullover | OK | 5.2%
+Incline Barbell Bench Press | OK | 6.2%
+Incline Cable Fly | OK | 2.5%
