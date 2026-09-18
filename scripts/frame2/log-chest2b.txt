@@ -1,0 +1,11 @@
+Smith Machine Bench Press | FAIL | duplicate
+Low-to-High Cable Fly | OK | 2.2%
+Incline Machine Chest Press | FAIL | duplicate
+Decline Dumbbell Press | OK | 7.1%
+Decline Dumbbell Fly | OK | 5.4%
+Decline Push-Up | OK | 6.1%
+Wide Push-Up | FAIL | duplicate
+Knee Push-Up | OK | 5.8%
+Plyometric Push-Up | OK | 13.2%
+Archer Push-Up | FAIL | duplicate
+High-to-Low Cable Fly | OK | 2.0%

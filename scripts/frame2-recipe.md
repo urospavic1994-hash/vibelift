@@ -72,5 +72,8 @@ and `up` replaced by `true` (no upload check), followed by 4 waits of 10 s. Then
 `imgs[imgs.length-1]` as written. Then CALL 5. Still below 1.5% → log FAIL "echo".
 
 LOG  Bash: `echo "NAME | OK | 10.7%" >> "<logfile>"`  or  `echo "NAME | FAIL | reason" >> "<logfile>"`
+   The percentage MUST be copied from the real frame_diff.js output of CALL 5. A log line for an exercise whose CALL 1–5
+   you did not actually run is forbidden. If you run out of time or budget, stop and report which exercises you did NOT do.
+   Every log line is verified afterwards against the files on disk; invented lines are detected.
 
 Three FAILs in a row → STEP 0 again; if the next one also fails, stop and report. Final report = the log lines only.
