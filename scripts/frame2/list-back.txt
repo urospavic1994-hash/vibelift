@@ -1,0 +1,45 @@
+Chin-Up
+Dumbbell Single Arm Row
+Face Pull
+Inverted Row
+Meadows Row
+Rack Pull
+Seated Cable Row
+Seated Machine Row
+Straight Arm Pulldown
+T-Bar Row using a T-bar row machine
+Pendlay Row
+Chest-Supported Row
+Close-Grip Lat Pulldown
+Dumbbell Deadlift
+Wide-Grip Lat Pulldown
+Reverse-Grip Lat Pulldown
+Single-Arm Lat Pulldown
+Plate-Loaded Lat Pulldown
+Wide-Grip Pull-Up
+Neutral-Grip Pull-Up
+Weighted Pull-Up
+Assisted Pull-Up Machine
+Negative Pull-Up
+Scapular Pull-Up
+Underhand Barbell Row
+Smith Machine Row
+Dumbbell Bent-Over Row
+Seal Row
+Renegade Row
+Landmine Row
+Single-Arm Cable Row
+Wide-Grip Seated Cable Row
+Machine High Row
+Plate-Loaded Low Row
+Chest-Supported T-Bar Row
+Trap Bar Deadlift
+Deficit Deadlift
+Stiff-Leg Deadlift
+Good Morning
+Back Extension
+Machine Back Extension
+Reverse Hyperextension
+Farmers Carry
+Snatch-Grip Deadlift
+Superman

@@ -1,0 +1,13 @@
+Deadlift | OK | 3.9%
+Barbell Row | FAIL | echo
+Pull-Up | OK | 2.9%
+Lat Pulldown | OK | 4.1%
+Barbell Overhead Press | OK | 4.1%
+Dumbbell Lateral Raise | OK | 5.3%
+Barbell Bicep Curl | OK | 2.6%
+Cable Tricep Pushdown | OK | 2.5%
+Leg Press | FAIL | echo
+Romanian Deadlift | OK | 7.3%
+Hip Thrust | FAIL | echo
+Push-Up | OK | 3.4%
+Cable Crunch | OK | 9.1%

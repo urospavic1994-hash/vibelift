@@ -1,0 +1,9 @@
+const fs=require('fs');
+const hold={'Inverted Row':'frame 1 has a grey checkerboard background instead of white','Machine Back Extension':'frame 1 shows a seated plate-loaded machine with a bar at the chest, not a back extension','Reverse Pec Deck':'frame 1 faces away from the pad like a normal pec deck fly; reverse pec deck faces the pad','Seated Leg Curl':'frame 1 has the pad on the front of the shins = leg extension; curl pad goes behind the ankles','Glute Ham Raise':'frame 1 is a 45 degree back extension bench with dumbbells, not a glute ham raise','Sissy Squat':'frame 1 is a person leaning back on a small bench, not a sissy squat','Dragon Flag':'frame 1 has shoulders on the bench end and feet on the floor; dragon flag = lying on the bench, body straight and lifted','Seated Cable Chest Press':'frame 1 faces the weight stack and reads as a seated row'};
+let merged=fs.readFileSync('scripts/frame2/_merged.md','utf8');
+let held=[];
+merged=merged.split('\n').map(l=>{const n=l.split(' | ')[0];if(hold[n]){held.push(l);return null;}return l;}).filter(l=>l!==null).join('\n');
+let head=fs.readFileSync('scripts/frame2-prompts.md','utf8').replace(/\n+$/,'\n');
+head+=`\n# Groups (written 17 Sep 2026 night; every frame 1 was looked at by Claude)\n\nLines reading \`SKIP hold\` are holds and carries: no second position, they stay static, never generate them.\nReview watch-list per group is in scripts/frame2/prompts-<group>.md under NOTES (calf raises and wrist curls move only a few pixels: accept frame 2 only if the change is clearly visible).\n`+merged+`\n## HOLD — frame 1 is wrong for the name. Redo frame 1 first (recipe v5), only then make frame 2\n\n`+held.map(l=>{const n=l.split(' | ')[0];return `${l}\n   PROBLEM: ${hold[n]}`;}).join('\n')+'\n';
+fs.writeFileSync('scripts/frame2-prompts.md',head);
+console.log('held',held.length);

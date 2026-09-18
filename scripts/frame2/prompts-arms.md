@@ -1,0 +1,59 @@
+Cable Overhead Tricep Extension | both elbows bent fully so the hands and the rope are pulled back behind the head, elbows pointing forward next to the ears, upper arms in the same place, the cable shorter; same split stance facing away from the machine, the machine does not move
+Cable Rope Hammer Curl | both arms lowered and hanging straight down, hands holding the rope ends in front of the thighs, elbows still tucked at the sides of the body, the cable shorter; the machine does not move
+Concentration Curl | the dumbbell curled all the way up to the front of the shoulder, elbow fully bent and still braced against the inner thigh, upper arm in the same place, torso still leaning forward, other hand still on the other knee; the bench does not move
+Diamond Push-Up | pushed all the way up, both arms fully straight, hands still together on the floor under the chest forming a diamond, the body one straight line from head to heels, feet on the toes
+Dumbbell Hammer Curl | both dumbbells curled all the way up to the front of the shoulders, palms still facing each other, elbows fully bent and still tucked at the sides of the body, upper arms vertical
+EZ Bar Curl | the EZ bar curled all the way up to shoulder height in front of the upper chest, elbows fully bent and still tucked at the sides of the body, upper arms vertical
+Incline Dumbbell Curl | both dumbbells curled all the way up to the front of the shoulders, elbows fully bent and still pointing down behind the torso, upper arms in the same place, back still flat against the inclined bench; the bench does not move
+Machine Bicep Curl | both arms stretched out almost straight and lying down along the sloped arm pad, the handles lowered far forward and down, the cable shorter, upper arms still resting on the pad, still seated; the machine does not move
+Overhead Tricep Extension | both arms pressed fully straight up, the dumbbell held high directly above the head with both hands, elbows locked out and close to the ears, torso upright
+Preacher Curl | the EZ bar curled all the way up toward the shoulders, elbows fully bent, forearms almost vertical, upper arms still resting flat on the sloped pad, still seated; the preacher bench does not move
+Tricep Dip | pushed all the way up, both arms fully straight and locked out, shoulders high above the handles, the whole body raised higher, legs still hanging in front; the dip station does not move
+Tricep Rope Pushdown | elbows bent so the forearms point upward, the rope ends raised up to chest height, elbows still tucked at the sides of the body, upper arms vertical, the cable shorter; the machine does not move
+Close-Grip Bench Press | the barbell pressed straight up above the chest, both arms fully extended and locked out, hands still close together on the bar, back still flat on the bench; the rack and the bench do not move
+Spider Curl | both arms hanging fully straight down toward the floor in front of the bench, the dumbbells low below the top of the bench, chest still lying on the inclined pad; the bench does not move
+Cable Bicep Curl | both arms lowered and fully straight, the bar held down against the front of the thighs, elbows still tucked at the sides of the body, the cable shorter; the machine does not move
+Reverse Barbell Curl | the barbell curled all the way up to shoulder height in front of the upper chest with the palms still facing down and the knuckles on top, elbows fully bent and still tucked at the sides of the body, upper arms vertical
+Dumbbell Bicep Curl | the curled arm lowered all the way down, both arms now hanging straight at the sides, both dumbbells resting next to the thighs
+Seated Dumbbell Curl | both arms hanging fully straight down at the sides of the bench, the dumbbells low beside the hips, back still against the upright pad, still seated; the bench does not move
+Zottman Curl | both arms lowered and hanging straight down, the dumbbells held in front of the thighs with the palms facing backward and the knuckles forward, elbows still tucked at the sides of the body
+Cross-Body Hammer Curl | the working arm lowered all the way down and hanging straight at the side, the dumbbell resting next to the outer thigh, the other arm unchanged
+Dumbbell Preacher Curl | the working arm stretched out almost straight and lying down along the sloped pad, the dumbbell lowered far forward and down near the bottom of the pad, upper arm still resting on the pad, still seated; the preacher bench does not move
+Machine Preacher Curl | both arms stretched out almost straight and lying down along the sloped pad, the handles and the lever arm of the machine lowered forward and down, upper arms still resting on the pad, still seated; the machine does not move
+Bayesian Cable Curl | the working elbow fully bent, the handle curled up to the front of the shoulder, the upper arm still slightly behind the body, the cable longer and running from the hand back down to the low pulley; same stance facing away from the machine, the machine does not move
+High Cable Curl | both elbows fully bent, both handles curled in toward the ears beside the head, upper arms still held out horizontal at shoulder height, the cables longer; both machines do not move
+Single-Arm Cable Curl | the working arm lowered and fully straight, the handle held down next to the front of the thigh, elbow still tucked at the side of the body, the cable shorter; the machine does not move
+Drag Curl | both arms lowered and fully straight, the barbell held down against the front of the thighs, elbows at the sides of the body; the stand behind the person does not move
+Wide-Grip Barbell Curl | both arms lowered and fully straight, the barbell held down against the front of the thighs with the hands still wide apart on the bar, elbows at the sides of the body
+Cable Reverse Curl | both arms lowered and fully straight, the bar held down against the front of the thighs with the palms still facing down and the knuckles forward, elbows still tucked at the sides of the body, the cable shorter; the machine does not move
+Barbell Wrist Curl | only the wrists move: both wrists curled fully upward so the knuckles point up and the barbell is lifted higher above the knees, forearms still resting flat on the thighs, still seated leaning forward; the bench does not move
+Reverse Wrist Curl | only the wrists move: both wrists bent fully downward so the knuckles point toward the floor and the barbell hangs lower in front of the knees, palms still facing down, forearms still resting flat on the thighs, still seated; the bench does not move
+Plate Pinch Hold | SKIP hold
+Dumbbell Wrist Curl | only the wrist moves: the wrist curled fully upward so the knuckles point up and the dumbbell is lifted higher above the knee, forearm still resting flat on the thigh, same seated posture leaning forward
+Tricep Kickback | the working elbow bent to a right angle, the forearm hanging straight down with the dumbbell below the elbow, the upper arm still held back along the side of the torso, same bent-over torso angle, other hand still on the bench; the bench does not move
+Cable Tricep Kickback | the working arm extended fully straight back behind the hip, the handle pulled back and up behind the body, the upper arm in line with the torso, the cable longer, same bent-over torso angle, the other arm unchanged; the machine does not move
+Single-Arm Overhead Dumbbell Extension | the working elbow fully bent so the dumbbell is lowered behind the head and neck, the elbow pointing straight up next to the ear, upper arm still vertical, the other arm unchanged, torso upright
+Single-Arm Cable Pushdown | the working elbow bent so the forearm points upward, the handle raised up to chest height, elbow still tucked at the side of the body, upper arm vertical, the cable shorter; the machine does not move
+Reverse-Grip Tricep Pushdown | elbows bent so the forearms point upward, the bar raised up to chest height with the palms still facing up, elbows still tucked at the sides of the body, upper arms vertical, the cable shorter; the machine does not move
+V-Bar Tricep Pushdown | elbows bent so the forearms point upward, the V-bar raised up to chest height, elbows still tucked at the sides of the body, upper arms vertical, the cable shorter; the machine does not move
+EZ Bar Overhead Extension | both elbows fully bent so the EZ bar is lowered behind the head and neck, elbows pointing straight up next to the ears, upper arms still vertical, back still against the upright pad, still seated; the bench does not move
+Machine Tricep Extension | both elbows fully bent so the handles and the lever arm of the machine are raised up close to the shoulders, forearms pointing up, elbows and upper arms still resting on the pad, still seated; the machine does not move
+Machine Tricep Dip | both handles pushed all the way down beside the hips, both arms fully straight and locked out, shoulders down, the weight stack lifted higher, still seated upright; the machine frame does not move
+Assisted Tricep Dip | pushed all the way up, both arms fully straight and locked out, shoulders high above the handles, the whole body and the knee pad raised higher, still kneeling on the pad; the machine frame does not move
+Bench Dip | pushed all the way up, both arms fully straight and locked out, hands still on the edge of the bench behind the body, hips raised to the height of the bench seat, legs still stretched out in front with the heels on the floor; the bench does not move
+JM Press | the barbell pressed straight up, both arms fully extended and locked out, the bar directly above the upper chest, hands still close together, back still flat on the bench; the bench does not move
+Weighted Tricep Dip | pushed all the way up, both arms fully straight and locked out, shoulders high above the bars, the whole body raised so the feet hang clearly off the floor, the weight plate still hanging from the belt between the legs; the dip station does not move
+Smith Machine Close-Grip Bench | the bar pressed straight up along the rails, both arms fully extended and locked out, the bar and its plates much higher above the chest, hands still close together, back still flat on the bench; the Smith machine frame and the bench do not move
+Lying Dumbbell Tricep Extension | both elbows fully bent so the dumbbells are lowered down beside the ears on each side of the head, elbows pointing straight up, upper arms still vertical, back still flat on the bench; the bench does not move
+
+NOTES
+- Zottman Curl: frame 1 has a stray white bracket-like object behind the person (artifact); pose itself is fine.
+- Wide-Grip Barbell Curl: frame 1 has stray small objects behind the person (looks like a leftover rack fragment).
+- Drag Curl: frame 1 includes a rack/stand behind the person that the exercise does not need; bar is at waist height, not visibly dragged along the body.
+- Dumbbell Wrist Curl: the person is seated in mid air, no bench drawn. Wrist movement is tiny, flip will be barely visible.
+- Barbell Wrist Curl and Reverse Wrist Curl: frame 1 shows neutral wrists and the two pictures are almost identical; wrist-only movement will be a very subtle flip.
+- Cable Tricep Kickback: odd frame 1, free arm stretched out forward and the working hand held low near the knee; reads as the start position.
+- High Cable Curl: right-hand cable comes from a low pulley, left from a high one (inconsistent), pose is fine.
+- Weighted Tricep Dip: frame 1 shows the feet on the floor, reads more like standing between the bars than dipping.
+- Cross-Body Hammer Curl: only one dumbbell visible, the other hand is empty; line written for the working arm only.
+- Dumbbell Hammer Curl, EZ Bar Curl, Spider Curl, Drag Curl, Wide-Grip Barbell Curl, Cable Reverse Curl: frame 1 is a mid position; the chosen end is the one that differs most.
