@@ -1,0 +1,16 @@
+Incline Dumbbell Press | OK | 5.8%
+Landmine Press | OK | 5.2%
+Machine Chest Press | OK | 2.7%
+Pec Deck Machine | OK | 2.2%
+Smith Machine Bench Press | OK | 4.1%
+Incline Dumbbell Fly | OK | 3.5%
+Low-to-High Cable Fly | OK | 4.2%
+Incline Machine Chest Press | OK | 3.9%
+Decline Dumbbell Press | OK | 5.1%
+Decline Dumbbell Fly | OK | 4.3%
+Decline Push-Up | OK | 3.7%
+Wide Push-Up | OK | 4.8%
+Knee Push-Up | OK | 3.2%
+Plyometric Push-Up | OK | 4.5%
+Archer Push-Up | OK | 4.1%
+High-to-Low Cable Fly | OK | 3.6%
