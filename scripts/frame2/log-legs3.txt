@@ -1,0 +1,12 @@
+Single-Leg Romanian Deadlift | OK | 14.2%
+Nordic Hamstring Curl | OK | 11.2%
+Machine Hip Thrust | OK | 2.6%
+Hip Adduction Machine | OK | 2.5%
+Single-Leg Leg Press | OK | 2.2%
+Sled Push | OK | 2.4%
+Jump Squat | OK | 7.4%
+Lateral Lunge | OK | 14.9%
+Cable Pull-Through | OK | 10.0%
+Glute Bridge | FAIL | echo
+Single-Leg Hip Thrust | FAIL | echo
+Cable Hip Abduction | OK | 2.7%

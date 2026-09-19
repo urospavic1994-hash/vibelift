@@ -1,0 +1,13 @@
+Barbell Lunge | OK | 16.5%
+Bulgarian Split Squat | FAIL | echo
+Front Squat | OK | 8.3%
+Goblet Squat | OK | 9.5%
+Hack Squat | OK | 2.5%
+Leg Extension | OK | 3.4%
+Lying Leg Curl | FAIL | echo
+Step Up | OK | 5.6%
+Sumo Deadlift | OK | 8.4%
+Walking Lunge | OK | 11.3%
+Hip Abduction Machine | OK | 5.5%
+Cable Glute Kickback | OK | 3.5%
+Smith Machine Squat | OK | 3.5%

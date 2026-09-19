@@ -1,0 +1,12 @@
+Dumbbell Squat | OK | 3.5%
+Box Squat | OK | 6.9%
+Zercher Squat | OK | 6.3%
+Pendulum Squat | OK | 12.5%
+Belt Squat | OK | 5.3%
+Pistol Squat | OK | 12.8%
+Bodyweight Squat | OK | 10.2%
+Box Jump | OK | 5.1%
+Reverse Lunge | OK | 13.1%
+Curtsy Lunge | OK | 7.7%
+Split Squat | OK | 3.3%
+Dumbbell Romanian Deadlift | OK | 3.9%
