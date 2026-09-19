@@ -1,3 +1,4 @@
+Ab Wheel
 Alternating Dumbbell Bench Press
 Assisted Chest Dip Machine
 Assisted Tricep Dip
@@ -13,7 +14,6 @@ Bulgarian Split Squat
 Cable External Rotation
 Cable Internal Rotation
 Cable Shrug
-Cable Side Bend
 Cable Tricep Kickback
 Chest Dip
 Close-Grip Bench Press
@@ -29,7 +29,6 @@ Dumbbell Side Bend
 Dumbbell Squeeze Press
 Dumbbell Wrist Curl
 Farmers Carry
-Flat Bench Cable Fly
 Flutter Kicks
 Glute Bridge
 Glute Ham Raise
@@ -38,21 +37,18 @@ Heel Touch
 Hollow Body Hold
 Incline Dumbbell Pullover
 Incline Machine Chest Press
-Incline Push-Up
 Incline Smith Machine Press
 Inverted Row
 JM Press
 Kneeling Landmine Press
 L-Sit
-Landmine Rotation
 Leg Press Calf Raise
-Lying Dumbbell Tricep Extension
 Machine Back Extension
 Machine Hip Thrust
 Mountain Climber
 Neutral-Grip Dumbbell Press
 Overhead Dumbbell Carry
-Plank Up-Down
+Plank
 Plate Pinch Hold
 Plate-Loaded Chest Press
 Push-Up
@@ -60,6 +56,7 @@ Reverse Pec Deck
 Reverse Plank
 Reverse Wrist Curl
 Reverse-Grip Bench Press
+Russian Twist
 Scapular Pull-Up
 Scissor Kicks
 Seated Cable Chest Press
@@ -75,15 +72,11 @@ Sissy Squat
 Smith Machine Bench Press
 Smith Machine Calf Raise
 Smith Machine Shrug
-Standing Cable Chest Press
 Standing Calf Raise
 Standing Dumbbell Overhead Press
 Suitcase Carry
-Svend Press
 Tricep Dip
-Weighted Chest Dip
 Weighted Plank
 Weighted Pull-Up
 Weighted Russian Twist
 Weighted Tricep Dip
-Wide-Grip Bench Press
