@@ -1,0 +1,13 @@
+Plate-Loaded Chest Press | OK | 17.3%
+Assisted Chest Dip Machine | OK | 22.1%
+Weighted Chest Dip | OK | 11.5%
+Kneeling Landmine Press | OK | 15.9%
+Svend Press | OK | 10.2%
+Incline Dumbbell Pullover | OK | 9.3%
+Incline Push-Up | OK | 3.8%
+Flat Bench Cable Fly | OK | 2.8%
+Wide-Grip Bench Press | OK | 5.3%
+Standing Cable Chest Press | OK | 1.6%
+Barbell Floor Press | FAIL | echo
+Decline Smith Machine Press | FAIL | echo
+Reverse-Grip Bench Press | FAIL | echo
