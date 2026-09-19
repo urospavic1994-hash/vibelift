@@ -1,0 +1,8 @@
+# Second round of replacement FIRST pictures, 19 Sep 2026.
+# Save name in CALL 2 is "<NAME>.new" so the live picture is never overwritten before review.
+# Format: NAME | [bodyweight]? | exercise line.  Append the BODYWEIGHT RULE sentence only where tagged.
+
+Dragon Flag | [bodyweight] | He lies face up along a flat bench, both hands reaching back over his head to grip the far edge of the bench behind him, only his upper back and shoulders touching the bench, his whole body from shoulders to toes held straight and stiff and lifted at a steep angle up into the air. The flat bench is the only equipment.
+Seated Cable Chest Press | | He sits upright on a seat at a cable machine with his back to the weight stack, both hands holding one handle each at chest height beside his chest, elbows bent and pointing back behind him, the two cables running back past his shoulders to the stack, at the start of the forward press. Exactly one cable machine in the picture.
+Reverse Pec Deck | | He sits on a shoulder machine with his chest pressed against a padded chest rest and his back to the weight stack. Both arms are held straight out in front of him at shoulder height, hands close together, each hand gripping one of the two machine arms that are swung forward in front of his chest. Exactly one machine in the picture.
+Sissy Squat | [bodyweight] | He stands on a small angled sissy squat platform with both feet hooked under its padded foot rollers. His knees are pushed far forward and his whole body from knees to head leans back in one straight rigid line at about forty five degrees, thighs and torso in line, both arms crossed over his chest. He is NOT sitting and his hips are not bent. The sissy squat platform is the only equipment.

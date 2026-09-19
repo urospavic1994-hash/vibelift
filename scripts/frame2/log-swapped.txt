@@ -1,0 +1,4 @@
+Inverted Row | FAIL | echo
+Machine Back Extension | OK | 16.9%
+Seated Leg Curl | FAIL | echo
+Glute Ham Raise | OK | 19.0%
