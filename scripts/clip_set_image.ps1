@@ -12,5 +12,7 @@ $candidates = @(
 $src = $candidates | Where-Object { Test-Path $_ } | Select-Object -First 1
 if (-not $src) { Write-Output ("ERROR no picture found for " + $Name); exit 1 }
 $img = [System.Drawing.Image]::FromFile($src)
-[System.Windows.Forms.Clipboard]::SetImage($img)
+if (Get-Process LogonUI -ErrorAction SilentlyContinue) { Write-Output "ERROR PC is locked (Windows lock screen) - clipboard unavailable. STOP THE WHOLE RUN and report this text."; exit 2 }
+try { [System.Windows.Forms.Clipboard]::SetImage($img) }
+catch { Write-Output ("ERROR clipboard refused the picture: " + $_.Exception.Message + " STOP THE WHOLE RUN and report this text."); exit 2 }
 Write-Output ("OK clipboard holds " + $Name + " " + $img.Width + "x" + $img.Height)
