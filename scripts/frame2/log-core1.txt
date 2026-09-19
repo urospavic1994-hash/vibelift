@@ -1,0 +1,14 @@
+Smith Machine Close-Grip Bench | OK | 3.1%
+Lying Dumbbell Tricep Extension | FAIL | echo
+Hanging Leg Raise | OK | 3.9%
+Dead Bug | OK | 1.6%
+Decline Crunch | OK | 5.3%
+Weighted Crunch | OK | 6.3%
+Machine Crunch | OK | 4.5%
+Hanging Knee Raise | OK | 6.4%
+Captains Chair Knee Raise | OK | 4.1%
+Toes to Bar | OK | 4.8%
+Windshield Wipers | OK | 4.4%
+Mountain Climber | FAIL | echo
+Plank Shoulder Tap | OK | 4.7%
+Plank Up-Down | FAIL | echo

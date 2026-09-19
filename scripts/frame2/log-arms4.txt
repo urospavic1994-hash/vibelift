@@ -1,0 +1,7 @@
+EZ Bar Overhead Extension | OK | 3.0%
+Machine Tricep Extension | OK | 3.4%
+Machine Tricep Dip | OK | 1.8%
+Assisted Tricep Dip | OK | 1.5%
+Bench Dip | OK | 2.0%
+JM Press | FAIL | noimg
+Weighted Tricep Dip | FAIL | echo

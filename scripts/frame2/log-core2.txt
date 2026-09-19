@@ -1,0 +1,13 @@
+Side Plank Hip Dip | FAIL | echo
+Bird Dog | OK | 4.9%
+Body Saw | FAIL | echo
+Pallof Press | OK | 2.2%
+Cable Woodchop High-to-Low | OK | 4.4%
+Cable Woodchop Low-to-High | OK | 5.6%
+Standing Cable Crunch | OK | 4.7%
+Cable Side Bend | FAIL | echo
+Dumbbell Side Bend | FAIL | echo
+Landmine Rotation | OK | 6.4%
+Plank Leg Lift | OK | 3.8%
+Hanging Oblique Knee Raise | OK | 5.6%
+Barbell Rollout | OK | 8.5%

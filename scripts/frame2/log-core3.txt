@@ -1,0 +1,12 @@
+Jackknife Sit-Up | OK | 15.5%
+Heel Touch | OK | 2.1%
+Weighted Russian Twist | OK | 1.5%
+Sit-Up | OK | 8.3%
+Decline Sit-Up | OK | 5.2%
+Bicycle Crunch | FAIL | echo
+Reverse Crunch | OK | 7.1%
+Oblique Crunch | OK | 6.2%
+Toe Touch | OK | 8.6%
+Flutter Kicks | FAIL | echo
+V-Up | OK | 19.8%
+Scissor Kicks | OK | 2.3%
