@@ -1,0 +1,16 @@
+Box Jump | OK | 5.0%
+Diamond Push-Up | OK | 2.0%
+Preacher Curl | OK | 3.0%
+Tricep Dip | FAIL | echo
+Tricep Rope Pushdown | OK | 1.7%
+Close-Grip Bench Press | FAIL | echo
+Reverse Barbell Curl | OK | 4.3%
+Single-Arm Cable Curl | FAIL | echo
+Cable Tricep Kickback | FAIL | echo
+Single-Arm Overhead Dumbbell Extension | OK | 1.6%
+Zottman Curl | OK | 5.2%
+JM Press | OK | 2.0%
+Weighted Tricep Dip | OK | 1.8%
+Machine Tricep Extension | OK | 3.8%
+Assisted Tricep Dip | OK | 2.6%
+Dead Bug | OK | 1.5%

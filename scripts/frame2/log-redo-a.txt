@@ -1,0 +1,15 @@
+Barbell Row | FAIL | echo
+Chest Dip | FAIL | echo
+Decline Barbell Bench Press | OK | 2.1%
+Smith Machine Bench Press | FAIL | echo
+Incline Machine Chest Press | OK | 2.3%
+Wide Push-Up | OK | 3.7%
+Archer Push-Up | OK | 10.5%
+Meadows Row | OK | 3.7%
+Seated Machine Row | OK | 1.7%
+Pendlay Row | OK | 15.3%
+Dumbbell Single Arm Row | OK | 4.4%
+Neutral-Grip Pull-Up | OK | 6.6%
+Weighted Pull-Up | OK | 4.0%
+Underhand Barbell Row | OK | 3.5%
+Smith Machine Row | OK | 2.4%

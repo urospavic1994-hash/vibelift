@@ -1,0 +1,15 @@
+Seal Row | OK | 3.0%
+Machine High Row | OK | 2.3%
+Standing Dumbbell Overhead Press | OK | 3.2%
+Z Press | OK | 9.0%
+Single-Arm Cable Rear Delt Fly | OK | 2.2%
+Barbell High Pull | OK | 10.7%
+Cable Internal Rotation | FAIL | echo
+Handstand Push-Up | OK | 2.2%
+Hack Squat | OK | 2.7%
+Bulgarian Split Squat | FAIL | echo
+Lying Leg Curl | OK | 2.7%
+Glute Bridge | OK | 2.0%
+Single-Leg Hip Thrust | FAIL | echo
+Machine Hip Thrust | OK | 1.6%
+Pendulum Squat | OK | 3.4%
