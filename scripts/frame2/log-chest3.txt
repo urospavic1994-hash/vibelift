@@ -1,0 +1,11 @@
+Single-Arm Cable Fly | OK | 1.5%
+Cable Pullover | OK | 3.4%
+Barbell Pullover | OK | 5.8%
+Reverse-Grip Bench Press | FAIL | echo
+Dumbbell Floor Press | OK | 17.3%
+Single-Arm Dumbbell Bench Press | OK | 19.1%
+Alternating Dumbbell Bench Press | OK | 18.8%
+Neutral-Grip Dumbbell Press | OK | 14.0%
+Dumbbell Squeeze Press | OK | 22.5%
+Incline Smith Machine Press | OK | 23.2%
+Decline Machine Chest Press | OK | 20.1%
