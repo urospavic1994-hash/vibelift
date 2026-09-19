@@ -1,0 +1,8 @@
+Cable Tricep Kickback | FAIL | echo
+Single-Arm Overhead Dumbbell Extension | FAIL | echo
+Single-Arm Cable Pushdown | OK | 1.7%
+Reverse-Grip Tricep Pushdown | OK | 2.3%
+V-Bar Tricep Pushdown | OK | 2.0%
+EZ Bar Overhead Extension | FAIL | duplicate
+Machine Tricep Extension | FAIL | duplicate
+Machine Tricep Dip | FAIL | duplicate

@@ -1,0 +1,15 @@
+Cable Overhead Tricep Extension | OK | 1.9%
+Cable Rope Hammer Curl | OK | 2.3%
+Concentration Curl | OK | 2.4%
+Diamond Push-Up | FAIL | noimg
+Dumbbell Hammer Curl | OK | 4.9%
+EZ Bar Curl | OK | 6.2%
+Incline Dumbbell Curl | OK | 4.6%
+Machine Bicep Curl | OK | 3.2%
+Overhead Tricep Extension | OK | 2.2%
+Preacher Curl | FAIL | echo
+Tricep Dip | FAIL | echo
+Tricep Rope Pushdown | FAIL | echo
+Close-Grip Bench Press | FAIL | echo
+Spider Curl | OK | 4.5%
+Cable Bicep Curl | OK | 2.0%
