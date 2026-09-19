@@ -1,0 +1,14 @@
+Cable External Rotation | FAIL | echo
+Cable Internal Rotation | OK | 2.3%
+Side-Lying External Rotation | OK | 2.3%
+Barbell High Pull | OK | 7.1%
+Plate Halo | OK | 2.8%
+Handstand Push-Up | OK | 1.8%
+Dumbbell Scaption | OK | 5.9%
+Dumbbell Lu Raise | OK | 5.1%
+Cable Y Raise | OK | 2.9%
+Dumbbell Rear Delt Row | OK | 10.5%
+Barbell Front Raise | OK | 6.0%
+Incline Y Raise | OK | 5.5%
+Incline Rear Delt Fly | OK | 5.8%
+Pike Push-Up | OK | 4.3%

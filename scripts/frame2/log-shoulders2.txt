@@ -1,0 +1,15 @@
+Seated Barbell Overhead Press | OK | 8.0%
+Smith Machine Shoulder Press | OK | 6.0%
+Z Press | OK | 7.5%
+Single-Arm Dumbbell Press | OK | 2.8%
+Dumbbell Push Press | OK | 9.9%
+Cable Front Raise | OK | 4.6%
+Leaning Dumbbell Lateral Raise | OK | 3.5%
+Seated Dumbbell Lateral Raise | OK | 6.9%
+Seated Rear Delt Fly | OK | 8.5%
+Single-Arm Cable Rear Delt Fly | OK | 1.8%
+Cable Upright Row | OK | 3.1%
+Dumbbell Upright Row | OK | 6.6%
+Cable Shrug | OK | 1.7%
+Smith Machine Shrug | FAIL | echo
+Dumbbell Cuban Press | OK | 4.8%

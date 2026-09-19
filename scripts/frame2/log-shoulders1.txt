@@ -1,0 +1,15 @@
+Arnold Press | OK | 6.4%
+Barbell Shrug | FAIL | echo
+Cable Lateral Raise | OK | 1.8%
+Dumbbell Front Raise | OK | 5.8%
+Dumbbell Rear Delt Fly | OK | 6.5%
+Landmine Lateral Raise | OK | 2.0%
+Machine Shoulder Press | OK | 3.0%
+Plate Front Raise | OK | 6.5%
+Push Press | OK | 10.7%
+Seated Dumbbell Overhead Press | OK | 5.1%
+Upright Row | OK | 10.8%
+Dumbbell Shrug | OK | 3.3%
+Machine Lateral Raise | OK | 3.6%
+Cable Rear Delt Fly | OK | 2.7%
+Standing Dumbbell Overhead Press | OK | 4.8%
